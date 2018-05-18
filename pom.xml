@@ -42,6 +42,8 @@
         <module>pipe</module>
         <module>machflow</module>
         <module>appmodule</module>
+        <module>dataset</module>
+        <module>component</module>
     </modules>
 
     <dependencyManagement>
