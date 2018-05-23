@@ -8,28 +8,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.List;
 
+@Service
 public class DataSetOptService implements IntDataSetOptService {
+
     private Logger logger = LoggerFactory.getLogger(DataSetOptService.class);
+
     @Autowired
     private DataSetOptRepository dataSetOptRepository;
-    @Autowired
+
     private Hiveinfo hiveinfo;
 
     @Override
     public DataSystem save(DataSystem dataSystem) throws IOException{
-//        try {
-//            HiveService hiveService = new HiveService();
-//            hiveService.setHiveinfo(hiveinfo);
-//            hiveService.createDataBase();
-//            hiveService.createHiveTable();
-//            logger.info("相关 hive 表创建完毕"+hiveService.getHiveTableName());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
         return dataSetOptRepository.save(dataSystem);
     }
 

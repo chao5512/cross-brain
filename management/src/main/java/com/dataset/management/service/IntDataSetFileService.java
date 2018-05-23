@@ -17,6 +17,10 @@ public interface IntDataSetFileService {
 
     public void deleteByFileId(String datasetFileId);
 
+    public void deleteAll();
+
+    public long count();
+
     public void updateAll(String path,String datasetfileDesc,String datasetUpdateDesc,String datasetUpdateTime,String datasetId);
 
 

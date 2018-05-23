@@ -5,6 +5,7 @@ import com.dataset.management.entity.DataSetColumn;
 import com.dataset.management.entity.Hiveinfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.List;
 
+@Service
 public class HiveService {
 
     private Logger logger = LoggerFactory.getLogger(HiveService.class);
@@ -24,6 +26,7 @@ public class HiveService {
     private static Statement stmt = null;
     private static ResultSet rs = null;
     private static Hiveinfo hiveinfo;
+    private static String hiveTbaleName;
 
     HiveService(){}
 
@@ -62,9 +65,22 @@ public class HiveService {
         conn = DriverManager.getConnection(newDriveurl,hiveuser,userpassword);
         stmt = conn.createStatement();
         logger.info("connect "+hiveuser+ "database success ");
+        hiveTbaleName = hiveinfo.getHiveTableNmae();
         List<DataSetColumn> columns = hiveinfo.getColumninfos();
         String sql = "create external table if not exists "+hiveinfo.getHiveTableNmae()+"("+getcloumninfo(columns)
                 +")"+getTerminaterStr(hiveinfo.getfTerminatedby(),hiveinfo.getlTerminaterby())+getStoreAs(hiveinfo.getStoreAs());
+        stmt.execute(sql);
+        close();
+    }
+
+    public void changeHiveTable(String newTableName) throws Exception{
+        String newDriveurl = driveUrl+hiveuser;
+        Class.forName(drives);
+        conn = DriverManager.getConnection(newDriveurl,hiveuser,userpassword);
+        stmt = conn.createStatement();
+        logger.info("connect "+hiveuser+ "database success ");
+        String sql = "ALTER TABLE "+hiveTbaleName+" RENAME TO "+newTableName;
+        hiveTbaleName =newTableName;
         stmt.execute(sql);
         close();
     }

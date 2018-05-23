@@ -21,7 +21,7 @@ public class DataSetColumn implements Serializable{
     private static String comment;
     @ManyToOne
     @JoinColumn(name = "datasetId",insertable = false,updatable = false)
-    private DataSystem dataSystem;
+    private DataSet dataSet;
 
     public int getId() {
         return id;
@@ -58,11 +58,11 @@ public class DataSetColumn implements Serializable{
         DataSetColumn.datasetId = datasetId;
     }
 
-    public DataSystem getDataSystem() {
-        return dataSystem;
+    public DataSet getDataSet() {
+        return dataSet;
     }
-    public void setDataSystem(DataSystem dataSystem) {
-        this.dataSystem = dataSystem;
+    public void setDataSet(DataSystem dataSystem) {
+        this.dataSet = dataSet;
     }
 
 

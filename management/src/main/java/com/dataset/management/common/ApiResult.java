@@ -5,22 +5,22 @@ package com.dataset.management.common;
  */
 public class ApiResult {
 
-    private boolean result;
+    private int code;
     private Object data;
     private String message;
 
-    public ApiResult(boolean result, Object data, String message) {
-        this.result = result;
+    public ApiResult(int code, Object data, String message) {
+        this.code = code;
         this.data = data;
         this.message = message;
     }
 
-    public boolean getResult() {
-        return result;
+    public int getcode() {
+        return code;
     }
 
-    public void setResult(boolean result) {
-        this.result = result;
+    public void setResult(int code) {
+        this.code = code;
     }
 
     public Object getData() {

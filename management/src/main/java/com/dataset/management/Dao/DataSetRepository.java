@@ -49,6 +49,15 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
                           int newCount,
                           String newStatus,
                           String datasetId);
+    /**
+     * 更改数据集名称
+     * */
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.dataSetEngListName = ?1," +
+            "dst.dataSetName = ?2 where dst.datasetId = ?3" )
+    public void updateDataSetName(String englishName,String chinaName,String dataSetId);
 
     /**
      * 更改数据集公开状态

@@ -20,6 +20,10 @@ public interface DataSetFileRepository extends JpaRepository<DataSetFile,String>
 
     public void deleteByFileId(String datasetFileId);
 
+    public void deleteAll();
+
+    public long count();
+
     @Modifying
     @Transactional
     @Query(value = "UPDATE DataSetFile dsf SET " +

@@ -39,7 +39,10 @@ public interface IntDataSetService {
                           int newCount,
                           String newStatus,
                           String datasetId);
-
+    /**
+     * 更改数据集名称
+     * */
+    public void updateDataSetName(String englishName,String chinaName,String dataSetId);
     /**
      * 更改数据集公开状态
      * */

@@ -30,13 +30,15 @@ public class DataSystem implements Serializable{
     @Column(nullable = false,name = "dataType")
     private static String datatype;
 
+    private String dataSetSystemSortBy;
+
     private static long DATASET_CREATE_TIMETMP ;
 
     //用户名
-    public String getDataSetUserName() {
+    public String getDataSetUserId() {
         return dataSetUserId;
     }
-    public void setDataSetUserName(String dataSetid){
+    public void setDataSetUserId(String dataSetid){
         dataSetUserId = dataSetid;
     }
 
@@ -81,21 +83,11 @@ public class DataSystem implements Serializable{
         dataSetDesc = datasetDesc;
     }
 
-    //时间戳  用于创建ID 字段
-    public long getDatasetCreateTimetmp() {
-        long time = System.currentTimeMillis();     //当前时间戳
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
-        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(time))));   // 时间戳转换成时间
-        setDatasetCreateDate(sd);                   //同时变更时间结构
-        DATASET_CREATE_TIMETMP = time;
-        return DATASET_CREATE_TIMETMP ;
-    }
-
     //获取转换后的时间
     public String getDatasetCreateDate() {
         return dataSetCreateTime;
     }
-    private void setDatasetCreateDate(String sd){
+    public void setDatasetCreateDate(String sd){
         dataSetCreateTime = sd;
     }
 
@@ -120,8 +112,14 @@ public class DataSystem implements Serializable{
         return dataSetHiveTableId;
     }
     public void setDataSetHiveTableId(String datasetHiveTableId) {
-        this.dataSetHiveTableId = datasetHiveTableId;
+        dataSetHiveTableId = datasetHiveTableId;
     }
 
 
+    public String getDataSetSystemSortBy() {
+        return dataSetSystemSortBy;
+    }
+    public void setDataSetSystemSortBy(String dataSetSystemSortBy) {
+        this.dataSetSystemSortBy = dataSetSystemSortBy;
+    }
 }

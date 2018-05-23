@@ -2,16 +2,15 @@ package com.dataset.management.entity;
 
 ;
 import org.springframework.data.annotation.Id;
+import org.springframework.stereotype.Controller;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Entity(name = "dataset_basic_info")
-@NamedNativeQueries({
-        @NamedNativeQuery(name = "DataSet.updateUpdateTime",
-        query = "update DataSet ds Set ds.dataSetLastUpdateTime= :dataSetLastUpdateTime where ds.dataSetId = :datasetId")})
-
 public class DataSet implements Serializable{
 
     private static String DATASET_OWNER;
@@ -25,6 +24,8 @@ public class DataSet implements Serializable{
     @ManyToOne
     @JoinColumn(name = "datasetId")
     private static DataSystem dataSetSystem;
+    @Column(name = "dataset_en_name")
+    private static String dataSetEnglishName;
     @Column(nullable = false,name = "status")
     private static String dataSetStatus;
     @Column(nullable = false,name = "if_public")
@@ -42,13 +43,33 @@ public class DataSet implements Serializable{
 
     private static List<DataSetFile> listfiles;
 
+    //当且仅当  system表获取信息时使用
+    private static String dataSetBasicDesc;
+
+    private static String dataSetCreateTime;
+
+    private static String dataSetName ;
+
+    private static String dataSetEngListName;
+
+    private static String dataSetStoreUrl;
+
+    private static String dataSetHiveTableName;
+
+    private static String dataSetHiveTableId;
+
+    private static String datatype;
+
+    private static Hiveinfo hiveinfo;
+
+
 
 
     //自动创建的ID
-    public static int getId() {
+    public int getId() {
         return id;
     }
-    public static void setId(int id) {
+    public void setId(int id) {
         DataSet.id = id;
     }
 
@@ -66,6 +87,14 @@ public class DataSet implements Serializable{
     }
     public void setDatasetId(String datasetId) {
        dataSetId = datasetId;
+    }
+
+    //数据集名称
+    public static String getDataSetEnglishName() {
+        return dataSetEnglishName;
+    }
+    public static void setDataSetEnglishName(String dataSetEnglishName) {
+        DataSet.dataSetEnglishName = dataSetEnglishName;
     }
 
     //数据集当前上传文件状态：
@@ -135,6 +164,78 @@ public class DataSet implements Serializable{
     }
     public void setFileCount(int fileCount) {
         filesCount = fileCount;
+    }
+
+
+    public String getDataSetBasicDesc() {
+        return dataSetBasicDesc;
+    }
+    public void setDataSetBasicDesc(String dataSetBasicDesc) {
+        DataSet.dataSetBasicDesc = dataSetBasicDesc;
+    }
+
+    public Long getTimeStamp(){
+        return System.currentTimeMillis();
+    }
+    public String getDataSetCreateTime() {
+        long timetmp = getTimeStamp();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+        dataSetCreateTime = sd;
+        return dataSetCreateTime;
+    }
+    public void setDataSetCreateTime(String datasetCreateTime) {
+        dataSetCreateTime = datasetCreateTime;
+    }
+
+
+    public String getDataSetName() {
+        return dataSetName;
+    }
+    public void setDataSetName(String dataSetName) {
+        DataSet.dataSetName = dataSetName;
+    }
+
+    public String getDataSetEngListName() {
+        return dataSetEngListName;
+    }
+    public void setDataSetEngListName(String dataSetEngListName) {
+        DataSet.dataSetEngListName = dataSetEngListName;
+    }
+
+    public String getDataSetStoreUrl() {
+        return dataSetStoreUrl;
+    }
+    public void setDataSetStoreUrl(String dataSetStoreUrl) {
+        DataSet.dataSetStoreUrl = dataSetStoreUrl;
+    }
+
+    public String getDataSetHiveTableName() {
+        return dataSetHiveTableName;
+    }
+    public void setDataSetHiveTableName(String dataSetHiveTableName) {
+        DataSet.dataSetHiveTableName = dataSetHiveTableName;
+    }
+
+    public String getDataSetHiveTableId() {
+        return dataSetHiveTableId;
+    }
+    public void setDataSetHiveTableId(String datasetHiveTableId) {
+        dataSetHiveTableId = datasetHiveTableId;
+    }
+
+    public String getDatatype() {
+        return datatype;
+    }
+    public void setDatatype(String datatype) {
+        DataSet.datatype = datatype;
+    }
+
+    public Hiveinfo getHiveinfo() {
+        return hiveinfo;
+    }
+    public void setHiveinfo(Hiveinfo hiveinfo) {
+        DataSet.hiveinfo = hiveinfo;
     }
 
 }
