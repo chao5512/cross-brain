@@ -15,6 +15,16 @@ public class DataSetConsts {
 
     public static final String POWER_PRIVATE = "PRIVATE";
 
+    public static final String SORT_BY_DATASET_ENGLISH_NAME = "dataSetEnglishName";
+
+    public static final String SORT_BY_DATASET_CREATE_TIME = "dataSetCreateTime";
+
+    public static final String SORT_BY_DATASET_UPDATE_TIME = "dataSetLastUpdateTime";
+
+    public static final String SORTTYPE_AESC = "AESC";
+
+    public static final String SORTTYPE_DESC = "DESC";
+
     public static final int MAX_CONTENER = 150;
 
     public static final String UPLOAD_STATUS_LOADING = "LOADING";

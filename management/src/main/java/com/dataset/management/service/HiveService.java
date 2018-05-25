@@ -1,6 +1,7 @@
 package com.dataset.management.service;
 
 import com.dataset.management.consts.DataSetSystemConsts;
+import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetColumn;
 import com.dataset.management.entity.Hiveinfo;
 import org.slf4j.Logger;
@@ -25,8 +26,9 @@ public class HiveService {
     private static Connection conn = null;
     private static Statement stmt = null;
     private static ResultSet rs = null;
+    private static DataSet dataSet;
     private static Hiveinfo hiveinfo;
-    private static String hiveTbaleName;
+    private String hiveTbaleName;
 
     HiveService(){}
 
@@ -52,22 +54,22 @@ public class HiveService {
     public void createDataBase() throws Exception{
         beforsql();
         String userName = hiveuser;
-        String SQL = "create database IF NOT EXISTS "+hiveuser;
+        String SQL = "create database IF NOT EXISTS "+userName;
         logger.info(SQL);
         stmt.execute(SQL);
         logger.info("create database success!");
         close();
     }
 
-    public void createHiveTable() throws Exception{
+    public void createHiveTable(String hivetbaleName) throws Exception{
         String newDriveurl = driveUrl+hiveuser;
         Class.forName(drives);
         conn = DriverManager.getConnection(newDriveurl,hiveuser,userpassword);
         stmt = conn.createStatement();
         logger.info("connect "+hiveuser+ "database success ");
-        hiveTbaleName = hiveinfo.getHiveTableNmae();
+        hiveTbaleName = hivetbaleName;
         List<DataSetColumn> columns = hiveinfo.getColumninfos();
-        String sql = "create external table if not exists "+hiveinfo.getHiveTableNmae()+"("+getcloumninfo(columns)
+        String sql = "create external table if not exists "+hiveTbaleName+"("+getcloumninfo(columns)
                 +")"+getTerminaterStr(hiveinfo.getfTerminatedby(),hiveinfo.getlTerminaterby())+getStoreAs(hiveinfo.getStoreAs());
         stmt.execute(sql);
         close();
@@ -85,12 +87,12 @@ public class HiveService {
         close();
     }
 
-    public void dropHiveTable() throws Exception{
+    public void dropHiveTable(String hivetableName) throws Exception{
         String newDriveurl = driveUrl+hiveuser;
         Class.forName(drives);
         conn = DriverManager.getConnection(newDriveurl,hiveuser,userpassword);
         stmt = conn.createStatement();
-        String sql = "drop table if exists"+hiveuser;
+        String sql = "drop table if exists"+hivetableName;
         stmt.execute(sql);
     }
 
@@ -131,7 +133,10 @@ public class HiveService {
     }
 
     public String getHiveTableName() {
-        return hiveuser;
+        return hiveTbaleName;
+    }
+    private void setHiveTbaleName(String hivetbaleName){
+        hiveTbaleName =hivetbaleName;
     }
 
 }

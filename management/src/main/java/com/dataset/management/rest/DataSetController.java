@@ -1,35 +1,30 @@
 package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
+import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
-import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.entity.DataSystem;
-import com.dataset.management.entity.Hiveinfo;
 import com.dataset.management.service.*;
-
-import org.apache.hadoop.hive.common.LogUtils;
-import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
+
+/**
+ * 操作对象 : DataSet
+ * 操作依据： datasetId;
+ *
+ * */
 @Controller
 @RequestMapping("/dataset")
 @CrossOrigin
 public class DataSetController {
-/***
- * 空值最外面的系统数据集的展示和操作
- *
- * **/
+
     private static Logger logger = LoggerFactory.getLogger(DataSetController.class);
 
     @Autowired
@@ -50,90 +45,70 @@ public class DataSetController {
     @Autowired
     HdfsService hdfsService;
 
-
-    private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
-
-    @ResponseBody
-    @RequestMapping(value = {"/create/","/cretae"},method = RequestMethod.POST)
-    public ApiResult createDataSet(DataSet dataSet) throws IOException{
-        int code  = 0;
-        String message = "begin create dataset";
-        if(null == dataSet){
-            return new ApiResult(code,null,"The DataSet must not null");
-        }
-        logger.info("DataSetParams: "+ JSON.toString(dataSet));
-
-        DataSystem newDataSystem = packageDataSystem(dataSet);
-        //体统表信息
-        dataSetOptService.save(newDataSystem);
-        logger.info("数据集系统表创建：。。。。。");
-        exeService.submit(new Runnable() {
-            @Override
-            public void run() {
-                //数据集表信息
-                dataSetService.save(dataSet);
-                logger.info("数据集基本表创建。。。。。。");
-                /**
-                 * hive info 如何放入？？？
-                 * */
-                Hiveinfo hiveinfo = dataSet.getHiveinfo();
-                hiveService.setHiveinfo(hiveinfo);
-                logger.info("获取hive表  设计结构："+hiveinfo);
-                try {
-                    logger.info("生成hvie 表中。。。。。");
-                    hiveService.createDataBase();
-                    hiveService.createHiveTable();
-                    logger.info("hive表生成完毕。。。。。");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        return  new ApiResult(code,newDataSystem,message);
-    }
     //查询
     @ResponseBody
-    @RequestMapping(value = {"/select/","/select"},method = RequestMethod.POST)
-    public ApiResult selectDataSet(@RequestParam(value = "dataSetSystemSortBy") String sortBy,
-                                   DataSystem dataSystem) throws IOException{
+    @RequestMapping(value = {"/listInfo/","/listInfo"},method = RequestMethod.POST)
+    public ApiResult listInfoDatasets(@RequestParam(value = "datasetId") String datasetId){
+        /**
+         * *排序方式已经由之前的 dataSystem  属性设置*
+         * sortBY  是不可变的
+         * */
         int code =0;
-        String message = "查询数据集系统表中。。。。";
-        //默认根据英文名字排序
-        if(sortBy != null){
-            logger.info("排序方式："+sortBy);
-            Sort sort = changSortBy("desc",sortBy);
-            // list<DataSystem>
-            dataSetOptService.findAll(sort);
-            message ="已经按照"+sortBy+" 方式排序";
-        }else {
-            logger.info("mr排序");
-            Sort sort = basicSortBy();
-            dataSetOptService.findAll(sort);
-            message ="已经按照默认方式排序";
-        }
-        return new ApiResult(0,dataSystem,message);
+        String message ="展示数据集基本信息表: ";
+        logger.info("开始罗列数据据基本信息");
+        DataSet dataSet = dataSetService.findByDataSetId(datasetId);
+        return new ApiResult(0,dataSet,message);
     }
+
+
     /**
-     *  修改
+     * 修改 ：  由System 移动到 basic 中
+     * 修改依据：  datasetId
+     *          可以  手选   修改项：
      *
-     *  在system 和 datasetbasic  表中修改，同时由 datasetId 获取，同时更改各自允许修改的 字段 ；
+     String en_datasetName,
+     String ch_datasetName,
+     String path,
+     String basicDesc,
+     String hivetableName,
+     String sortBy,
+     String sortType,
+     String powerStatus,
+     String updateDesc,
+     int newMax,
+     String dataType,总计   11 个更改
+
+     String dataSetStatus          状态随动，依据数据集文件上传的状态而定
+     String dataSetLastUpdateTime  状态随动  伴随更改操作而定；
+     int filesCount：              状态随动  依据数据集内文件数量变更；
+
+     *
+     * 问题：  数据集英文名称改了 那ID 是不是也因该改
      * */
     @ResponseBody
     @RequestMapping(value = {"/update/","/update"},method = RequestMethod.POST)
-    public ApiResult updateDataSet(@RequestParam(value = "datasetId") String datasetId,
+    public ApiResult updateDataSet(String datasetId,
                                    @RequestParam(value = "datasetUpdateChnineseName",required = false)String datasetUpdateChnineseName,
                                    @RequestParam(value = "datasetUpdateEnglishName",required = false) String datasetUpdateEnglishName,
                                    @RequestParam(value = "datasetStorePath",required = false) String datasetStorePath,
-                                   @RequestParam(value = "datatsetUpdateDesc",required = false) String datatsetUpdateDesc,
-                                   @RequestParam(value = "hiveTbaleName",required = false)String hiveTableName
-                                   )throws IOException{
+                                   @RequestParam(value = "dataSetBasicDesc",required = false) String dataSetBasicDesc,
+                                   @RequestParam(value = "hiveTbaleName",required = false)String hiveTableName,
+                                   @RequestParam(value = "datasetSortBy",required = true)String sortBy,
+                                   @RequestParam(value = "datasetSortType") String sortType,
+                                   @RequestParam(value = "datasetPower") String dataSetPower,
+                                   @RequestParam(value = "datasetUpdateDesc") String dataSetUpdateDesc,
+                                   @RequestParam(value = "datasetDtaType") String dataSetDataType,
+                                   @RequestParam(value = "maxContener") int maxContener
+    )throws IOException {
         int code =0;
-        String message = "修改系统中的数据集。。。。。";
+        String message = "修改数据集";
+        logger.info("准备修改操作，系统表  基本信息表全部准备更新。。。");
         DataSystem dataSystem = dataSetOptService.findByDataSetId(datasetId);
         DataSet dataSet = dataSetService.findByDataSetId(datasetId);
-        logger.info("检测到当前数据集："+ dataSystem);
-        if(null == dataSystem){
-            return new ApiResult(-1,dataSystem,"未找到数据集");
+        logger.info("检测到当前数据集系统："+ dataSystem);
+        logger.info("检测到当前数据集："+ dataSet);
+        if(null == dataSystem && null == dataSet){
+            return new ApiResult(-1,null,"未找到系统数据集或者 数据集信息表");
         }
         if(datasetUpdateChnineseName != null){
             dataSystem.setDatasetName(datasetUpdateChnineseName);
@@ -141,33 +116,73 @@ public class DataSetController {
         }
         if(datasetUpdateEnglishName != null){
             dataSystem.setDatasetEnglishName(datasetUpdateEnglishName);
-            dataSet.setDataSetEngListName(datasetUpdateEnglishName);
+            dataSet.setDataSetEnglishName(datasetUpdateEnglishName);
         }
         if(datasetStorePath != null){
             dataSystem.setDatasetStoreurl(datasetStorePath);
             dataSet.setDataSetStoreUrl(datasetStorePath);
         }
-        if(datatsetUpdateDesc != null){
-            dataSystem.setDatasetDesc(datatsetUpdateDesc);
-            dataSet.setDataSetBasicDesc(datatsetUpdateDesc);
+        if(dataSetBasicDesc != null){
+            dataSystem.setDatasetDesc(dataSetBasicDesc);
+            dataSet.setDataSetBasicDesc(dataSetBasicDesc);
         }
         if(hiveTableName != null){
             dataSystem.setDatasetHiveTablename(hiveTableName);
             dataSet.setDataSetHiveTableName(hiveTableName);
         }
+        if(sortBy != null){
+            dataSystem.setDataSetSystemSortBy(sortBy);
+            dataSet.setDataSetSortBY(sortBy);
+        }
+        if(sortType != null){
+            dataSystem.setDataSetSortType(sortType);
+            dataSet.setDataSetSortType(sortType);
+        }
+        if(dataSetPower != null){
+            dataSet.setDatasetPower(dataSetPower);
+        }
+        if(dataSetUpdateDesc != null){
+            dataSet.setDataSetUpdateDesc(dataSetUpdateDesc);
+        }
+        if(dataSetDataType != null){
+            dataSet.setDatatype(dataSetDataType);
+        }
+        if(maxContener > 0){
+            dataSet.setMaxContener(maxContener);
+        }
         //确认获取新生成的数据
-        logger.info("开始数据集系统表。。。。。7 ");
+        logger.info("开始更新数据集系统表。。。。。7 ");
         dataSetOptService.update(
                 dataSystem.getDatasetEnglishName(),
                 dataSystem.getDatasetName(),
                 dataSystem.getDatasetStoreurl(),
                 dataSystem.getDatasetDesc(),
                 dataSystem.getDatasetHiveTablename(),
-                dataSystem.getDataSetId()
-                );
+                dataSystem.getDataSetSystemSortBy(),
+                dataSystem.getDataSetSortType(),
+                datasetId
+        );
         //同时更新 数据集基本表信息
         logger.info("更改对应数据集基本表信息：。。。");
-        dataSetService.updateDataSetName(dataSystem.getDatasetEnglishName(),dataSystem.getDatasetName(),dataSystem.getDataSetId());
+        dataSetService.updateAll(
+                dataSet.getDataSetEnglishName(),
+                dataSet.getDataSetName(),
+                dataSet.getDataSetStoreUrl(),
+                dataSet.getDataSetBasicDesc(),
+                dataSet.getDataSetHiveTableName(),
+                dataSet.getDataSetSortBY(),
+                dataSet.getDataSetSortType(),
+                dataSet.getDatasetPower(),
+                dataSet.getDataSetUpdateDesc(),
+                dataSet.getMaxContener(),
+                dataSet.getDatatype(),
+                datasetId);
+        logger.info("重置 数据集更新时间 ");
+        dataSet.setContentTimeStamp();
+        String newTime = dataSet.getDatasetUpdatetime(dataSet.getContentTimeStamp());
+        dataSet.setDatasetUpdatetime(newTime);
+        dataSetService.updateDataSetLastUpdateTime(newTime,datasetId);
+
         //更新hive表名
         try {
             hiveService.changeHiveTable(dataSystem.getDatasetEnglishName());
@@ -183,53 +198,34 @@ public class DataSetController {
      * 删除了文件  files   更新 数据集基本表中关于文件的统计   filesCounts
      * */
     @ResponseBody
-    @RequestMapping(value = {"/update/","/update"},method = RequestMethod.POST)
-    public ApiResult updateDataSet(@RequestParam(value = "datasetId") String datasetId)throws IOException{
+    @RequestMapping(value = {"/clean/","/clean"},method = RequestMethod.POST)
+    public ApiResult cleanDataSet(@RequestParam(value = "datasetId") String datasetId)throws IOException{
         int code = 0;
         String message = "执行清空数据及操作。。。";
         DataSet dataSet = dataSetService.findByDataSetId(datasetId);
         logger.info("获取数据集："+dataSet);
         logger.info("数据集准备清空操作  （删除文件） ");
         dataSetFileService.deleteAll();
-        logger.info("数据集当前文件数："+dataSetFileService.count());
         if(dataSetFileService.count() ==0){
-            dataSet.setFileCount(0);
+            logger.info("数据集当前文件数："+dataSetFileService.count());
             logger.info("远程 hdfs 删除文件中。。");
+            hdfsService.setDataSet(dataSet);
             hdfsService.deleteFiles(hdfsService.datasetHdsfFiles());
             int counts = hdfsService.datasetHdsfFiles().size();
             logger.info("hdfs 中 指定路径文件数："+counts);
+
             dataSet.setFileCount(counts);
-            dataSetService.updateDataSetFilecount(datasetId,counts);
+            dataSet.setContentTimeStamp();
+            String newTime = dataSet.getDatasetUpdatetime(dataSet.getContentTimeStamp());
+            String newDesc = "清空了数据集所有文件。。";
+            dataSetService.updateDataSetDesc(newDesc,datasetId);
+            dataSetService.updateDataSetLastUpdateTime(newTime,datasetId);
+            dataSetService.updateDataSetFilecount(counts,datasetId);
             logger.info("数据及基本表中：（文件数）："+dataSet.getFileCount());
             return new ApiResult(0,dataSet,"清空数据及成功");
         }
         return new ApiResult(-1,dataSet,"清空失败");
     }
-    //删除
-
-
-    private DataSystem packageDataSystem(DataSet dataSet){
-        DataSystem dataSystem = new DataSystem();
-        dataSystem.setDataSetId(dataSet.getDatasetId());
-        dataSystem.setDatasetName(dataSet.getDataSetName());
-        dataSystem.setDataSetUserId(dataSet.getDatasetOwner());
-        dataSystem.setDatasetDesc(dataSet.getDataSetBasicDesc());
-        dataSystem.setDatasetHiveTablename(dataSet.getDataSetHiveTableName());
-        dataSystem.setDataSetHiveTableId(dataSet.getDataSetHiveTableId());
-        dataSystem.setDatasetCreateDate(dataSet.getDataSetCreateTime());
-        dataSystem.setDatasetEnglishName(dataSet.getDataSetEngListName());
-        return dataSystem;
-    }
-
-    private Sort changSortBy(String orderType,String orderColumn){
-        Sort sort = new Sort(Sort.Direction.fromString(orderType),orderColumn);
-        return sort;
-    }
-
-    private Sort basicSortBy(){
-        return changSortBy("desc","dataSetEngListName");
-    }
-
 
 
 }

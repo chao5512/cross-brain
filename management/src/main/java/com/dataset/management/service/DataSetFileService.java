@@ -13,9 +13,16 @@ public class DataSetFileService implements IntDataSetFileService {
     @Autowired
     private DataSetFileRepository dataSetFileRepository;
 
+    //也是上传的功能
     public DataSetFile save(DataSetFile datasetFile){
         return dataSetFileRepository.save(datasetFile);
     }
+
+    public List<DataSetFile> save (List<DataSetFile> dataSetFiles){
+        return dataSetFileRepository.save(dataSetFiles);
+    }
+
+
 
     public List<DataSetFile> findAll(Sort sort){
         return dataSetFileRepository.findAll(sort);
@@ -25,12 +32,20 @@ public class DataSetFileService implements IntDataSetFileService {
         return dataSetFileRepository.findBydatasetFileId(datasetFileId);
     }
 
+    public DataSetFile findBydatasetId(String datasetId) {
+        return dataSetFileRepository.findBydatasetFileId(datasetId);
+    }
+
     public DataSetFile findBydatasetFileName(String datasetFileName){
         return dataSetFileRepository.findBydatasetFileName(datasetFileName);
     }
 
     public void deleteByFileId(String datasetFileId){
         dataSetFileRepository.deleteByFileId(datasetFileId);
+    }
+
+    public void deleteBydatasetId(String datasetId){
+        dataSetFileRepository.deleteBydatasetId(datasetId);
     }
 
     public void deleteAll(){ dataSetFileRepository.deleteAll();}

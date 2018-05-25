@@ -24,45 +24,60 @@ public class DataSet implements Serializable{
     @ManyToOne
     @JoinColumn(name = "datasetId")
     private static DataSystem dataSetSystem;
+    //数据集英文名称
     @Column(name = "dataset_en_name")
     private static String dataSetEnglishName;
-    @Column(nullable = false,name = "status")
+    //数据集上传文件状态
+    @Column(nullable = false,name = "dataset_status")
     private static String dataSetStatus;
-    @Column(nullable = false,name = "if_public")
+    //数据集公开状态
+    @Column(nullable = false,name = "dataset_if_public")
     private static String dataSetPower;
-    @Column(nullable = false,name = "updated_time")
+    //数据集最后修改时间
+    @Column(nullable = false,name = "dataset_updated_time")
     private static String dataSetLastUpdateTime;
-    @Column(nullable = true,name = "modidied_info")
+    //数据集最后修改描述
+    @Column(nullable = true,name = "dataset_modidied_info")
     private static String dataSetUpdateDesc;
-    @Column(nullable = false,name = "rank_mode")
+    //数据集排序方式
+    @Column(nullable = false,name = "dataset_rank_mode")
     private static String dataSetSortBY;
-    @Column(nullable = false,name = "size")
+
+    @Column(name = "dataset_sort_type")
+    private static String dataSetSortType;
+    //数据集容量大小
+    @Column(nullable = false,name = "dataset_size")
     private static int maxContener;
-    @Column(nullable = false,name = "number")
+    //数据及当前文件数量
+    @Column(nullable = false,name = "dataset_filecount")
     private static int filesCount;
-
-    private static List<DataSetFile> listfiles;
-
+    @Column(name = "dataset_basic_desc")
     //当且仅当  system表获取信息时使用
     private static String dataSetBasicDesc;
-
+    //创建时间
+    @Column(name = "dataset_create_time")
     private static String dataSetCreateTime;
-
+    //中文名称
+    @Column(name = "dataset_cn_name")
     private static String dataSetName ;
-
-    private static String dataSetEngListName;
-
+    //保存路径
+    @Column(name = "dataset_storeurl")
     private static String dataSetStoreUrl;
-
+    //hive 表名
+    @Column(name = "dataset_hivetableName")
     private static String dataSetHiveTableName;
-
+    //H表ID
+    @Column(name = "dataset_hivetableId")
     private static String dataSetHiveTableId;
-
+    //数据集数据类型
+    @Column(name = "dataset_dataType")
     private static String datatype;
-
+    // H表创建时的属性
     private static Hiveinfo hiveinfo;
+    //数据集唯一标识的时间错
+    private long createTimetamp;
 
-
+    private long contentTimeTmp;
 
 
     //自动创建的ID
@@ -82,18 +97,27 @@ public class DataSet implements Serializable{
     }
 
     // 数据集ID
-    public String getDatasetId() {
+    public String getDatasetId(){
         return dataSetId;
     }
-    public void setDatasetId(String datasetId) {
-       dataSetId = datasetId;
+    public void setDatasetId() {
+        dataSetId = dataSetEnglishName+"_"+createTimetamp;
     }
 
-    //数据集名称
-    public static String getDataSetEnglishName() {
+
+    public long getCreateTimetamp() {
+        return createTimetamp;
+    }
+    public void setCreateTimetamp(long createTimetamp) {
+        this.createTimetamp = createTimetamp;
+    }
+
+
+    //数据集名称(en)
+    public String getDataSetEnglishName() {
         return dataSetEnglishName;
     }
-    public static void setDataSetEnglishName(String dataSetEnglishName) {
+    public void setDataSetEnglishName(String dataSetEnglishName) {
         DataSet.dataSetEnglishName = dataSetEnglishName;
     }
 
@@ -113,17 +137,25 @@ public class DataSet implements Serializable{
         dataSetPower = datasetPower;
     }
 
-    //数据集文件列表
-    public List<DataSetFile> getListfiles() {
-        return listfiles;
+    //创建时间
+    public Long getContentTimeStamp(){
+        return contentTimeTmp;
     }
-    public void setListfiles(List<DataSetFile> listfiles) {
-        DataSet.listfiles = listfiles;
+    public void setContentTimeStamp(){
+        contentTimeTmp = System.currentTimeMillis();
     }
-
-
+    public String getDataSetCreateTime( ) {
+        long timetmp = createTimetamp;
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+        dataSetCreateTime = sd;
+        return dataSetCreateTime;
+    }
     //修改时间
-    public String getDatasetUpdatetime() {
+    public String getDatasetUpdatetime(long timetmp) {
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
+        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+        dataSetLastUpdateTime = sd;
         return dataSetLastUpdateTime;
     }
     public void setDatasetUpdatetime(String datasetUpdatetime) {
@@ -145,10 +177,19 @@ public class DataSet implements Serializable{
     }
 
     //排序方式
-    public String getSortType() {
+    public String getDataSetSortBY() {
         return dataSetSortBY;
     }
-    public void setSortType(String datasetSortBy) { dataSetSortBY= datasetSortBy; }
+    public void setDataSetSortBY(String datasetSortBy) { dataSetSortBY= datasetSortBy; }
+
+    //排序升降序方式
+    public  String getDataSetSortType() {
+        return dataSetSortType;
+    }
+    public  void setDataSetSortType(String dataSetSortType) {
+        DataSet.dataSetSortType = dataSetSortType;
+    }
+
 
     //数据及大小
     public int getMaxContener() {
@@ -174,33 +215,13 @@ public class DataSet implements Serializable{
         DataSet.dataSetBasicDesc = dataSetBasicDesc;
     }
 
-    public Long getTimeStamp(){
-        return System.currentTimeMillis();
-    }
-    public String getDataSetCreateTime() {
-        long timetmp = getTimeStamp();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
-        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
-        dataSetCreateTime = sd;
-        return dataSetCreateTime;
-    }
-    public void setDataSetCreateTime(String datasetCreateTime) {
-        dataSetCreateTime = datasetCreateTime;
-    }
 
-
+    //数据集中文
     public String getDataSetName() {
         return dataSetName;
     }
     public void setDataSetName(String dataSetName) {
         DataSet.dataSetName = dataSetName;
-    }
-
-    public String getDataSetEngListName() {
-        return dataSetEngListName;
-    }
-    public void setDataSetEngListName(String dataSetEngListName) {
-        DataSet.dataSetEngListName = dataSetEngListName;
     }
 
     public String getDataSetStoreUrl() {

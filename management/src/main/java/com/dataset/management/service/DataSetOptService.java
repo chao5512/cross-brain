@@ -21,8 +21,6 @@ public class DataSetOptService implements IntDataSetOptService {
     @Autowired
     private DataSetOptRepository dataSetOptRepository;
 
-    private Hiveinfo hiveinfo;
-
     @Override
     public DataSystem save(DataSystem dataSystem) throws IOException{
         return dataSetOptRepository.save(dataSystem);
@@ -44,8 +42,15 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public void update (String en_datasetName,String ch_datasetName,String path,String desciption,String hivetableName,String datasetId) throws IOException{
-        dataSetOptRepository.update(en_datasetName,ch_datasetName,path,desciption,hivetableName,datasetId);
+    public void update (String en_datasetName,
+                        String ch_datasetName,
+                        String path,
+                        String desciption,
+                        String hivetableName,
+                        String sortBy,
+                        String sortType,
+                        String datasetId) throws IOException{
+        dataSetOptRepository.update(en_datasetName,ch_datasetName,path,desciption,hivetableName,sortBy,sortType,datasetId);
     }
 
 

@@ -11,8 +11,8 @@ public class DataSystem implements Serializable{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false,name = "datasetId")
     private static String dataSetId ;
-    @Column(nullable = false,name = "userId")
-    private static String dataSetUserId ;
+//    @Column(nullable = false,name = "userId")
+//    private static String dataSetUserId ;
     @Column(nullable = true,name = "ch_name")
     private static String dataSetName ;
     @Column(nullable = false,name = "en_name")
@@ -27,20 +27,20 @@ public class DataSystem implements Serializable{
     private static String dataSetHiveTableName;
      @Column(nullable = false,name = "hive_table_Id")
     private String dataSetHiveTableId;
-    @Column(nullable = false,name = "dataType")
-    private static String datatype;
-
+    @Column(name = "datasetSortBy")
     private String dataSetSystemSortBy;
+    @Column(name ="datasetSortType")
+    private String dataSetSortType;
 
     private static long DATASET_CREATE_TIMETMP ;
 
-    //用户名
-    public String getDataSetUserId() {
-        return dataSetUserId;
-    }
-    public void setDataSetUserId(String dataSetid){
-        dataSetUserId = dataSetid;
-    }
+//    //用户名
+//    public String getDataSetUserId() {
+//        return dataSetUserId;
+//    }
+//    public void setDataSetUserId(String dataSetid){
+//        dataSetUserId = dataSetid;
+//    }
 
     public String getDataSetId() {
         return dataSetId;
@@ -91,13 +91,6 @@ public class DataSystem implements Serializable{
         dataSetCreateTime = sd;
     }
 
-    //数据类型
-    public String getDataType() {
-        return datatype;
-    }
-    public void setDataType(String DATATYPE) {
-        datatype = DATATYPE;
-    }
 
     //对应hive 表
     public String getDatasetHiveTablename() {
@@ -122,4 +115,13 @@ public class DataSystem implements Serializable{
     public void setDataSetSystemSortBy(String dataSetSystemSortBy) {
         this.dataSetSystemSortBy = dataSetSystemSortBy;
     }
+
+
+    public String getDataSetSortType() {
+        return dataSetSortType;
+    }
+    public void setDataSetSortType(String dataSetSortType) {
+        this.dataSetSortType = dataSetSortType;
+    }
+
 }

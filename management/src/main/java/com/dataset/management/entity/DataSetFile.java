@@ -32,7 +32,9 @@ public class DataSetFile implements Serializable{
     @Column(nullable = true,name = "update_description")
     private static String fileUpdateDesc;
     @Column(nullable = false,name = "size")
-    private static int filesize;
+    private static String filesize;
+
+
 
 
     private static String filePower;
@@ -57,11 +59,8 @@ public class DataSetFile implements Serializable{
     }
 
     //时间戳
-    public Long getOnloadTime() {
+    public Long getOnloadTimetmp() {
         UPLOAD_TIMETMP = System.currentTimeMillis();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(UPLOAD_TIMETMP))));
-        setOnloadTimeDate(sd);
         return UPLOAD_TIMETMP;
     }
 
@@ -69,14 +68,14 @@ public class DataSetFile implements Serializable{
     public String getFileId() {
         return fileId;
     }
-    public void setFileId() {
-        if(fileId !=null && UPLOAD_TIMETMP !=0)
-        fileId = fileName + "_" + UPLOAD_TIMETMP;
+    public void setFileId(String fileID) {
+        fileId = fileID;
     }
 
     //date时间格式
-    private  void setOnloadTimeDate(String sd){
-        uploadTime = sd;
+    public  void setOnloadTimeDate(long onloadTimetmp){
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        uploadTime = sdf.format(new Date(Long.parseLong(String.valueOf(onloadTimetmp))));
     }
     public String getOnloadTimedate() {
         return uploadTime;
@@ -180,10 +179,10 @@ public class DataSetFile implements Serializable{
     }
 
     //文件大小
-    public static int getFileSize() {
+    public  String getFileSize() {
         return filesize;
     }
-    public static void setFileSize(int fileSize) {
+    public  void setFileSize(String fileSize) {
         filesize = fileSize;
     }
 }

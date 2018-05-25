@@ -1,12 +1,14 @@
 package com.dataset.management.service;
 
 import com.dataset.management.consts.DataSetSystemConsts;
+import com.dataset.management.entity.DataSet;
 import com.sun.tools.doclets.formats.html.PackageTreeWriter;
 import org.apache.calcite.avatica.Meta;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -23,8 +25,17 @@ public class HdfsService {
 
     private Logger logger = LoggerFactory.getLogger(HdfsService.class);
 
+    private DataSet dataSet;
+
+    @Autowired
+    HiveService hiveService;
+
+    private String newStoreUrl;
+
+    //默认的 路径
     private String conterHdfsUrl(){
-        return hdsfbasic+user;
+        newStoreUrl = hdsfbasic+user+hiveService.getHiveTableName();
+        return hdsfbasic+user+hiveService.getHiveTableName();
     }
 
     public void uploadFiles(List<String> newFiles)throws IOException{
@@ -76,6 +87,15 @@ public class HdfsService {
         fs.close();
     }
 
+    public void deleteDatasetDir()throws IOException{
+        String url = conterHdfsUrl();
+        Configuration configuration = new Configuration();
+        Path dfspath = new Path(url);
+        FileSystem fs = FileSystem.get(dfspath.toUri(),configuration);
+        fs.delete(dfspath,true);
+        fs.close();
+    }
+
     public String getUser() {
         return user;
     }
@@ -83,6 +103,21 @@ public class HdfsService {
         this.user = user;
     }
 
+    public DataSet getDataSet() {
+        return dataSet;
+    }
+    public void setDataSet(DataSet dataSet) {
+        this.dataSet = dataSet;
+    }
 
+    /***
+     * 更改存储路径；
+     * */
+    public void setStorerUrl( String newstoreurl){
+        newStoreUrl = newstoreurl;
+    }
+    public String getNewStoreUrl(){
+        return newStoreUrl;
+    }
 
 }

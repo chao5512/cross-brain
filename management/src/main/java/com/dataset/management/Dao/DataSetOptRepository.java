@@ -30,8 +30,17 @@ public interface DataSetOptRepository extends JpaRepository <DataSystem,String>{
             "dsst.datasetEnglishName = ?2," +
             "dsst.datasetStoreurl = ?3," +
             "dsst.datasetDesc = ?4," +
-            "dsst.datasetHiveTablename = ?5 WHERE dsst.dataSetId= ?6")
-    public void update (String en_datasetName,String ch_datasetName,String path,String desciption,String hivetableId,String datasetId) throws IOException;
+            "dsst.datasetHiveTablename = ?5," +
+            "dsst.dataSetSystemSortBy = ?6," +
+            "dsst.dataSetSortType =?7 WHERE dsst.dataSetId= ?8")
+    public void update (String en_datasetName,
+                        String ch_datasetName,
+                        String path,
+                        String desciption,
+                        String hivetableId,
+                        String sortBy,
+                        String sortType,
+                        String datasetId) throws IOException;
 
     public void deleteAll();
 

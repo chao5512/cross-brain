@@ -21,8 +21,11 @@ public interface IntDataSetOptService {
 
     public void update (String en_datasetName,
                         String ch_datasetName,
-                        String path,String desciption,
+                        String path,
+                        String desciption,
                         String hivetableName,
+                        String sortBy,
+                        String sortType,
                         String datasetId) throws IOException;
 
     public void clearByDataSetId (String datasetId) throws IOException;

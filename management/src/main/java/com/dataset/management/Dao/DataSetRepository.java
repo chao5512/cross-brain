@@ -28,26 +28,36 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
      * */
     public List<DataSet> findAll(Sort sort);
 
+    public DataSet findFirst();
+
     /**
      * 更改数据集多个属性
      * */
     @Modifying
     @Transactional
     @Query(value = "UPDATE DataSet dst SET " +
-            "dst.datasetPower = ?1," +
-            "dst.sortType = ?2," +
-            "dst.datasetUpdatetime =?3," +
-            "dst.dataSetUpdateDesc = ?4," +
-            "dst.maxContener = ?5," +
-            "dst.fileCount = ?6," +
-            "dst.datasetStatus = ?7 where dst.datasetId = ?7")
-    public void updateAll(String power,
-                          String newSortBy,
-                          String newTime,
-                          String newDesc,
+            "dst.dataSetEnglishName = ?1," +
+            "dst.dataSetName =?2," +
+            "dst.dataSetStoreUrl = ?3," +
+            "dst.dataSetBasicDesc = ?4," +
+            "dst.dataSetHiveTableName = ?5," +
+            "dst.dataSetSortBY =?6," +
+            "dst.dataSetSortType =?7," +
+            "dst.datasetPower =?8," +
+            "dst.dataSetUpdateDesc =?9," +
+            "dst.maxContener =?10," +
+            "dst.datatype =?11 where dst.datasetId = ?12")
+    public void updateAll(String en_datasetName,
+                          String ch_datasetName,
+                          String path,
+                          String basicDesc,
+                          String hivetableName,
+                          String sortBy,
+                          String sortType,
+                          String powerStatus,
+                          String updateDesc,
                           int newMax,
-                          int newCount,
-                          String newStatus,
+                          String dataType,
                           String datasetId);
     /**
      * 更改数据集名称
@@ -56,43 +66,66 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
     @Transactional
     @Query(value = "UPDATE DataSet dst SET " +
             "dst.dataSetEngListName = ?1," +
-            "dst.dataSetName = ?2 where dst.datasetId = ?3" )
-    public void updateDataSetName(String englishName,String chinaName,String dataSetId);
+            "dst.dataSetName = ?2, " +
+            "dst.sortType = ?3 where dst.datasetId = ?4" )
+    public void updateDataSetName(String englishName,String chinaName,String sortBy,String dataSetId);
 
     /**
      * 更改数据集公开状态
      * */
-    public void updateDataSetPowerStatus(String datasetId,String powerStatus);
+    public void updateDataSetPowerStatus(String powerStatus,String datasetId);
 
     /**
      * 更改数据集排序方式
      * */
-    public void updateDataSetSortBy(String datasetId,String newSortBy);
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.dataSetSortBY= ?1 where dst.dataSetSortBY = dst.dataSetSortBY")
+    public void updateDataSetSortBy(String newSortBy);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.dataSetSortType= ?1 where dst.dataSetSortType = dst.dataSetSortType")
+    public void updateDataSetSortType(String sortType);
 
     /**
      * 更改数据集修改时间
      * */
-    public void updateDataSetLastUpdateTime(String datasetId,String newTime);
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.datasetUpdatetime= ?1 where dst.datasetId = ?2")
+    public void updateDataSetLastUpdateTime(String newTime,String datasetId);
 
     /**
      * 更改数据集描述
      * */
-    public void updateDataSetDesc(String datasetId,String newDesc);
+    public void updateDataSetDesc(String newDesc,String datasetId);
 
     /**
      * 更改数据集上限
      * */
-    public void updateDataSetMaxContener(String datasetId,int newMax);
+    public void updateDataSetMaxContener(int newMax,String datasetId);
 
     /**
      * 更改数据集文件数
      * */
-    public void updateDataSetFilecount(String datasetId,long newCount);
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.fileCount = ?1 where dst.datasetId = ?2")
+    public void updateDataSetFilecount(long newCount,String datasetId);
 
     /**
      * 更改数据集上传状态
      * */
-    public void updateDataSetUploadStatus(String datasetId,String newStatus);
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE DataSet dst SET " +
+            "dst.datasetStatus = ?1 where dst.datasetId = ?2")
+    public void updateDataSetUploadStatus(String newStatus,String datasetId);
 
     /**
      * 清空数据集
@@ -102,7 +135,7 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
     /**
      * 删除数据集
      * */
-    public void deleteDataSet(String datasetId);
+    public void deleteByDataSetId(String datasetId);
 
     /**
      * 上传文件

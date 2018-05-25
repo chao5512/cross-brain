@@ -28,55 +28,63 @@ public interface IntDataSetService {
      * */
     public List<DataSet> findAll(Sort sort);
 
+    public DataSet findFirst();
+
     /**
      * 更改数据集多个属性
      * */
-    public void updateAll(String powerStatus,
-                          String newSortBy,
-                          String newTime,
-                          String newDesc,
+    public void updateAll(String en_datasetName,
+                          String ch_datasetName,
+                          String path,
+                          String basicDesc,
+                          String hivetableName,
+                          String sortBy,
+                          String sortType,
+                          String powerStatus,
+                          String updateDesc,
                           int newMax,
-                          int newCount,
-                          String newStatus,
+                          String dataType,
                           String datasetId);
     /**
      * 更改数据集名称
      * */
-    public void updateDataSetName(String englishName,String chinaName,String dataSetId);
+    public void updateDataSetName(String englishName,String chinaName,String sortBy,String dataSetId);
     /**
      * 更改数据集公开状态
      * */
-    public void updateDataSetPowerStatus(String datasetId,String powerStatus);
+    public void updateDataSetPowerStatus(String powerStatus,String datasetId);
 
     /**
      * 更改数据集排序方式
      * */
-    public void updateDataSetSortBy(String datasetId,String newSortBy);
+    public void updateDataSetSortBy(String newSortBy);
+
+    public void updateDataSetSortType(String sortType);
 
     /**
      * 更改数据集修改时间
      * */
-    public void updateDataSetLastUpdateTime(String datasetId,String newTime);
+    public void updateDataSetLastUpdateTime(String newTime,String datasetId);
 
     /**
      * 更改数据集描述
      * */
-    public void updateDataSetDesc(String datasetId,String newDesc);
+    public void updateDataSetDesc(String newDesc,String datasetId);
 
     /**
      * 更改数据集上限
      * */
-    public void updateDataSetMaxContener(String datasetId,int newMax);
+    public void updateDataSetMaxContener(int newMax,String datasetId);
 
     /**
      * 更改数据集文件数
      * */
-    public void updateDataSetFilecount(String datasetId,long newCount);
+    public void updateDataSetFilecount(long newCount,String datasetId);
 
     /**
      * 更改数据集上传状态
      * */
-    public void updateDataSetUploadStatus(String datasetId,String newStatus);
+    public void updateDataSetUploadStatus(String newStatus,String datasetId);
 
     /**
      * 清空数据集
@@ -86,7 +94,7 @@ public interface IntDataSetService {
     /**
      * 删除数据集
      * */
-    public void deleteDataSet(String datasetId);
+    public void deleteByDataSetId(String datasetId);
 
     /**
      * 上传文件
