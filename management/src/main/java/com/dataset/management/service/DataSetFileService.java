@@ -22,22 +22,16 @@ public class DataSetFileService implements IntDataSetFileService {
         return dataSetFileRepository.save(dataSetFiles);
     }
 
-
-
-    public List<DataSetFile> findAll(Sort sort){
-        return dataSetFileRepository.findAll(sort);
+    public List<DataSetFile> findAll(Sort sort,String datasetId){
+        return dataSetFileRepository.findAll(sort,datasetId);
     }
 
-    public DataSetFile findBydatasetFileId(String datasetFileId){
-        return dataSetFileRepository.findBydatasetFileId(datasetFileId);
+    public DataSetFile findDataSetFileByDataSetFileName(String datasetFileName){
+        return dataSetFileRepository.findDataSetFileByDataSetFileName(datasetFileName);
     }
 
-    public DataSetFile findBydatasetId(String datasetId) {
-        return dataSetFileRepository.findBydatasetFileId(datasetId);
-    }
-
-    public DataSetFile findBydatasetFileName(String datasetFileName){
-        return dataSetFileRepository.findBydatasetFileName(datasetFileName);
+    public List<DataSetFile> findDataSetFilesBydatasetId(String datasetId){
+        return dataSetFileRepository.findDataSetFilesBydatasetId(datasetId);
     }
 
     public void deleteByFileId(String datasetFileId){
@@ -52,7 +46,11 @@ public class DataSetFileService implements IntDataSetFileService {
 
     public long count(){return  dataSetFileRepository.count();}
 
-    public void updateAll(String path,String datasetfileDesc,String datasetUpdateDesc,String datasetUpdateTime,String datasetId){
-        dataSetFileRepository.updateAll(path,datasetfileDesc,datasetUpdateDesc,datasetUpdateTime,datasetId);
+    public void updateFileDescOrFileName(String fileDesc,String fileName,String filetId){
+        dataSetFileRepository.updateFileDescOrFileName(fileDesc,fileName,filetId);
+    }
+
+    public DataSetFile findDataSetFileByDataSetFileId(String datasetFileId){
+        return dataSetFileRepository.findDataSetFileByDataSetFileId(datasetFileId);
     }
 }

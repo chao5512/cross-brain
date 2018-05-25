@@ -4,6 +4,7 @@ import com.dataset.management.entity.DataSetFile;
 
 import org.springframework.data.domain.Sort;
 
+import javax.swing.plaf.PanelUI;
 import java.util.List;
 
 public interface IntDataSetFileService {
@@ -11,13 +12,13 @@ public interface IntDataSetFileService {
 
     public List<DataSetFile> save (List<DataSetFile> dataSetFiles);
 
-    public List<DataSetFile> findAll(Sort sort);
+    public List<DataSetFile> findAll(Sort sort,String datasetId);
 
-    public DataSetFile findBydatasetFileId(String datasetFileId);
+    public DataSetFile findDataSetFileByDataSetFileName(String datasetFileName);
 
-    public DataSetFile findBydatasetId(String datasetId);
+    public List<DataSetFile> findDataSetFilesBydatasetId(String datasetId);
 
-    public DataSetFile findBydatasetFileName(String datasetFileId);
+    public DataSetFile findDataSetFileByDataSetFileId(String datasetFileId);
 
     public void deleteByFileId(String datasetFileId);
 
@@ -27,7 +28,7 @@ public interface IntDataSetFileService {
 
     public long count();
 
-    public void updateAll(String path,String datasetfileDesc,String datasetUpdateDesc,String datasetUpdateTime,String datasetId);
+    public void updateFileDescOrFileName(String fileDesc,String fileName,String fileId);
 
 
 }

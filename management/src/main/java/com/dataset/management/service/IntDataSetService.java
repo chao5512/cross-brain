@@ -66,6 +66,12 @@ public interface IntDataSetService {
      * */
     public void updateDataSetLastUpdateTime(String newTime,String datasetId);
 
+
+    /**
+     * 数据集修改的描述
+     * */
+    public void updateDataSetLastUpdateDesc(String newUpdateDesc,String datasetId);
+
     /**
      * 更改数据集描述
      * */

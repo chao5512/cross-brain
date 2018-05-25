@@ -52,6 +52,7 @@ public class DataSet implements Serializable{
     @Column(nullable = false,name = "dataset_filecount")
     private static int filesCount;
     @Column(name = "dataset_basic_desc")
+
     //当且仅当  system表获取信息时使用
     private static String dataSetBasicDesc;
     //创建时间
@@ -152,14 +153,11 @@ public class DataSet implements Serializable{
         return dataSetCreateTime;
     }
     //修改时间
-    public String getDatasetUpdatetime(long timetmp) {
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
-        String sd = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
-        dataSetLastUpdateTime = sd;
+    public String getDataSetLastUpdateTime() {
         return dataSetLastUpdateTime;
     }
-    public void setDatasetUpdatetime(String datasetUpdatetime) {
-        dataSetLastUpdateTime = datasetUpdatetime;
+    public void setDataSetLastUpdateTime( String datasetLastUpdateTime ) {
+        dataSetLastUpdateTime = datasetLastUpdateTime;
     }
 
     public String getDataSetUpdateDesc() {

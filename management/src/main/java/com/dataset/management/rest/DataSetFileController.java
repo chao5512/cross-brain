@@ -1,20 +1,24 @@
 package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
+import com.dataset.management.common.ResultUtil;
+import com.dataset.management.consts.DataSetConsts;
+import com.dataset.management.consts.DataSetFileConsts;
 import com.dataset.management.consts.DataSetSystemConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.entity.DataSystem;
+import com.dataset.management.service.HdfsService;
 import com.dataset.management.service.IntDataSetFileService;
 import com.dataset.management.service.IntDataSetOptService;
 import com.dataset.management.service.IntDataSetService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.awt.image.ImagingOpException;
 import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
@@ -34,26 +38,89 @@ public class DataSetFileController {
     @Autowired
     IntDataSetOptService dataSetOptService;
 
+    @Autowired
+    HdfsService hdfsService;
+
+
     private static Logger logger = LoggerFactory.getLogger(DataSetFileController.class);
 
     //上传
     @ResponseBody
     @RequestMapping(value = {"/upload/","/uploadFiles"},method = RequestMethod.POST)
-    public ApiResult uploadFilestoDataSet(@RequestParam(value = "files") List<String> files,
+    public ApiResult uploadFilestoDataSet(@RequestParam(value = "files") List<String> filesName,
+                                          @RequestParam(value = "fileSortBy") String  sortBy,
+                                          @RequestParam(value = "fileSortType") String  sortType,
                                           String datasetId) throws IOException{
         int code =0;
         String message ="上传数据集文件信息：";
+        Sort sort;
+        logger.info("修改当前数据集上传文件状态：");
+        dataSetService.updateDataSetUploadStatus(DataSetConsts.UPLOAD_STATUS_LOADING,datasetId);
 
-        List<DataSetFile> dataSetFiles = packageDataSetFiles(files,datasetId);
-
+        List<DataSetFile> dataSetFiles = packageDataSetFiles(filesName,datasetId);
         List<DataSetFile> dataSetFileList = dataSetFileService.save(dataSetFiles);
-        return new ApiResult(code,dataSetFileList,message);
+        dataSetService.updateDataSetFilecount(dataSetFiles.size(),datasetId);
+        logger.info(" 准备 上传至hdfs");
+        String hdfsurl = hdfsService.conterHdfsUrl();
+        logger.info("hdfs 路径："+ hdfsurl);
+        hdfsService.uploadFiles(filesName,hdfsurl);
+        logger.info("上传完毕，数据集状态更改");
+        dataSetService.updateDataSetUploadStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE,datasetId);
 
+
+        if( sortBy != null && sortType != null){
+             sort = changSortBy(sortType,sortBy);
+        }
+        logger.info("数据集文件排序方式："+sortBy+"  "+sortType);
+        sort = basicSortBy();
+        logger.info("查看上传后数据集文件的列表：");
+        List<DataSetFile> fileList = dataSetFileService.findAll(sort,datasetId);
+        return ResultUtil.success(fileList);
     }
-    //查询
 
+    //查询
+    @ResponseBody
+    @RequestMapping(value = {"/listFiles/","/listFiles"},method = RequestMethod.POST)
+    public ApiResult selectAllFiles(String sortBy,String sortType,String datasetId){
+        int code = 0;
+        String message =" 查询数据集文件信息：";
+        Sort sort;
+
+        if( sortBy != null && sortType != null){
+            sort = changSortBy(sortType,sortBy);
+        }
+        logger.info("数据集文件排序方式："+sortBy+"  "+sortType);
+        sort = basicSortBy();
+        logger.info("查看上传后数据集文件的列表：");
+        List<DataSetFile> fileList = dataSetFileService.findAll(sort,datasetId);
+        return ResultUtil.success(fileList);
+    }
 
     //修改
+    @ResponseBody
+    @RequestMapping(value = {"/updateFile/","/updateFile"},method = RequestMethod.POST)
+    public ApiResult updateDatasetFiles(@RequestParam(value = "datasetFileBasicDesc") String fileBasicDesc,
+                                        @RequestParam(value = "datasetFileName") String fileName,
+                                        String fileId){
+        int code = 0;
+        String message ="修改数据集文件信息";
+        logger.info("获取数据集所选文件： ");
+        DataSetFile dataSetFile = dataSetFileService.findDataSetFileByDataSetFileId(fileId);
+        if(fileBasicDesc != null){
+            dataSetFile.setFileDesc(fileBasicDesc);
+        }
+        if(fileName != null){
+            dataSetFile.setFileName(fileName);
+        }
+        dataSetFileService.updateFileDescOrFileName(
+                dataSetFile.getFileDesc(),
+                dataSetFile.getFileName(),
+                fileId);
+
+        return ResultUtil.success();
+    }
+
+
     //删除
 
     /**
@@ -78,29 +145,33 @@ public class DataSetFileController {
             Long newTimetmp = dataSetFile.getOnloadTimetmp();
             dataSetFile.setOnloadTimeDate(newTimetmp);
 
-            String fileId = dataSetFile.getFileName()+"_"+newTimetmp;
+            byte[] nameByte = f.getBytes("UTF-8");
+            String fileId = nameByte+"_"+newTimetmp;
             dataSetFile.setFileId(fileId);
 
             dataSetFile.setBpodataSets(datasetId);
 
-            DataSystem dataSystem = dataSetOptService.findByDataSetId(datasetId);
-            String path = dataSystem.getDatasetStoreurl();
+            DataSet dataSet = dataSetService.findByDataSetId(datasetId);
+            String path = dataSet.getDataSetStoreUrl();
             dataSetFile.setFilePath(path);
 
             String filesize = GetFileSize(f);
             dataSetFile.setFileSize(filesize);
+
+            dataSetFile.setFileSortBy(DataSetFileConsts.FILE_SORT_BY_FILENAME);
+            dataSetFile.setFileSortType(DataSetFileConsts.FILE_SORT_TYPE_AESC);
 
             dataSetFiles.add(dataSetFile);
         }
         return dataSetFiles;
     }
 
-    public static String GetFileSize(String Path){
+    private static String GetFileSize(String Path){
         return GetFileSize(new File(Path));
     }
 
 
-    public static String GetFileSize(File file){
+    private static String GetFileSize(File file){
         String size = "";
         if(file.exists() && file.isFile()){
             long fileS = file.length();
@@ -121,5 +192,15 @@ public class DataSetFileController {
         }
         return size;
     }
+
+    private Sort changSortBy(String orderType, String orderColumn){
+        Sort sort = new Sort(Sort.Direction.fromString(orderType),orderColumn);
+        return sort;
+    }
+
+    private Sort basicSortBy(){
+        return changSortBy(DataSetConsts.SORTTYPE_DESC,DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME);
+    }
+
 
 }

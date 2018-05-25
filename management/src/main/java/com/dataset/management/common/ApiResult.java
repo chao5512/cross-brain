@@ -14,6 +14,10 @@ public class ApiResult {
         this.data = data;
         this.message = message;
     }
+    public ApiResult(int code,String message){
+        this.code =code;
+        this.message =message;
+    }
 
     public int getcode() {
         return code;
@@ -34,6 +38,16 @@ public class ApiResult {
     public String getMessage() {
         return message;
     }
+
+    @Override
+    public String toString() {
+        return "Result{" +
+                "code=" + code +
+                ", msg='" + message + '\'' +
+                ", data=" + data +
+                '}';
+    }
+
 
     public void setMessage(String message) {
         this.message = message;

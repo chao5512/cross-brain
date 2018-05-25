@@ -15,13 +15,11 @@ public interface DataSetFileRepository extends JpaRepository<DataSetFile,String>
 
     public List<DataSetFile> save (List<DataSetFile> dataSetFiles);
 
-    public List<DataSetFile> findAll(Sort sort);
+    public List<DataSetFile> findAll(Sort sort,String datasetId);
 
-    public DataSetFile findBydatasetFileId(String datasetFileId);
+    public List<DataSetFile> findDataSetFilesBydatasetId(String datasetId);
 
-    public DataSetFile findBydatasetId(String datasetId);
-
-    public DataSetFile findBydatasetFileName(String datasetFileId);
+    public DataSetFile findDataSetFileByDataSetFileName(String datasetFileName);
 
     public void deleteByFileId(String datasetFileId);
 
@@ -33,10 +31,10 @@ public interface DataSetFileRepository extends JpaRepository<DataSetFile,String>
 
     @Modifying
     @Transactional
-    @Query(value = "UPDATE DataSetFile dsf SET " +
-            "dsf.filePath = ?1," +
-            "dsf.fileDesc = ?2," +
-            "dsf.fileUpdateDesc =?3," +
-            "dsf.lastUpdateTime =?4 WHERE dsf.fileId = ?5")
-    public void updateAll(String path,String datasetfileDesc,String datasetUpdateDesc,String datasetUpdateTime,String datasetId);
+    @Query(value = "Update DataSetFile dsf SET " +
+            "dsf.fileDesc = ?1," +
+            "dsf.fileName = ?2 where dsf.fileId = ?3")
+    public void updateFileDescOrFileName(String fileDesc,String fileName,String filetId);
+
+    public DataSetFile findDataSetFileByDataSetFileId(String datasetFileId);
 }

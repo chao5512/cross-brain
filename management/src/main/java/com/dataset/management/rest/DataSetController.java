@@ -1,6 +1,7 @@
 package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
+import com.dataset.management.common.ResultUtil;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSystem;
@@ -13,6 +14,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 
 /**
@@ -57,7 +60,7 @@ public class DataSetController {
         String message ="展示数据集基本信息表: ";
         logger.info("开始罗列数据据基本信息");
         DataSet dataSet = dataSetService.findByDataSetId(datasetId);
-        return new ApiResult(0,dataSet,message);
+        return ResultUtil.success(dataSet);
     }
 
 
@@ -108,7 +111,7 @@ public class DataSetController {
         logger.info("检测到当前数据集系统："+ dataSystem);
         logger.info("检测到当前数据集："+ dataSet);
         if(null == dataSystem && null == dataSet){
-            return new ApiResult(-1,null,"未找到系统数据集或者 数据集信息表");
+            return ResultUtil.error(-1,"未找到对应数据集");
         }
         if(datasetUpdateChnineseName != null){
             dataSystem.setDatasetName(datasetUpdateChnineseName);
@@ -179,8 +182,9 @@ public class DataSetController {
                 datasetId);
         logger.info("重置 数据集更新时间 ");
         dataSet.setContentTimeStamp();
-        String newTime = dataSet.getDatasetUpdatetime(dataSet.getContentTimeStamp());
-        dataSet.setDatasetUpdatetime(newTime);
+        long timetmp = dataSet.getContentTimeStamp();
+        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
         dataSetService.updateDataSetLastUpdateTime(newTime,datasetId);
 
         //更新hive表名
@@ -189,7 +193,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ApiResult(0,dataSystem,"已经更改数据集");
+        return ResultUtil.success();
     }
 
     /**
@@ -206,7 +210,7 @@ public class DataSetController {
         logger.info("获取数据集："+dataSet);
         logger.info("数据集准备清空操作  （删除文件） ");
         dataSetFileService.deleteAll();
-        if(dataSetFileService.count() ==0){
+        if(dataSetFileService.count() == 0){
             logger.info("数据集当前文件数："+dataSetFileService.count());
             logger.info("远程 hdfs 删除文件中。。");
             hdfsService.setDataSet(dataSet);
@@ -214,17 +218,19 @@ public class DataSetController {
             int counts = hdfsService.datasetHdsfFiles().size();
             logger.info("hdfs 中 指定路径文件数："+counts);
 
-            dataSet.setFileCount(counts);
             dataSet.setContentTimeStamp();
-            String newTime = dataSet.getDatasetUpdatetime(dataSet.getContentTimeStamp());
+            long timetmp = dataSet.getContentTimeStamp();
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+
             String newDesc = "清空了数据集所有文件。。";
             dataSetService.updateDataSetDesc(newDesc,datasetId);
             dataSetService.updateDataSetLastUpdateTime(newTime,datasetId);
             dataSetService.updateDataSetFilecount(counts,datasetId);
             logger.info("数据及基本表中：（文件数）："+dataSet.getFileCount());
-            return new ApiResult(0,dataSet,"清空数据及成功");
+            return ResultUtil.success();
         }
-        return new ApiResult(-1,dataSet,"清空失败");
+        return ResultUtil.error(-1,"清空失败");
     }
 
 

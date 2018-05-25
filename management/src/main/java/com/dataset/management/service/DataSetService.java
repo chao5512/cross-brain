@@ -73,7 +73,7 @@ public class DataSetService implements IntDataSetService {
         dataSetRepository.updateDataSetSortBy(newSortBy);
     }
     public void updateDataSetSortType(String sortType){
-
+        dataSetRepository.updateDataSetSortType(sortType);
     }
 
     /**
@@ -85,8 +85,12 @@ public class DataSetService implements IntDataSetService {
     /**
      * 更改数据集描述
      * */
-    public void updateDataSetDesc(String newDesc,String datasetId){}
-
+    public void updateDataSetDesc(String newDesc,String datasetId){
+        dataSetRepository.updateDataSetDesc(newDesc,datasetId);
+    }
+    public void updateDataSetLastUpdateDesc(String newUpdateDesc,String datasetId) {
+        dataSetRepository.updateDataSetLastUpdateDesc(newUpdateDesc,datasetId);
+    }
     /**
      * 更改数据集上限
      * */

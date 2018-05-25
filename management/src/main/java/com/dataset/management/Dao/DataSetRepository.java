@@ -96,13 +96,19 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
     @Modifying
     @Transactional
     @Query(value = "UPDATE DataSet dst SET " +
-            "dst.datasetUpdatetime= ?1 where dst.datasetId = ?2")
+            "dst.dataSetLastUpdateTime= ?1 where dst.datasetId = ?2")
     public void updateDataSetLastUpdateTime(String newTime,String datasetId);
 
     /**
      * 更改数据集描述
      * */
     public void updateDataSetDesc(String newDesc,String datasetId);
+
+    /**
+     * 更改数据集修改描述
+     * */
+
+    public void updateDataSetLastUpdateDesc(String newUpdateDesc,String datasetId);
 
     /**
      * 更改数据集上限

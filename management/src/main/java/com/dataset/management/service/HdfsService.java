@@ -33,13 +33,12 @@ public class HdfsService {
     private String newStoreUrl;
 
     //默认的 路径
-    private String conterHdfsUrl(){
+    public String conterHdfsUrl(){
         newStoreUrl = hdsfbasic+user+hiveService.getHiveTableName();
         return hdsfbasic+user+hiveService.getHiveTableName();
     }
 
-    public void uploadFiles(List<String> newFiles)throws IOException{
-        String url = conterHdfsUrl();
+    public void uploadFiles(List<String> newFiles,String url)throws IOException{
         Configuration configuration = new Configuration();
         Path dfspath = new Path(url);
         FileSystem fs = FileSystem.get(dfspath.toUri(),configuration);

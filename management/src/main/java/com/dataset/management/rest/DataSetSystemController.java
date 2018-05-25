@@ -1,6 +1,7 @@
 package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
+import com.dataset.management.common.ResultUtil;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
@@ -8,22 +9,17 @@ import com.dataset.management.entity.DataSystem;
 import com.dataset.management.entity.Hiveinfo;
 import com.dataset.management.service.*;
 
-import java.util.List;
-import org.apache.hadoop.hive.common.LogUtils;
 import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import java.util.List;
 @Controller
 @RequestMapping("/dataset")
 @CrossOrigin
@@ -62,7 +58,7 @@ public class DataSetSystemController {
         int code  = 0;
         String message = "begin create dataset";
         if(null == dataSet){
-            return new ApiResult(code,null,"The DataSet must not null");
+            return  ResultUtil.error(-1,"无法获取有效的 dataset 属性");
         }
         logger.info("DataSetParams: "+ JSON.toString(dataSet));
 
@@ -92,7 +88,7 @@ public class DataSetSystemController {
                 }
             }
         });
-        return  new ApiResult(code,newDataSystem,message);
+        return  ResultUtil.success();
     }
     //查询
     @ResponseBody
@@ -112,10 +108,10 @@ public class DataSetSystemController {
             sort = basicSortBy();
             message ="已经按照默认方式排序";
         }
-        dataSetOptService.findAll(sort);
+        List<DataSystem> dataSystemList = dataSetOptService.findAll(sort);
         dataSetService.updateDataSetSortBy(sortBy);
         dataSetService.updateDataSetSortType(sortType);
-        return new ApiResult(0,dataSetOptService.findAll(sort),message);
+        return ResultUtil.success(dataSystemList);
     }
 
     /**
@@ -139,8 +135,7 @@ public class DataSetSystemController {
         logger.info("准备从数据集基本信息表中删除数据集：");
         dataSetService.deleteByDataSetId(dataSetId);
 
-        DataSetFile dataSetFile = dataSetFileService.findBydatasetFileId(dataSetId);
-        logger.info("获取数据集文件信息表："+dataSetFile);
+        logger.info("获取数据集文件信息表：");
         logger.info("准备从数据集文件表中删除数据集：");
         dataSetFileService.deleteBydatasetId(dataSetId);
 
@@ -150,11 +145,10 @@ public class DataSetSystemController {
             logger.info("准备删除 hdfs中 数据集文件");
             hdfsService.setDataSet(dataSet);
             hdfsService.deleteFiles(hdfsService.datasetHdsfFiles());
-            return new ApiResult(0,dataSystem,"已经删除数据集");
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return new ApiResult(-1,dataSystem,"删除失败");
+        return ResultUtil.success();
     }
 
 
