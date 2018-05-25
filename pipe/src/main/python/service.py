@@ -9,4 +9,4 @@ def health():
 def getUser():
     result = {'username': 'python', 'password': 'python'}
     return Response(json.dumps(result), mimetype='application/json')
-app.run(port=3001, host='0.0.0.0')
+app.run(port=3001, host='localhost')
