@@ -15,26 +15,22 @@ public interface DataSetFileRepository extends JpaRepository<DataSetFile,String>
 
     public List<DataSetFile> save (List<DataSetFile> dataSetFiles);
 
-    public List<DataSetFile> findAll(Sort sort,String datasetId);
+    public List<DataSetFile> findAll(Sort sort);
 
-    public List<DataSetFile> findDataSetFilesBydatasetId(String datasetId);
+    public List<DataSetFile> findDataSetFilesByDataSetId(int dataSetId,Sort sort);
 
-    public DataSetFile findDataSetFileByDataSetFileName(String datasetFileName);
+    public List<DataSetFile> findDataSetFilesByDataSetId(int Id);
 
-    public void deleteByFileId(String datasetFileId);
+    public DataSetFile findDataSetFileById(int datasetFileId);
 
-    public void deleteBydatasetId(String datasetId);
+    public DataSetFile findDataSetFileByFileName(String  fileName);
+
+    public void deleteById(int datasetFileId);
+
+    public void deleteDataSetFilesByDataSetId(int datasetId);
 
     public void deleteAll();
 
     public long count();
 
-    @Modifying
-    @Transactional
-    @Query(value = "Update DataSetFile dsf SET " +
-            "dsf.fileDesc = ?1," +
-            "dsf.fileName = ?2 where dsf.fileId = ?3")
-    public void updateFileDescOrFileName(String fileDesc,String fileName,String filetId);
-
-    public DataSetFile findDataSetFileByDataSetFileId(String datasetFileId);
 }

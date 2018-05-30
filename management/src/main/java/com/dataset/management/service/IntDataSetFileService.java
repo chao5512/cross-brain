@@ -12,23 +12,26 @@ public interface IntDataSetFileService {
 
     public List<DataSetFile> save (List<DataSetFile> dataSetFiles);
 
-    public List<DataSetFile> findAll(Sort sort,String datasetId);
+    public List<DataSetFile> findAll(Sort sort);
 
-    public DataSetFile findDataSetFileByDataSetFileName(String datasetFileName);
+    public List<DataSetFile> findDataSetFilesByDataSetId(int datasetId);
 
-    public List<DataSetFile> findDataSetFilesBydatasetId(String datasetId);
+    public List<DataSetFile> findDataSetFilesByDataSetId(int dataSetId,Sort sort);
 
-    public DataSetFile findDataSetFileByDataSetFileId(String datasetFileId);
+    public DataSetFile findDataSetFileById(int datasetFileId);
 
-    public void deleteByFileId(String datasetFileId);
+    public DataSetFile findDataSetFileByFileName(String  fileName);
 
-    public void deleteBydatasetId(String datasetId);
+    public List<String> isExistsFiles(List<DataSetFile> dataSetFiles);
+
+    public void deleteByFileId(int datasetFileId);
+
+    public void deleteDataSetFilesByDataSetId(int datasetId);
+
+    public void deleteById(int datasetId);
 
     public void deleteAll();
 
     public long count();
-
-    public void updateFileDescOrFileName(String fileDesc,String fileName,String fileId);
-
 
 }

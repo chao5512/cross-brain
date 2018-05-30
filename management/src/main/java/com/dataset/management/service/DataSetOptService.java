@@ -14,7 +14,7 @@ import java.util.List;
 public class DataSetOptService implements IntDataSetOptService {
 
     @Autowired
-    DataSetOptRepository dataSetOptRepository;
+    private DataSetOptRepository dataSetOptRepository;
 
     @Override
     public DataSystem save(DataSystem dataSystem) throws IOException{
@@ -22,7 +22,12 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public DataSystem findByDataSetId(String datasetId)throws IOException{
+    public DataSystem findById(int datasetId)throws IOException{
+        return dataSetOptRepository.findById(datasetId);
+    }
+
+    @Override
+    public DataSystem findByDataSetId(int datasetId) throws IOException{
         return dataSetOptRepository.findByDataSetId(datasetId);
     }
 
@@ -30,43 +35,23 @@ public class DataSetOptService implements IntDataSetOptService {
     public DataSystem findByDataSetName(String datasetName)throws IOException{
         return dataSetOptRepository.findByDataSetName(datasetName);
     }
+    @Override
+    public List<DataSystem> findByUserName(String userName){
+        return dataSetOptRepository.findByUserName(userName);
+    }
 
     @Override
     public List<DataSystem> findAll(Sort sort)throws IOException{
         return dataSetOptRepository.findAll(sort);
     }
 
-    @Override
-    public void update (String en_datasetName,
-                        String ch_datasetName,
-                        String path,
-                        String desciption,
-                        String hivetableName,
-                        String sortBy,
-                        String sortType,
-                        String datasetId) throws IOException{
-        dataSetOptRepository.update(en_datasetName,ch_datasetName,path,desciption,hivetableName,sortBy,sortType,datasetId);
-    }
-
-
-    @Override
-    public void clearByDataSetId (String datasetId) throws IOException{
-
+    public void deleteAll(){
+        dataSetOptRepository.deleteAll();
     }
 
     @Override
-    public void deleteByDataSetId (String datasetId) throws IOException{
-        dataSetOptRepository.deleteByDataSetId(datasetId);
-    }
-
-    @Override
-    public void upload (String datasetId,List<DataSetFile> fileList) throws IOException{
-        dataSetOptRepository.upload(datasetId,fileList);
-    }
-
-    @Override
-    public void sort (String datasetId,String sort) throws IOException{
-        dataSetOptRepository.sort(datasetId,sort);
+    public void deleteById (int Id) throws IOException{
+        dataSetOptRepository.deleteById(Id);
     }
 
 }

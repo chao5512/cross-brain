@@ -15,40 +15,18 @@ public interface DataSetOptRepository extends JpaRepository <DataSystem,String>{
 
     public DataSystem save (DataSystem dataSystem);
 
-    public DataSystem findByDataSetId (String datasetId) throws IOException;
+    public DataSystem findById (int Id) throws IOException;
+
+    public DataSystem findByDataSetId(int datasetId) throws IOException;
 
     public DataSystem findByDataSetName (String datasetName)throws IOException;
 
-    public List<DataSystem> findAll();
+    public List<DataSystem> findByUserName(String userName);
 
     public List<DataSystem> findAll(Sort sort);
 
-    @Modifying
-    @Transactional
-    @Query(value = "UPDATE DataSystem dsst SET " +
-            "dsst.datasetName = ?1," +
-            "dsst.datasetEnglishName = ?2," +
-            "dsst.datasetStoreurl = ?3," +
-            "dsst.datasetDesc = ?4," +
-            "dsst.datasetHiveTablename = ?5," +
-            "dsst.dataSetSystemSortBy = ?6," +
-            "dsst.dataSetSortType =?7 WHERE dsst.dataSetId= ?8")
-    public void update (String en_datasetName,
-                        String ch_datasetName,
-                        String path,
-                        String desciption,
-                        String hivetableId,
-                        String sortBy,
-                        String sortType,
-                        String datasetId) throws IOException;
-
     public void deleteAll();
 
-    public void clearByDataSetId (String datasetId) throws IOException;
+    public void deleteById (int datasetId) throws IOException;
 
-    public void deleteByDataSetId (String datasetId) throws IOException;
-
-    public void upload (String datasetId,List<DataSetFile> fileList) throws IOException;
-
-    public void sort (String datasetId,String Sort) throws IOException;
 }

@@ -13,27 +13,19 @@ public interface IntDataSetOptService {
 
     public DataSystem save (DataSystem dataSystem) throws IOException;
 
-    public DataSystem findByDataSetId (String datasetId) throws IOException;
+    public DataSystem findById (int datasetId) throws IOException;
+
+    public DataSystem findByDataSetId(int datasetId) throws IOException;
 
     public DataSystem findByDataSetName(String datasetName)throws IOException;
 
+    public List<DataSystem> findByUserName(String userName);
+
     public List<DataSystem> findAll(Sort sort)throws IOException;
 
-    public void update (String en_datasetName,
-                        String ch_datasetName,
-                        String path,
-                        String desciption,
-                        String hivetableName,
-                        String sortBy,
-                        String sortType,
-                        String datasetId) throws IOException;
+    public void deleteById (int datasetId) throws IOException;
 
-    public void clearByDataSetId (String datasetId) throws IOException;
+    public void deleteAll();
 
-    public void deleteByDataSetId (String datasetId) throws IOException;
-
-    public void upload (String datasetId,List<DataSetFile> fileList) throws IOException;
-
-    public void sort (String datasetId,String sort) throws IOException;
 
 }

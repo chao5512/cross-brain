@@ -9,30 +9,33 @@ import java.util.Date;
 public class DataSystem implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,name = "datasetId")
-    private static String dataSetId ;
-//    @Column(nullable = false,name = "userId")
-//    private static String dataSetUserId ;
-    @Column(nullable = true,name = "ch_name")
-    private static String dataSetName ;
-    @Column(nullable = false,name = "en_name")
-    private static String dataSetEngListName;
-    @Column(nullable = false,name = "create_time")
-    private static String dataSetCreateTime;
-    @Column(nullable = false,name = "path")
-    private static String dataSetStoreUrl;
-    @Column(nullable = true,name = "description")
-    private static String dataSetDesc;
-    @Column(nullable = false,name = "hive_table_name")
-    private static String dataSetHiveTableName;
-     @Column(nullable = false,name = "hive_table_Id")
+    @Column(name = "id")
+    private int id;
+    @Column(name = "dataset_id",insertable = false,updatable = false)
+    private  int dataSetId ;
+    @ManyToOne
+    @JoinColumn(name = "dataset_id")
+    private DataSet dataSet;
+    @Column(name = "dataset_name")
+    private String dataSetName ;
+    @Column(name = "dataset_english_name")
+    private String dataSetEngListName;
+    @Column(name = "created_time")
+    private String dataSetCreateTime;
+    @Column(name = "path")
+    private String dataSetStoreUrl;
+    @Column(name = "description")
+    private String dataSetDesc;
+    @Column(name = "hive_table_name")
+    private String dataSetHiveTableName;
+    @Column(name = "hive_table_Id")
     private String dataSetHiveTableId;
-    @Column(name = "datasetSortBy")
+    @Column(name = "dataset_sort_by")
     private String dataSetSystemSortBy;
-    @Column(name ="datasetSortType")
+    @Column(name ="dataset_sort_type")
     private String dataSetSortType;
-
-    private static long DATASET_CREATE_TIMETMP ;
+    @Column(name ="user_name")
+    private String userName;
 
 //    //用户名
 //    public String getDataSetUserId() {
@@ -42,13 +45,27 @@ public class DataSystem implements Serializable{
 //        dataSetUserId = dataSetid;
 //    }
 
-    public String getDataSetId() {
+
+    public int getDataSetId() {
         return dataSetId;
     }
-    public void setDataSetId(String datasetId) {
-        DataSystem.dataSetId = datasetId;
+    public void setDataSetId(int dataSetId) {
+        this.dataSetId = dataSetId;
     }
 
+    public DataSet getDataSet() {
+        return dataSet;
+    }
+    public void setDataSet(DataSet dataSet) {
+        this.dataSet = dataSet;
+    }
+
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 
     //数据集名称
     public String getDatasetName(){
@@ -124,4 +141,10 @@ public class DataSystem implements Serializable{
         this.dataSetSortType = dataSetSortType;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 }

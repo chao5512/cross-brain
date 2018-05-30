@@ -41,4 +41,24 @@ public class DataSetConsts {
 
     public static final String MYSQL_DRIVE = "com.mysql.jdbc.Driver";
 
+    public static final String DATASET_ENGLISH_NAME ="admin";
+
+    public static final String DATASET_CHINA_NAME ="新建数据集";
+
+    public static final String DATASET_BASIC_DESC ="新建数据集";
+
+    public static final String DATASET_STOREURL ="hdsf:xxxxx测试xxxxxxx";
+
+    public static final String DATASET_DATATYPE="CSV";
+
+    public static final int DATASET_USER_ID = 12;
+
+    public static final String DATASET_USER_NAME = "admin";
+
+    public static final int DATASET_FILECOUNT_ZERO = 0;
+
+
+
+
+
 }
