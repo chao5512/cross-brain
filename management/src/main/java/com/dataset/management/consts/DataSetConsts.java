@@ -21,9 +21,9 @@ public class DataSetConsts {
 
     public static final String SORT_BY_DATASET_UPDATE_TIME = "dataSetLastUpdateTime";
 
-    public static final String SORTTYPE_AESC = "AESC";
+    public static final String SORTTYPE_ASC = "asc";
 
-    public static final String SORTTYPE_DESC = "DESC";
+    public static final String SORTTYPE_DESC = "desc";
 
     public static final int MAX_CONTENER = 150;
 
@@ -43,17 +43,15 @@ public class DataSetConsts {
 
     public static final String DATASET_ENGLISH_NAME ="admin";
 
-    public static final String DATASET_CHINA_NAME ="新建数据集";
+    public static final String DATASET_CHINA_NAME ="newDataset";
 
-    public static final String DATASET_BASIC_DESC ="新建数据集";
+    public static final String DATASET_BASIC_DESC ="createSuccess!";
 
-    public static final String DATASET_STOREURL ="hdsf:xxxxx测试xxxxxxx";
+    public static final String DATASET_STOREURL ="hdsf://xxxxx";
 
     public static final String DATASET_DATATYPE="CSV";
 
-    public static final int DATASET_USER_ID = 12;
-
-    public static final String DATASET_USER_NAME = "admin";
+    public static final String DATASET_USER_NAME = "hadoop";
 
     public static final int DATASET_FILECOUNT_ZERO = 0;
 

@@ -64,6 +64,7 @@ public class DataSetFileController {
         logger.info("获取当前数据集中已经存在的文件名称列表：");
         List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
         List<String> estsFilesNmaes = dataSetFileService.isExistsFiles(estsDataSetFiles);
+        logger.info("当前数据集存在文件列表："+estsDataSetFiles);
         for(DataSetFile setFile: dataSetFiles){
             String name = setFile.getFileName();
             if(!estsFilesNmaes.contains(name)){
