@@ -6,36 +6,34 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-@Entity(name = "dataset_files_info")
+@Entity(name = "dataset_file_info")
 public class DataSetFile implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,name = "fileId")
-    private static String fileId;
-    @Column(nullable = false,name = "name")
-    private static String fileName;
-    @Column(nullable = false,name = "datasetId")
-    private static String dataSetId;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
+    private  int id;
+//    @Column(name = "fileId")
+//    private String fileId;
+    @Column(name = "name")
+    private String fileName;
+    @Column(name = "dataset_id",insertable = false,updatable = false)
+    private int dataSetId;
     @ManyToOne
-    @JoinColumn(name = "datasetId")
-    private static DataSet bpoDataSet;
+    @JoinColumn(name = "dataset_id")
+    private  DataSet bpoDataSet;
     @Column(name = "path")
-    private static String filePath;
+    private  String filePath;
     @Column(name = "upload_time")
-    private static String uploadTime;
-
-    @Column(name = "fileSortBy")
+    private String uploadTime;
+    @Column(name = "file_sort_by")
     private String fileSortBy;
-    @Column(name = "fileSortType")
+    @Column(name = "file_sort_type")
     private String fileSortType;
+    @Column(name = "description")
+    private String fileDesc;
+    @Column(name = "size")
+    private String filesize;
 
-    @Column(nullable = true,name = "description")
-    private static String fileDesc;
-
-    @Column(nullable = true,name = "size")
-    private static String filesize;
-
-    private static long UPLOAD_TIMETMP;
 //    private static String FILE_USE_STATUS;
 //
 //    private static String FILE_OWNER;
@@ -61,23 +59,31 @@ public class DataSetFile implements Serializable{
 
 
     //时间戳
-    public Long getOnloadTimetmp() {
-        UPLOAD_TIMETMP = System.currentTimeMillis();
-        return UPLOAD_TIMETMP;
-    }
+//    public Long getOnloadTimetmp() {
+//        UPLOAD_TIMETMP = System.currentTimeMillis();
+//        return UPLOAD_TIMETMP;
+//    }
 
     //文件ID
-    public String getFileId() {
-        return fileId;
+    public int getId() {
+        return id;
     }
-    public void setFileId(String fileID) {
-        fileId = fileID;
+    public void setId(int id) {
+        id = id;
     }
 
+
+//    public String getFileId() {
+//        return fileId;
+//    }
+//
+//    public void setFileId(String fileId) {
+//        this.fileId = fileId;
+//    }
+
     //date时间格式
-    public  void setOnloadTimeDate(long onloadTimetmp){
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        uploadTime = sdf.format(new Date(Long.parseLong(String.valueOf(onloadTimetmp))));
+    public  void setOnloadTimeDate( String  onloadTimetmp){
+        uploadTime = onloadTimetmp;
     }
     public String getOnloadTimedate() {
         return uploadTime;
@@ -123,11 +129,11 @@ public class DataSetFile implements Serializable{
 //        filePower = filePower1;
 //    }
 
-    public static DataSet getBpoDataSet() {
+    public DataSet getBpoDataSet() {
         return bpoDataSet;
     }
-    public static void setBpoDataSet(DataSet bpoDataSet) {
-        DataSetFile.bpoDataSet = bpoDataSet;
+    public void setBpoDataSet(DataSet bpodataSet) {
+        bpoDataSet = bpodataSet;
     }
 
 //
@@ -148,12 +154,12 @@ public class DataSetFile implements Serializable{
 //    }
 
     //文件所属数据集
-    public String getBpodataSets() {
-        return dataSetId;
-    }
-    public void setBpodataSets(String bpodataSet1) {
-        dataSetId = bpodataSet1;
-    }
+//    public String getBpodataSets() {
+//        return dataSetId;
+//    }
+//    public void setBpodataSets(String bpodataSet1) {
+//        dataSetId = bpodataSet1;
+//    }
 
 //    //文件包含的列列表
 //    public List<DataSetColumn> getColumns() {
@@ -200,4 +206,12 @@ public class DataSetFile implements Serializable{
     public void setFileSortType(String fileSortType) {
         this.fileSortType = fileSortType;
     }
+
+    public int getDataSetId() {
+        return dataSetId;
+    }
+    public  void setDataSetId(int datasetId) {
+        dataSetId = datasetId;
+    }
+
 }

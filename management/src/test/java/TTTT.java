@@ -33,14 +33,21 @@ public class TTTT {
 //        dd.add("2222");
 //        System.out.println(dd.get(0));
 
-        String  ss = "我是马晨aa";
-        try {
-            byte[] bytes = ss.getBytes("UTF-8");
-            long time = 23;
-            String BB = bytes+"_"+time;
-            System.out.println(BB);
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+//        String  ss = "我是马晨aa";
+//        try {
+//            byte[] bytes = ss.getBytes("UTF-8");
+//            long time = 23;
+//            String BB = bytes+"_"+time;
+//            System.out.println(BB);
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+
+        List<String > ss = new ArrayList<>();
+        ss.add("aa");
+        ss.add("bb");
+        ss.add("aa");
+        System.out.println(ss);
+
     }
 }
