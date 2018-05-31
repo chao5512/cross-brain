@@ -20,10 +20,7 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
      * 定位dataset 方式
      * */
     public DataSet findById(int datasetId);
-
-    public DataSet findByDataSetName (String datasetName);
-
-    public List<DataSet> findByUserId(int userid);
+    public DataSet findByDataSetEnglishName (String datasetName);
     public List<DataSet> findByUserName(String userName);
 
     /**

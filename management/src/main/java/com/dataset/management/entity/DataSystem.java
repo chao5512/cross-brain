@@ -8,13 +8,13 @@ import java.util.Date;
 @Entity(name = "dataset_system_info")
 public class DataSystem implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-    @Column(name = "dataset_id",insertable = false,updatable = false)
+    @Column(name = "dataset_id")
     private  int dataSetId ;
-    @ManyToOne
-    @JoinColumn(name = "dataset_id")
+    @OneToOne
+    @JoinColumn(name = "dataset_id",insertable = false,updatable = false)
     private DataSet dataSet;
     @Column(name = "dataset_name")
     private String dataSetName ;

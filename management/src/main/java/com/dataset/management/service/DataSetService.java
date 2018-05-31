@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 @Service
 public class DataSetService implements IntDataSetService {
@@ -27,11 +28,9 @@ public class DataSetService implements IntDataSetService {
     public DataSet findById(int datasetId){
         return dataSetRepository.findById(datasetId);
     }
-    public DataSet findByDataSetName(String datasetName){
-        return dataSetRepository.findByDataSetName(datasetName);
-    }
-    public List<DataSet> findByUserId(int userid){
-        return dataSetRepository.findByUserId(userid);
+
+    public DataSet findByDataSetEnglishName(String datasetName){
+        return dataSetRepository.findByDataSetEnglishName(datasetName);
     }
     public List<DataSet> findByUserName(String userName){
         return dataSetRepository.findByUserName(userName);
@@ -43,6 +42,7 @@ public class DataSetService implements IntDataSetService {
     public List<DataSet> findAll(Sort sort){
         return dataSetRepository.findAll(sort);
     }
+
 
     /**
      * 删除数据集
@@ -57,4 +57,5 @@ public class DataSetService implements IntDataSetService {
     public void deleteAll(){
         dataSetRepository.deleteAll();
     }
+
 }

@@ -6,6 +6,7 @@ import com.dataset.management.entity.DataSetFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,8 +23,8 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public DataSystem findById(int datasetId)throws IOException{
-        return dataSetOptRepository.findById(datasetId);
+    public DataSystem findById(int Id)throws IOException{
+        return dataSetOptRepository.findById(Id);
     }
 
     @Override
@@ -32,7 +33,8 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public DataSystem findByDataSetName(String datasetName)throws IOException{
+    @Transactional
+    public List<DataSystem> findByDataSetName(String datasetName)throws IOException{
         return dataSetOptRepository.findByDataSetName(datasetName);
     }
     @Override
@@ -50,6 +52,7 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
+    @Transactional
     public void deleteById (int Id) throws IOException{
         dataSetOptRepository.deleteById(Id);
     }
