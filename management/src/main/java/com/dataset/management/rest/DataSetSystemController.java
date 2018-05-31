@@ -154,12 +154,12 @@ public class DataSetSystemController {
     @RequestMapping(value = "/selectByUser/{UserName}",method = RequestMethod.GET)
     public ApiResult selectByUserName(@PathVariable(value = "UserName") String userName) throws IOException{
         List<DataSystem> dataSystems = dataSetOptService.findByUserName(userName);
-        if (dataSystems.size() != 0){
+        logger.info("获取用户名："+dataSystems.get(0).getUserName());
+        if (dataSystems.get(0).getUserName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystems);
     }
-
 
     /**
      *删除

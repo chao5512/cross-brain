@@ -6,6 +6,7 @@ import com.dataset.management.entity.DataSetFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +48,7 @@ public class DataSetService implements IntDataSetService {
     /**
      * 删除数据集
      * */
+    @Transactional
     public void deleteById(int datasetId){
         dataSetRepository.deleteById(datasetId);
     }
@@ -54,6 +56,7 @@ public class DataSetService implements IntDataSetService {
     /**
      * 删除文件
      * */
+    @Transactional
     public void deleteAll(){
         dataSetRepository.deleteAll();
     }

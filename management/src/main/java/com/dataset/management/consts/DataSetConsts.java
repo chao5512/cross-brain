@@ -51,7 +51,7 @@ public class DataSetConsts {
 
     public static final String DATASET_DATATYPE="CSV";
 
-    public static final String DATASET_USER_NAME = "admin";
+    public static final String DATASET_USER_NAME = "hadoop";
 
     public static final int DATASET_FILECOUNT_ZERO = 0;
 

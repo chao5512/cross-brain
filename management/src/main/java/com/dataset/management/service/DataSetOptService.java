@@ -33,7 +33,6 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    @Transactional
     public List<DataSystem> findByDataSetName(String datasetName)throws IOException{
         return dataSetOptRepository.findByDataSetName(datasetName);
     }
