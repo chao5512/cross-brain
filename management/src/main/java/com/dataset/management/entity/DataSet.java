@@ -13,13 +13,11 @@ import java.util.List;
 @Entity(name = "dataset_basic_info")
 public class DataSet implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-    @Column(name = "userId")
-    public int userId;
     @Column(name = "user_name")
-    public String userName;
+    private String userName;
     //数据集英文名称
     @Column(name = "dataset_english_name")
     private String dataSetEnglishName;
@@ -75,13 +73,7 @@ public class DataSet implements Serializable{
     public void setId(int ids) {
         id = ids;
     }
-    //用户Id
-    public int getUserId() {
-        return userId;
-    }
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+
     //用户名称
     public String getUserName() {
         return userName;

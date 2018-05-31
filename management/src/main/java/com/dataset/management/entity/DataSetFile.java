@@ -9,7 +9,7 @@ import java.util.List;
 @Entity(name = "dataset_file_info")
 public class DataSetFile implements Serializable{
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private  int id;
 //    @Column(name = "fileId")

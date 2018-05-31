@@ -64,10 +64,10 @@ public class DataSetController {
 
     //查询  datasetName
     @ResponseBody
-    @RequestMapping(value = "/listInfo/{dataSetName}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
+    @RequestMapping(value = "/listInfo/{dataSetEnglishName}",method = RequestMethod.GET)
+    public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetEnglishName") String dataSetEnglishName){
         logger.info("开始罗列数据据基本信息");
-        DataSet dataSet = dataSetService.findByDataSetName(dataSetName);
+        DataSet dataSet = dataSetService.findByDataSetEnglishName(dataSetEnglishName);
         if(dataSet.getId() ==0 ){
             return ResultUtil.error(-1,"没有找到对应的数据集 Id");
         }
@@ -83,14 +83,6 @@ public class DataSetController {
         return ResultUtil.success(dataSets);
     }
 
-    //查询  userId
-    @ResponseBody
-    @RequestMapping(value = "/listInfo/{UserId}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
-        logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
-        List<DataSet> dataSets = dataSetService.findByUserId(userId);
-        return ResultUtil.success(dataSets);
-    }
 
     //查询全部
     @ResponseBody
@@ -105,7 +97,7 @@ public class DataSetController {
             return ResultUtil.error(-1,"排序规则不符合规定");
         }
         if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
-                || !sortType.equals(DataSetConsts.SORTTYPE_AESC)){
+                || !sortType.equals(DataSetConsts.SORTTYPE_ASC)){
             logger.info("数据集基本表排序方式需要变更");
             sort = changSortBy(sortType,sortBy);
             // list<DataSet>
@@ -144,7 +136,7 @@ public class DataSetController {
      * */
     @ResponseBody
     @RequestMapping(value = "/update/{updateJson}",method = RequestMethod.POST)
-    public ApiResult updateDataByJson(@PathVariable("updateJson") String updateJson){
+    public ApiResult updateDataByJson(@PathVariable("updateJson") String updateJson) throws IOException{
         DataSet dataSet = JSON.parseObject(updateJson,DataSet.class);
         int id = dataSet.getId();
         logger.info("获取修改的数据集ID："+id);
@@ -158,6 +150,8 @@ public class DataSetController {
          *
          */
         dataSetService.save(dataSet);
+        DataSystem dataSystem = packageDataSystem(dataSet);
+        dataSetOptService.save(dataSystem);
         return null;
     }
 
@@ -192,6 +186,8 @@ public class DataSetController {
             dataSet.setDataSetFileCount(0);
             dataSetService.save(dataSet);
             logger.info("数据及基本表新信息："+dataSet);
+            DataSystem dataSystem = packageDataSystem(dataSet);
+            dataSetOptService.save(dataSystem);
             return ResultUtil.success();
         }
         return ResultUtil.error(-1,"清空失败");
@@ -203,7 +199,24 @@ public class DataSetController {
     }
 
     private Sort basicSortBy(){
-        return changSortBy(DataSetConsts.SORTTYPE_AESC,DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME);
+        return changSortBy(DataSetConsts.SORTTYPE_ASC,DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME);
+    }
+
+    private DataSystem packageDataSystem(DataSet dataSet){
+        DataSystem dataSystem = new DataSystem();
+        //总计11项
+        dataSystem.setDatasetName(dataSet.getDataSetName());
+        dataSystem.setDatasetEnglishName(dataSet.getDataSetEnglishName());
+        dataSystem.setDataSetId(dataSet.getId());
+        dataSystem.setUserName(dataSet.getUserName());
+        dataSystem.setDatasetCreateDate(dataSet.getDataSetCreateTime());
+        dataSystem.setDatasetStoreurl(dataSet.getDataSetStoreUrl());
+        dataSystem.setDatasetDesc(dataSet.getDataSetBasicDesc());
+        dataSystem.setDatasetHiveTablename(dataSet.getDataSetHiveTableName());
+        dataSystem.setDataSetHiveTableId(dataSet.getDataSetHiveTableId());
+        dataSystem.setDataSetSystemSortBy(dataSet.getDataSetSortBY());
+        dataSystem.setDataSetSortType(dataSet.getDataSetSortType());
+        return dataSystem;
     }
 
 
