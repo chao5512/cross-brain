@@ -1,6 +1,7 @@
 import requests
 
-pipe = {'appName': 'test', 'inputPath': '/weather'}
-r = requests.post("http://localhost:3001/submit", data=pipe)
+pipe = {'appName': 'testLD', 'filePath': 'E:/tmp/pythonData/sougou-train'}
+# r = requests.post("http://localhost:3001/submit", data=pipe)
+r = requests.post("http://localhost:3001/LRDemo", data=pipe)
 
 print(r.text)

@@ -17,7 +17,11 @@ class MLPipeline(Pipeline):
     def create(self):
         """create SparkSession"""
         print(self.conf.get('config','sparkMaster'))
-        self.spark = SparkSession.builder.master(self.conf.get('config','sparkMaster')).appName(self.appName).getOrCreate()
+        self.spark = SparkSession.builder \
+            .master(self.conf.get('config','sparkMaster')) \
+            .appName(self.appName)\
+            .getOrCreate()
+        # .master(self.conf.get('config','sparkMaster'))\
         print(self.spark.version)
         return self.spark
 
@@ -30,11 +34,14 @@ class MLPipeline(Pipeline):
 
     """参数ratio类型为列表，两个元素构成表示train和test数据集比例权重"""
     def split(self,ratio):
-        element0 = ratio[0]/(ratio[0]+ratio[1])
-        size = len(self.dataFrame);
-        position = element0/size
-        self.trainSet = self.dataFrame[0:position]
-        self.testSet = self.dataFrame[position+1]
+        element0 = self.dataFrame.randomSplit(ratio)
+        self.trainSet = element0[0]
+        self.testSet = element0[1]
+        # element0 = ratio[0]/(ratio[0]+ratio[1])
+        # size = len(self.dataFrame);
+        # position = element0/size
+        # self.trainSet = self.dataFrame[0:position]
+        # self.testSet = self.dataFrame[position+1]
 
     def buildPipeline(self,stages):
         pipeline = Pipeline(stages=stages)

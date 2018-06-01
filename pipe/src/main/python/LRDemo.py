@@ -7,10 +7,12 @@ from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 spark = SparkSession\
     .builder\
     .appName("Segment Test")\
-    .config("spark.some.config.option", "some-value") \
+    .config("executor-memory", "512m") \
     .getOrCreate();
 
 filePath = "E:/tmp/pythonData/sougou-train";
+# hdfs://172.16.31.231:9000/data
+# .master("spark://172.16.31.231:7077")\
 # filePath = "D:/beh/ckoocML/data/classnews/train/culture.txt";
 textRDD = spark.sparkContext.textFile(filePath)
 # 每条RDD均变为String数组类型（should）
