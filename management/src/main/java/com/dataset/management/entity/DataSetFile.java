@@ -11,16 +11,16 @@ public class DataSetFile implements Serializable{
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
-    private  int id;
+    private int id;
 //    @Column(name = "fileId")
 //    private String fileId;
     @Column(name = "name")
     private String fileName;
-    @Column(name = "dataset_id",insertable = false,updatable = false)
+    @Column(name = "dataset_id")
     private int dataSetId;
-    @ManyToOne
-    @JoinColumn(name = "dataset_id")
-    private  DataSet bpoDataSet;
+
+//    @JoinColumn(name = "dataset_id")
+//    private  DataSet bpoDataSet;
     @Column(name = "path")
     private  String filePath;
     @Column(name = "upload_time")
@@ -68,8 +68,8 @@ public class DataSetFile implements Serializable{
     public int getId() {
         return id;
     }
-    public void setId(int id) {
-        id = id;
+    public void setId(int Id) {
+        id = Id;
     }
 
 
@@ -129,12 +129,12 @@ public class DataSetFile implements Serializable{
 //        filePower = filePower1;
 //    }
 
-    public DataSet getBpoDataSet() {
-        return bpoDataSet;
-    }
-    public void setBpoDataSet(DataSet bpodataSet) {
-        bpoDataSet = bpodataSet;
-    }
+//    public DataSet getBpoDataSet() {
+//        return bpoDataSet;
+//    }
+//    public void setBpoDataSet(DataSet bpodataSet) {
+//        bpoDataSet = bpodataSet;
+//    }
 
 //
 //    //文件使用状态

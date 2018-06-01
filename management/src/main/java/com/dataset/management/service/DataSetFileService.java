@@ -1,10 +1,14 @@
 package com.dataset.management.service;
 
 import com.dataset.management.Dao.DataSetFileRepository;
+import com.dataset.management.consts.DataSetFileConsts;
 import com.dataset.management.entity.DataSetFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +17,7 @@ import java.util.List;
 public class DataSetFileService implements IntDataSetFileService {
     @Autowired
     private DataSetFileRepository dataSetFileRepository;
+    private static Logger logger = LoggerFactory.getLogger(DataSetFileService.class);
 
     //也是上传的功能
     public DataSetFile save(DataSetFile datasetFile){
@@ -24,6 +29,12 @@ public class DataSetFileService implements IntDataSetFileService {
 
     public List<DataSetFile> findAll(Sort sort){
         return dataSetFileRepository.findAll(sort);
+    }
+
+    @Override
+    public List<DataSetFile> findAll(){
+        Sort sort = new Sort(Sort.Direction.fromString(DataSetFileConsts.FILE_SORT_TYPE_ASC),DataSetFileConsts.FILE_SORT_BY_FILENAME);
+        return findAll(sort);
     }
 
     public List<DataSetFile> findDataSetFilesByDataSetId(int datasetId){
@@ -39,11 +50,11 @@ public class DataSetFileService implements IntDataSetFileService {
     public DataSetFile findDataSetFileByFileName(String  fileName){
         return dataSetFileRepository.findDataSetFileByFileName(fileName);
     }
-    @Override
     public List<String> isExistsFiles(List<DataSetFile> dataSetFiles){
         List<String> filelist = new ArrayList<>();
         for (DataSetFile file: dataSetFiles){
             String name = file.getFileName();
+            logger.info("当前文件名称："+name);
             if(!filelist.contains(file)){
                 filelist.add(name);
             }
@@ -51,18 +62,15 @@ public class DataSetFileService implements IntDataSetFileService {
         return filelist;
     }
 
-    public void deleteByFileId(int datasetFileId){
-        dataSetFileRepository.deleteById(datasetFileId);
-    }
-
+    @Transactional
     public void deleteDataSetFilesByDataSetId(int datasetId){
         dataSetFileRepository.deleteDataSetFilesByDataSetId(datasetId);
     }
-
+    @Transactional
     public void deleteById(int datasetId){
         dataSetFileRepository.deleteById(datasetId);
     }
-
+    @Transactional
     public void deleteAll(){ dataSetFileRepository.deleteAll();}
 
     public long count(){return  dataSetFileRepository.count();}
