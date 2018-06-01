@@ -8,9 +8,9 @@ spark = SparkSession\
     .builder\
     .appName("Segment Test")\
     .config("executor-memory", "512m") \
-    .getOrCreate();
+    .getOrCreate()
 
-filePath = "E:/tmp/pythonData/sougou-train";
+filePath = "E:/tmp/pythonData/sougou-train"
 # hdfs://172.16.31.231:9000/data
 # .master("spark://172.16.31.231:7077")\
 # filePath = "D:/beh/ckoocML/data/classnews/train/culture.txt";
@@ -33,8 +33,8 @@ schema = StructType([
     StructField("label", StringType(), True),
     StructField("content", StringType(), True)])
 
-textRDD = spark.createDataFrame(lastRDD, schema)
-lastDF = textRDD.withColumn("label", textRDD["label"].cast("Double"))
+textDF = spark.createDataFrame(lastRDD, schema)
+lastDF = textDF.withColumn("label", textDF["label"].cast("Double"))
 # lastDF.show()
 
 # step2 切分数据集

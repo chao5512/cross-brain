@@ -25,4 +25,20 @@ pipe.loadDataSet(lastDF)
 
 pipe.split([0.6, 0.4])
 
+train = pipe.trainSet
+test = pipe.testSet
+
+# step3 分词器分词
+tokenizer = Tokenizer(inputCol="content", outputCol="words")
+
+# step4 计算词频
+hashingTF = HashingTF(inputCol=tokenizer.getOutputCol(), outputCol="features")
+
+# step5 逻辑回归
+lr = LogisticRegression(maxIter=10, regParam=0.001)
+
+stages = [tokenizer, hashingTF, lr]
+# step6组装pipeline
+pipe.buildPipeline(stages)
+
 pipe.trainSet.show()
