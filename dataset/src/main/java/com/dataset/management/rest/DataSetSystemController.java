@@ -49,16 +49,17 @@ public class DataSetSystemController {
 //    @Autowired
 //    HiveService hiveService;
 //
-//    @Autowired
-//    HdfsService hdfsService;
+    @Autowired
+    HdfsService hdfsService;
 
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create",method = RequestMethod.POST)
-    public ApiResult createDataSet() throws IOException{
+    @RequestMapping(value = "/create/{dataSetName}",method = RequestMethod.POST)
+    public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
+        dataSet.setDataSetName(dataSetName);
         Sort sort = basicSortBy();
         List<DataSet> dataSets = dataSetService.findAll(sort);
         List<String> cnDatasetNames = listName(dataSets);
@@ -77,19 +78,19 @@ public class DataSetSystemController {
         //体统表信息
         logger.info("数据集系统表开始创建：。。。。。");
         dataSetOptService.save(newDataSystem);
-
-
-                /**
-                 * hive info 如何放入？？？
-                 * */
-//                Hiveinfo hiveinfo = dataSet.getHiveinfo();
-//                hiveService.setHiveinfo(hiveinfo);
-//                logger.info("获取hive表  设计结构："+hiveinfo);
         try {
-             logger.info("生成hvie 表中。。。。。");
-//           hiveService.createDataBase();
-//           hiveService.createHiveTable(dataSet.getDataSetEnglishName());
-             logger.info("hive表生成完毕。。。。。");
+            logger.info("正在HDFS 中创建数据集文件夹");
+            String user = dataSet.getUserName();
+            String DSName = dataSet.getDataSetEnglishName();
+            String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
+            String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
+            String userNameDataSetName = user + DSName;
+            if(hdfsService.existDir(hdfsFinal)){
+               logger.info("数据集文件夹已经存在");
+            }
+            hdfsService.mkdirHdfsDir(userNameDataSetName);
+            logger.info("生成hvie 表中。。。。。");
+            logger.info("hive表生成完毕。。。。。");
         } catch (Exception e) {
              e.printStackTrace();
         }
@@ -192,12 +193,15 @@ public class DataSetSystemController {
             dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
         }
 
+        String user = dataSet.getUserName();
+        String DSName = dataSet.getDataSetEnglishName();
+        String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
+        String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
+        String hdfsUserDataSetPath = DataSetConsts.DATASET_SYSTEM_USER_PATH + user + DSName;
+
         try {
-//            logger.info("准备删除 hive 表"+hiveService.getHiveTableName());
-//            hiveService.dropHiveTable(hiveService.getHiveTableName());
-//            logger.info("准备删除 hdfs中 数据集文件");
-//            hdfsService.setDataSet(dataSet);
-//            hdfsService.deleteFiles(hdfsService.datasetHdsfFiles());
+            logger.info("hdfs 库中开始删除相关数据集：");
+            hdfsService.deletedir(hdfsUserDataSetPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
