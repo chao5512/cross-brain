@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from pipeline import Pipe
 from pyspark.ml import Pipeline
-from pyspark.ml.feature import HashingTF, Tokenizer
+from pyspark.ml.feature import HashingTF, Tokenizer, basestring
 from pyspark.sql import SparkSession,DataFrame
 from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
@@ -39,18 +39,24 @@ class MLPipeline(Pipe):
         self.trainSet = element0[0]
         self.testSet = element0[1]
 
-    def createTokenizer(self, inputCol, outputCol):
-        tokenizer = Tokenizer(inputCol=inputCol, outputCol=outputCol)
-        return tokenizer
-
-    def createHashingTF(self, inputCol, outputCol):
-        hashingTF = HashingTF(inputCol=inputCol, outputCol=outputCol)
-        return hashingTF
-
-    def buildPipeline(self, stages):
+    def buildPipeline(self, originalStages):
+        stages = self.buildStages(originalStages)
         pipeline = Pipeline(stages=stages)
         model = pipeline.fit(self.trainSet)
         return model
+
+    def buildStages(self, originalStages):
+        stages = []
+        for className in originalStages:
+            params = ""
+            for (param,paramValue) in originalStages[className].items():
+                if isinstance(paramValue, basestring):
+                    params +="," +param+"='"+paramValue+"'"
+                else:
+                    params +="," +param+"="+str(paramValue)
+            stages.append(eval(className+"("+params[1:]+")"))
+        return stages
+
 
     def validator(self, model):
         prediction = model.transform(self.testSet)
