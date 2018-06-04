@@ -46,7 +46,6 @@
         <module>appmodule</module>
         <module>dataset</module>
         <module>component</module>
-        <module>management</module>
     </modules>
 
     <dependencyManagement>
