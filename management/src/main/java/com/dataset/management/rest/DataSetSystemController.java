@@ -183,10 +183,14 @@ public class DataSetSystemController {
         logger.info("准备从数据集基本信息表中删除数据集：");
         dataSetService.deleteById(dataSetId);
 
-//        List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
-//        logger.info("所属数据集的文件数量："+fileList.size());
-//        logger.info("准备从数据集文件表中删除数据集：");
-//        dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
+        List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
+        logger.info("所属数据集的文件数量："+fileList.size());
+        if(fileList.size() ==0 ){
+            logger.info("数据集是空的。不用执行删除文件操作");
+        }else {
+            logger.info("准备从数据集文件表中删除数据集：");
+            dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
+        }
 
         try {
 //            logger.info("准备删除 hive 表"+hiveService.getHiveTableName());

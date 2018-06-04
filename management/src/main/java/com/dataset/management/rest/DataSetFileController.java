@@ -88,9 +88,8 @@ public class DataSetFileController {
             setFile.setOnloadTimeDate(newTime);
             setFile.setFileDesc("upload  success! ");
             if(!estsFilesNmaes.contains(name)){
-               cntentDataSetFile = dataSetFileService.save(setFile);
-               setFile.setDataSetId(dataSetId);
-
+                setFile.setDataSetId(dataSetId);
+                cntentDataSetFile = dataSetFileService.save(setFile);
                logger.info("上传后的文件属性"+cntentDataSetFile);
                addFileName.add(setFile.getFileName());
             }else {
@@ -108,7 +107,7 @@ public class DataSetFileController {
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
         logger.info("修改时对应数据集上文件数：");
         contentdDataSet.setDataSetFileCount(dataSetFiles.size());
-        contentdDataSet.setDataSetUpdateDesc("新增文件 名称："+addFileName);
+        contentdDataSet.setDataSetUpdateDesc("upload the file :"+addFileName);
         long timetmp = System.currentTimeMillis();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
