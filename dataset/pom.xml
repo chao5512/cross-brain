@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
@@ -7,12 +8,8 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
     <artifactId>dataset</artifactId>
-    <packaging>war</packaging>
-
-    <name>dataset Maven Webapp</name>
-
+    <name>dataset</name>
 
     <dependencies>
 
@@ -35,6 +32,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!--Mysql依赖 start-->
         <dependency>
@@ -48,11 +51,11 @@
 
         <!--&lt;!&ndash;hadoop junit test start&ndash;&gt;-->
         <!--<dependency>-->
-            <!--<groupId>org.apache.mrunit</groupId>-->
-            <!--<artifactId>mrunit</artifactId>-->
-            <!--<version>1.1.0</version>-->
-            <!--<classifier>hadoop2</classifier>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apache.mrunit</groupId>-->
+        <!--<artifactId>mrunit</artifactId>-->
+        <!--<version>1.1.0</version>-->
+        <!--<classifier>hadoop2</classifier>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--hadoop相关依赖-->
         <dependency>
@@ -68,14 +71,18 @@
                     <groupId>log4j</groupId>
                     <artifactId>log4j</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>javax.servlet</groupId>
+                    <artifactId>servlet-api</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
         <!--<dependency>-->
-            <!--<groupId>org.apache.hadoop</groupId>-->
-            <!--<artifactId>hadoop-minicluster</artifactId>-->
-            <!--<version>2.6.0</version>-->
-            <!--<scope>test</scope>-->
+        <!--<groupId>org.apache.hadoop</groupId>-->
+        <!--<artifactId>hadoop-minicluster</artifactId>-->
+        <!--<version>2.6.0</version>-->
+        <!--<scope>test</scope>-->
         <!--</dependency>-->
         <!--&lt;!&ndash;hadoop junit test stop&ndash;&gt;-->
         <!-- spring boot devtools 依赖包. -->
@@ -153,17 +160,17 @@
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.hive/hive-exec -->
-       <!-- <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-exec</artifactId>
-            <version>2.0.1</version>
-        </dependency>
+        <!-- <dependency>
+             <groupId>org.apache.hive</groupId>
+             <artifactId>hive-exec</artifactId>
+             <version>2.0.1</version>
+         </dependency>
 
-        <dependency>
-            <groupId>org.apache.hive</groupId>
-            <artifactId>hive-jdbc</artifactId>
-            <version>2.0.1</version>
-        </dependency>-->
+         <dependency>
+             <groupId>org.apache.hive</groupId>
+             <artifactId>hive-jdbc</artifactId>
+             <version>2.0.1</version>
+         </dependency>-->
 
         <!-- https://mvnrepository.com/artifact/org.springframework.data/spring-data-jpa -->
         <dependency>
