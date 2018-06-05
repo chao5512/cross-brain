@@ -1,11 +1,13 @@
 #!/usr/bin/python3
-from pipeline import Pipeline
+from pipeline import Pipe
+from pyspark.ml import Pipeline
+from pyspark.ml.feature import HashingTF, Tokenizer, basestring
 from pyspark.sql import SparkSession,DataFrame
 from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 import configparser
 
-class MLPipeline(Pipeline):
+class MLPipeline(Pipe):
 
     """初始化参数 appName:任务名称"""
     def __init__(self,appName):
@@ -18,7 +20,6 @@ class MLPipeline(Pipeline):
         """create SparkSession"""
         print(self.conf.get('config','sparkMaster'))
         self.spark = SparkSession.builder \
-            .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName)\
             .getOrCreate()
         # .master(self.conf.get('config','sparkMaster'))\
@@ -33,22 +34,31 @@ class MLPipeline(Pipeline):
         self.dataFrame = dataFrame
 
     """参数ratio类型为列表，两个元素构成表示train和test数据集比例权重"""
-    def split(self,ratio):
+    def split(self, ratio):
         element0 = self.dataFrame.randomSplit(ratio)
         self.trainSet = element0[0]
         self.testSet = element0[1]
-        # element0 = ratio[0]/(ratio[0]+ratio[1])
-        # size = len(self.dataFrame);
-        # position = element0/size
-        # self.trainSet = self.dataFrame[0:position]
-        # self.testSet = self.dataFrame[position+1]
 
-    def buildPipeline(self,stages):
+    def buildPipeline(self, originalStages):
+        stages = self.buildStages(originalStages)
         pipeline = Pipeline(stages=stages)
         model = pipeline.fit(self.trainSet)
         return model
 
-    def validator(self,model):
+    def buildStages(self, originalStages):
+        stages = []
+        for className in originalStages:
+            params = ""
+            for (param,paramValue) in originalStages[className].items():
+                if isinstance(paramValue, basestring):
+                    params +="," +param+"='"+paramValue+"'"
+                else:
+                    params +="," +param+"="+str(paramValue)
+            stages.append(eval(className+"("+params[1:]+")"))
+        return stages
+
+
+    def validator(self, model):
         prediction = model.transform(self.testSet)
         return prediction
 
@@ -57,13 +67,17 @@ class MLPipeline(Pipeline):
         model = self.buildPipeline(stages)
         prediction = self.validator(model)
 
-    def evaluator(self,e,predictions):
+    def evaluator(self, e, predictions, labelCol):
         if e == 'MulticlassClassificationEvaluator':
-            evaluator = MulticlassClassificationEvaluator()
-            accuracy =evaluator.setMetricName("accuracy").evaluate(predictions);
-            weightedPrecision=evaluator.setMetricName("weightedPrecision").evaluate(predictions);
-            weightedRecall=evaluator.setMetricName("weightedRecall").evaluate(predictions);
-            f1=evaluator.setMetricName("f1").evaluate(predictions);
+            evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction",
+                                                          metricName="accuracy")
+            accuracy = evaluator.evaluate(predictions)
+            return accuracy
+            # evaluator = MulticlassClassificationEvaluator()
+            # accuracy =evaluator.setMetricName("accuracy").evaluate(predictions);
+            # weightedPrecision=evaluator.setMetricName("weightedPrecision").evaluate(predictions);
+            # weightedRecall=evaluator.setMetricName("weightedRecall").evaluate(predictions);
+            # f1=evaluator.setMetricName("f1").evaluate(predictions);
 
     """保存Model文件"""
     def saveModel(self,model,modelPath):

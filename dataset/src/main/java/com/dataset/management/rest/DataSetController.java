@@ -15,7 +15,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import scala.tools.cmd.gen.AnyVals;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -50,8 +49,8 @@ public class DataSetController {
 //    @Autowired
 //    HiveService hiveService;
 //
-//    @Autowired
-//    HdfsService hdfsService;
+    @Autowired
+    HdfsService hdfsService;
 
     //查询  Id
     @ResponseBody
@@ -192,14 +191,20 @@ public class DataSetController {
         if(fileList.size() == 0 ){
             return ResultUtil.error(-1,"此数据集不存在文件");
         }
+
+        String user = dataSet.getUserName();
+        String DSName = dataSet.getDataSetEnglishName();
+        String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
+        String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
+        String userNameDataSetName = user + DSName;
+
         dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
         if(dataSetFileService.count() == 0){
             logger.info("数据集当前文件数："+dataSetFileService.count());
             logger.info("远程 hdfs 删除文件中。。");
-//            hdfsService.setDataSet(dataSet);
-//            hdfsService.deleteFiles(hdfsService.datasetHdsfFiles());
-//            int counts = hdfsService.datasetHdsfFiles().size();
-//            logger.info("hdfs 中 指定路径文件数："+counts);
+
+            hdfsService.deletedir(hdfsFinal);
+            hdfsService.mkdirHdfsDir(userNameDataSetName);
 
             //需要更改3项参数
             long timetmp = System.currentTimeMillis();

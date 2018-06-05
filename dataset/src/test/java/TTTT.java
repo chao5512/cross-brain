@@ -1,7 +1,12 @@
+import com.alibaba.fastjson.JSON;
+import com.dataset.management.entity.DataSetFile;
 import net.bytebuddy.matcher.FilterableList;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
+import java.nio.file.Path;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -43,11 +48,58 @@ public class TTTT {
 //            e.printStackTrace();
 //        }
 
-        List<String > ss = new ArrayList<>();
-        ss.add("aa");
-        ss.add("bb");
-        ss.add("aa");
-        System.out.println(ss);
+//        List<String > ss = new ArrayList<>();
+//        ss.add("aa");
+//        System.out.println(ss.get(0));
+//
+//        Path path = new File("D:\\QQ\\config.xml.txd").toPath();
+//        Path name = path.getFileName();
+//        String nn = path.toFile().getName();
+//        System.out.println(name);
+//        System.out.println(nn);
+//        System.out.println(GetFileSize(new File("D:\\QQ\\config.xml.txd")));
 
+        /**
+         config.xml.txd
+         config.xml.txd
+         855.30KB
+         * */
+
+
+        DataSetFile dd =new DataSetFile();
+        dd.setFileSortType("asc");
+        String json = JSON.toJSONString(dd);
+        String json2 = JSON.toJSONString(dd);
+        String jj ="["+json+","+json2+"]";
+        System.out.println(jj);
+
+    }
+
+
+    private static String GetFileSize(String Path){
+        return GetFileSize(new File(Path));
+    }
+
+
+    private static String GetFileSize(File file){
+        String size = "";
+        if(file.exists() && file.isFile()){
+            long fileS = file.length();
+            DecimalFormat df = new DecimalFormat("#.00");
+            if (fileS < 1024) {
+                size = df.format((double) fileS) + "BT";
+            } else if (fileS < 1048576) {
+                size = df.format((double) fileS / 1024) + "KB";
+            } else if (fileS < 1073741824) {
+                size = df.format((double) fileS / 1048576) + "MB";
+            } else {
+                size = df.format((double) fileS / 1073741824) +"GB";
+            }
+        }else if(file.exists() && file.isDirectory()){
+            size = "";
+        }else{
+            size = "0BT";
+        }
+        return size;
     }
 }

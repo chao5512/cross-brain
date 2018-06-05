@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-class Pipeline:
+class Pipe:
     def __init__(self,appName):
         self._appName = appName
 

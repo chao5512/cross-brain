@@ -14,6 +14,8 @@ public interface IntDataSetFileService {
 
     public List<DataSetFile> findAll(Sort sort);
 
+    public List<DataSetFile> findAll();
+
     public List<DataSetFile> findDataSetFilesByDataSetId(int datasetId);
 
     public List<DataSetFile> findDataSetFilesByDataSetId(int dataSetId,Sort sort);
@@ -23,8 +25,6 @@ public interface IntDataSetFileService {
     public DataSetFile findDataSetFileByFileName(String  fileName);
 
     public List<String> isExistsFiles(List<DataSetFile> dataSetFiles);
-
-    public void deleteByFileId(int datasetFileId);
 
     public void deleteDataSetFilesByDataSetId(int datasetId);
 
