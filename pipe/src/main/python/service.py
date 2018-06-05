@@ -39,15 +39,23 @@ def loadDataSet():
         StructField("content", StringType(), True)])
     textDF = spark.createDataFrame(lastRDD, schema)
     lastDF = textDF.withColumn("label", textDF["label"].cast("Double"))
-    # step2 load and split dataset
     pipe.loadDataSet(lastDF)
-    pipe.split([0.6, 0.4])
+
+    # step2 切分数据
+    if data['isSplitSample'] :
+        trainRatio = data['trainRatio']
+        pipe.split([trainRatio, 1-trainRatio])
+
+    # step3 构造模型
     model = pipe.buildPipeline(data['originalStages'])
-    # step7 评估模型
+
+    # step4 模型作用于测试集
     prediction = pipe.validator(model)
-    # step8 验证准确性
-    accuracy = pipe.evaluator("MulticlassClassificationEvaluator", prediction, "label")
-    # step9 打印模型准确率
+
+    # step5 验证准确性
+    accuracy = pipe.evaluator(data['evaluator'], prediction, "label")
+
+    # step6 打印模型准确率
     print("Test set accuracy = " + str(accuracy))
     result = {'appName': appName, 'accuracy': accuracy}
     return Response(json.dumps(result), mimetype='application/json')

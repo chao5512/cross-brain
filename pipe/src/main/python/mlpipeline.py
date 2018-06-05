@@ -20,9 +20,9 @@ class MLPipeline(Pipe):
         """create SparkSession"""
         print(self.conf.get('config','sparkMaster'))
         self.spark = SparkSession.builder \
+            .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName)\
             .getOrCreate()
-        # .master(self.conf.get('config','sparkMaster'))\
         print(self.spark.version)
         return self.spark
 
