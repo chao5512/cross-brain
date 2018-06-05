@@ -11,7 +11,7 @@ public class ResultUtil {
     }
 
     //当错误时返回的值
-    public static ApiResult error(int code,String msg){
+    public static ApiResult error(int code ,String msg){
         ApiResult result = new ApiResult(-1,msg);
         return result;
     }
