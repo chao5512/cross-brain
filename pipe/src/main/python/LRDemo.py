@@ -6,12 +6,13 @@ from pyspark.ml import Pipeline
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 spark = SparkSession\
     .builder\
+    .master("spark://172.16.31.231:7077")\
     .appName("Segment Test")\
     .config("executor-memory", "512m") \
-    .getOrCreate();
+    .getOrCreate()
 
-filePath = "E:/tmp/pythonData/sougou-train";
-# hdfs://172.16.31.231:9000/data
+# filePath = "E:/tmp/pythonData/sougou-train";
+filePath = "hdfs://172.16.31.231:9000/data"
 # .master("spark://172.16.31.231:7077")\
 # filePath = "D:/beh/ckoocML/data/classnews/train/culture.txt";
 textRDD = spark.sparkContext.textFile(filePath)
