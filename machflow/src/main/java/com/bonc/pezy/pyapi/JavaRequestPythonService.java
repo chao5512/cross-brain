@@ -1,23 +1,22 @@
 package com.bonc.pezy.pyapi;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 /**
  * Created by 冯刚 on 2018/6/6.
  */
-public class LogicalTest {
-    public static void main(String[] args){
+public class JavaRequestPythonService {
 
-        String pipe = "{\"appName\": \"testLD\", \"filePath\": \"hdfs://172.16.31.231:9000/data\",\"isSplitSample\":1," +
-                "\"trainRatio\":0.6,\"evaluator\":\"MulticlassClassificationEvaluator\"," +
-                "\"originalStages\": {\"Tokenizer\": {\"inputCol\": \"content\",\"outputCol\": \"words\"}," +
-                "\"HashingTF\": {\"inputCol\": \"words\",\"outputCol\": \"features\"}," +
-                "\"LogisticRegression\": {\"maxIter\": 10,\"regParam\": 0.001}}}";
-        String url = "http://localhost:3001/LRDemo";
-        JavaRequestPythonService jrps = new JavaRequestPythonService();
-        jrps.requestPythonService(pipe,url);
-        /*URL url = null;
+    public void requestPythonService(String pipe,String urls){
+
+        URL url = null;
         HttpURLConnection conn = null;
         try {
-            url = new URL("http://localhost:3001/LRDemo");
+            url = new URL(urls);
             conn = (HttpURLConnection)url.openConnection();
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
@@ -41,8 +40,6 @@ public class LogicalTest {
 
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
-
-
+        }
     }
 }
