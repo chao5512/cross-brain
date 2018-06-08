@@ -2,11 +2,13 @@ package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
+import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,9 @@ public class HiveTableController {
     @Autowired
     private DataSetMetastoreService metastoreService;
 
+    @Autowired
+    private DataSetService dataSetService;
+
     /**
      * 功能描述:创建或修改表
      * @param tableMeta
@@ -48,12 +53,26 @@ public class HiveTableController {
         boolean exist = hiveTableService.isExist(dataSet);
         if(exist){
             boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
+
             if(result){
                 return ResultUtil.success();
             }
             return ResultUtil.error(-1,"更新失败");
         }else{
             boolean table = hiveTableService.createTable(tableMeta, user, dataSet);
+
+
+            //更新hive 表名称和其他相关
+            DataSet dataSetConTent = dataSetService.findById(Integer.parseInt(dataSetId));
+            String hiveTableName = tableMeta.getTableName();
+            long timetmp = System.currentTimeMillis();
+            String hiveTableID = hiveTableName+"_"+timetmp;
+            dataSetConTent.setDataSetHiveTableName(hiveTableName);
+            dataSetConTent.setDataSetHiveTableId(hiveTableID);
+            String HDSFPATH = DataSetConsts.DATASET_STOREURL+"/tmp/user/"+dataSetId;
+            dataSetConTent.setDataSetStoreUrl(HDSFPATH);
+            dataSetService.save(dataSetConTent);
+
             if(table){
                 return ResultUtil.success();
             }else {

@@ -9,13 +9,14 @@ spring:
   application:
     name: account
   #数据库配置mysql
-  datasource:
-    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: 123456
-    driver-class-name: com.mysql.jdbc.Driver
+  #  datasource:
+  #    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
+  #    username: root
+  #    password: 123456
+  #    driver-class-name: com.mysql.jdbc.Driver
   secondary-datasource:
-    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
+  #   url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
+    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 123456
     driver-class-name: com.mysql.jdbc.Driver

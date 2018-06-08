@@ -47,7 +47,7 @@ public class DataSetConsts {
 
     public static final String DATASET_BASIC_DESC ="createSuccess!";
 
-    public static final String DATASET_STOREURL ="hdsf://172.16.11.222:9000";
+    public static final String DATASET_STOREURL ="hdfs://172.16.11.222:9000";
 
     public static final String DATASET_SYSTEM_USER_PATH ="/user/hdaoop";
 

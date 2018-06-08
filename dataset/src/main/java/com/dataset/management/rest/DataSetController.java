@@ -43,12 +43,6 @@ public class DataSetController {
     @Autowired
     IntDataSetFileService dataSetFileService;
 
-//    @Autowired
-//    DataSetColumService dataSetColumService;
-//
-//    @Autowired
-//    HiveService hiveService;
-//
     @Autowired
     HdfsService hdfsService;
 
@@ -161,7 +155,6 @@ public class DataSetController {
         String newDesc = "update the dataset "+dataSet.getDataSetName();
         dataSet.setDataSetUpdateDesc(newDesc);
 
-        dataSet.setDataSetFileCount(0);
         DataSet newDataSet = dataSetService.save(dataSet);
         logger.info("更新后的数据集基本表："+newDataSet);
 
@@ -192,19 +185,17 @@ public class DataSetController {
             return ResultUtil.error(-1,"此数据集不存在文件");
         }
 
-        String user = dataSet.getUserName();
-        String DSName = dataSet.getDataSetEnglishName();
-        String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
-        String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
-        String userNameDataSetName = user + DSName;
+        String hdfsTmpPath = "/tmp/user";
+        int dataSetnumId = dataSet.getId();
+        String tmpPath = hdfsTmpPath+"/"+dataSetnumId;
 
         dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
         if(dataSetFileService.count() == 0){
             logger.info("数据集当前文件数："+dataSetFileService.count());
             logger.info("远程 hdfs 删除文件中。。");
 
-            hdfsService.deletedir(hdfsFinal);
-            hdfsService.mkdirHdfsDir(userNameDataSetName);
+            hdfsService.deletedir(tmpPath);
+            hdfsService.mkdirHdfsDir(tmpPath);
 
             //需要更改3项参数
             long timetmp = System.currentTimeMillis();

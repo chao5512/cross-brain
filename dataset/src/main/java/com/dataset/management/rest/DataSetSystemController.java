@@ -43,28 +43,34 @@ public class DataSetSystemController {
     @Autowired
     IntDataSetFileService dataSetFileService;
 
-//    @Autowired
-//    DataSetColumService dataSetColumService;
-//
-//    @Autowired
-//    HiveService hiveService;
-//
+    @Autowired
+    HiveTableService hiveTableService;
+
     @Autowired
     HdfsService hdfsService;
 
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create/{dataSetName}",method = RequestMethod.POST)
-    public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName) throws IOException{
+    @RequestMapping(value = "/create/{dataSetName}/{userName}/{dataSetDesc}",method = RequestMethod.POST)
+    public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
+                                   @PathVariable(value = "userName") String userName,
+                                   @PathVariable(value = "dataSetDesc") String datSetDesc) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
+        dataSet.setUserName(userName);
+        dataSet.setDataSetBasicDesc(datSetDesc);
+        dataSet.setDataSetHiveTableName(null);
+        dataSet.setDataSetHiveTableId(null);
+        dataSet.setDataSetEnglishName(null);
+        dataSet.setDataSetStoreUrl(null);
+
         Sort sort = basicSortBy();
         List<DataSet> dataSets = dataSetService.findAll(sort);
         List<String> cnDatasetNames = listName(dataSets);
         if(cnDatasetNames.contains(dataSet.getDataSetName())){
-            return ResultUtil.error(-1,"请设置已经存在的默认数据集名称");
+            return ResultUtil.error(-1,"数据集名称已经存在,请重新命名。。。");
         }
         logger.info("准备创建的数据集: "+ JSON.toString(dataSet));
 
@@ -78,22 +84,6 @@ public class DataSetSystemController {
         //体统表信息
         logger.info("数据集系统表开始创建：。。。。。");
         dataSetOptService.save(newDataSystem);
-        try {
-            logger.info("正在HDFS 中创建数据集文件夹");
-            String user = dataSet.getUserName();
-            String DSName = dataSet.getDataSetEnglishName();
-            String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
-            String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
-            String userNameDataSetName = user + DSName;
-            if(hdfsService.existDir(hdfsFinal)){
-               logger.info("数据集文件夹已经存在");
-            }
-            hdfsService.mkdirHdfsDir(userNameDataSetName);
-            logger.info("生成hvie 表中。。。。。");
-            logger.info("hive表生成完毕。。。。。");
-        } catch (Exception e) {
-             e.printStackTrace();
-        }
         return  ResultUtil.success();
     }
     //查询
@@ -143,9 +133,9 @@ public class DataSetSystemController {
         List<DataSystem> dataSystem = dataSetOptService.findByDataSetName(datasetName);
         logger.info("......."+dataSystem);
         logger.info("查询当前数据集名称："+dataSystem.get(0).getDatasetName());
-//        if (dataSystem.getDatasetName().isEmpty()){
-//            return ResultUtil.error(-1,"所查找的数据集不存在");
-//        }
+        if (dataSystem.get(0).getUserName().isEmpty()){
+            return ResultUtil.error(-1,"所查找的数据集不存在");
+        }
         return ResultUtil.success(dataSystem);
     }
 
@@ -193,15 +183,19 @@ public class DataSetSystemController {
             dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
         }
 
-        String user = dataSet.getUserName();
-        String DSName = dataSet.getDataSetEnglishName();
-        String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
-        String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
-        String hdfsUserDataSetPath = DataSetConsts.DATASET_SYSTEM_USER_PATH + user + DSName;
+        String hdfsTmpPath = "/tmp/user";
+        String tmpPath = hdfsTmpPath+"/"+dataSetId;
+        String finalPath = DataSetConsts.DATASET_STOREURL+tmpPath;
+
 
         try {
             logger.info("hdfs 库中开始删除相关数据集：");
-            hdfsService.deletedir(hdfsUserDataSetPath);
+            logger.info("hdfs:" +finalPath);
+            if(hdfsService.existDir(tmpPath,false)){
+                logger.info(hdfsService.existDir(tmpPath,false)+"  普安段");
+                logger.info("已找到 hdfs 对应文件夹");
+                hdfsService.deletedir(tmpPath);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

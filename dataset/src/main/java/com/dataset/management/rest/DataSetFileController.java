@@ -70,11 +70,10 @@ public class DataSetFileController {
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_LOADING);
         dataSetService.save(contentdDataSet);
 
-        String user = contentdDataSet.getUserName();
-        String DSName = contentdDataSet.getDataSetEnglishName();
-        String hdfsPath = DataSetConsts.DATASET_STOREURL + DataSetConsts.DATASET_SYSTEM_USER_PATH;
-        String hdfsFinal = hdfsPath+"/"+user+"/"+DSName;
-        String userNameDataSetName = user + DSName;
+        String hdfsTmpPath = "/tmp/user";
+        int dataSetnumId = contentdDataSet.getId();
+        String tmpPath = hdfsTmpPath+"/"+dataSetnumId;
+
 
         List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
         logger.info("获取当前数据集中已经存在的文件名称列表："+estsDataSetFiles);
@@ -86,7 +85,7 @@ public class DataSetFileController {
         for(DataSetFile setFile: dataSetFiles){
             String name = setFile.getFileName();
             //hdfs 中的全路径
-            String fileHdfsPath = hdfsFinal+"/"+name;
+            String fileHdfsPath = tmpPath+"/"+name;
 
             long timetmp = System.currentTimeMillis();
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
