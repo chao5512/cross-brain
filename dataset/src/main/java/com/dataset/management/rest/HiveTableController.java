@@ -38,20 +38,27 @@ public class HiveTableController {
      * @auther: 王培文
      * @date: 2018/6/5 16:04
      */
-    @RequestMapping(value = "create/{userId}/{dataSetId}",method = RequestMethod.POST)
+    @RequestMapping(value = "save/{userId}/{dataSetId}",method = RequestMethod.POST)
     public ApiResult createOrUpdateTable(HiveTableMeta tableMeta, @PathVariable("userId") String userId, @PathVariable("dataSetId") String dataSetId){
         User user = new User();
         long id = Long.parseLong(userId);
         user.setId(id);
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(dataSetId));
-
-
-        boolean table = hiveTableService.createTable(tableMeta, user, dataSet);
-        if(table){
-            return ResultUtil.success();
-        }else {
-            return ResultUtil.error(-1,"表已经存在");
+        boolean exist = hiveTableService.isExist(dataSet);
+        if(exist){
+            boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
+            if(result){
+                return ResultUtil.success();
+            }
+            return ResultUtil.error(-1,"更新失败");
+        }else{
+            boolean table = hiveTableService.createTable(tableMeta, user, dataSet);
+            if(table){
+                return ResultUtil.success();
+            }else {
+                return ResultUtil.error(-1,"表已经存在");
+            }
         }
     }
 
@@ -67,17 +74,12 @@ public class HiveTableController {
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(datasetId));
         HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
+        String tableName = hiveTableMeta.getTableName();
+        int length = tableName.length();
+        int index = tableName.indexOf("_");
+        String subTableName = tableName.substring(index + 1, length);
+        hiveTableMeta.setTableName(subTableName);
         return ResultUtil.success(hiveTableMeta);
     }
 
-    @RequestMapping(value = "update/{userId}")
-    public ApiResult updateHiveTable(HiveTableMeta tableMeta,@PathVariable("userId") String userId){
-        DataSet dataSet = new DataSet();
-        dataSet.setId(Integer.parseInt(userId));
-        boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
-        if(result){
-            return ResultUtil.success();
-        }
-        return ResultUtil.error(-1,"更新失败");
-    }
 }

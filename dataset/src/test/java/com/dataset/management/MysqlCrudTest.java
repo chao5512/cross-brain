@@ -53,8 +53,16 @@ public class MysqlCrudTest {
     @Test
     public void test02(){
 //        System.out.println(env.getRequiredProperty("spring.secondary-datasource.url"));
-        String s = StringEscapeUtils.escapeJava("\t");
-        System.out.println(s);
+        /*String s = StringEscapeUtils.escapeJava("\t");
+        System.out.println(s);*/
+        //3_studentno
+        String name = "3_studentno";
+        int length = name.length();
+        int i = name.indexOf("_");
+        System.out.println("下标："+i);
+        String substring = name.substring(i + 1, length);
+//        String[] split = name.split("_");
+        System.out.println(substring);
     }
     @Test
     public void test01(){

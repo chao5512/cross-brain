@@ -44,9 +44,29 @@ public class HiveTableServiceImpl implements HiveTableService {
         }
     }
 
+    /**
+     * 功能描述:更改表结构
+     * @param tableMeta
+     * @param dataSet
+     * @return: boolean
+     * @auther: 王培文
+     * @date: 2018/6/8 9:23
+     */
     @Override
     @Transactional
     public boolean alterTableStructure(HiveTableMeta tableMeta, DataSet dataSet) {
         return hiveRepository.alterTableStructure(tableMeta,dataSet);
+    }
+
+    /**
+     * 功能描述:判断表是否存在
+     * @param dataSet
+     * @return: boolean
+     * @auther: 王培文
+     * @date: 2018/6/8 9:23
+     */
+    @Override
+    public boolean isExist(DataSet dataSet) {
+        return hiveRepository.isExist(dataSet);
     }
 }

@@ -1,7 +1,13 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/stretch/eureka/
 server:
   port: 7777
   ip: localhost
 spring:
+  application:
+    name: account
   #数据库配置mysql
   datasource:
     url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8

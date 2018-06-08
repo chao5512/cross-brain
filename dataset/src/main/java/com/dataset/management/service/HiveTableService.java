@@ -13,4 +13,5 @@ import com.dataset.management.entity.User;
 public interface HiveTableService {
     boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet);
     boolean alterTableStructure(HiveTableMeta tableMeta,DataSet dataSet);
+    boolean isExist(DataSet dataSet);
 }
