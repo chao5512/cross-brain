@@ -20,8 +20,6 @@ import javax.sql.DataSource;
  * @Version 1.0
  **/
 @Configuration
-@ConfigurationProperties(prefix = "spring.secondary-datasource")
-@EnableAutoConfiguration
 public class DataSourceConfig {
 
     @Value("${spring.secondary-datasource.url}")

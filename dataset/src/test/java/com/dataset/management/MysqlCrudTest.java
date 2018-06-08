@@ -47,6 +47,8 @@ public class MysqlCrudTest {
     @Resource(name = "hiveJdbcTemplate")
     private JdbcTemplate hiveJdbcTemplate;
     @Resource
+    private HiveRepository hiveRepository;
+    @Resource
     private Environment env;
     @Test
     public void test02(){
@@ -212,5 +214,12 @@ public class MysqlCrudTest {
         fieldMetas.add(fieldMeta2);
         tableMeta.setFields(fieldMetas);
         hiveTableService.alterTableStructure(tableMeta,dataSet);
+    }
+
+    @Test
+    public void isExist(){
+        DataSet dataSet = new DataSet();
+        dataSet.setId(2);
+        System.out.println(hiveRepository.isExist(dataSet));
     }
 }

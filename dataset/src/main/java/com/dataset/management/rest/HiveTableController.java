@@ -30,7 +30,7 @@ public class HiveTableController {
     private DataSetMetastoreService metastoreService;
 
     /**
-     * 功能描述:创建表
+     * 功能描述:创建或修改表
      * @param tableMeta
      * @param userId
      * @param dataSetId
@@ -39,12 +39,14 @@ public class HiveTableController {
      * @date: 2018/6/5 16:04
      */
     @RequestMapping(value = "create/{userId}/{dataSetId}",method = RequestMethod.POST)
-    public ApiResult createTable(HiveTableMeta tableMeta, @PathVariable("userId") String userId, @PathVariable("dataSetId") String dataSetId){
+    public ApiResult createOrUpdateTable(HiveTableMeta tableMeta, @PathVariable("userId") String userId, @PathVariable("dataSetId") String dataSetId){
         User user = new User();
         long id = Long.parseLong(userId);
         user.setId(id);
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(dataSetId));
+
+
         boolean table = hiveTableService.createTable(tableMeta, user, dataSet);
         if(table){
             return ResultUtil.success();
@@ -67,5 +69,15 @@ public class HiveTableController {
         HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
         return ResultUtil.success(hiveTableMeta);
     }
-    
+
+    @RequestMapping(value = "update/{userId}")
+    public ApiResult updateHiveTable(HiveTableMeta tableMeta,@PathVariable("userId") String userId){
+        DataSet dataSet = new DataSet();
+        dataSet.setId(Integer.parseInt(userId));
+        boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
+        if(result){
+            return ResultUtil.success();
+        }
+        return ResultUtil.error(-1,"更新失败");
+    }
 }

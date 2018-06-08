@@ -89,7 +89,8 @@ public class HiveRepositoryImpl implements HiveRepository {
         StringBuffer sb = new StringBuffer();
         sb.append("SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE ?");
         ArrayList<Object> params = new ArrayList<Object>();
-        params.add("%"+dataSet.getId()+"%");
+        //SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE '2\_%'
+        params.add(dataSet.getId()+"\\_%");
         Integer query = jdbcTemplate.query(sb.toString(), params.toArray(), new ResultSetExtractor<Integer>() {
             @Override
             public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
