@@ -1,4 +1,4 @@
-package com.dataset.management.Dao;
+package com.dataset.management.SecondaryDao;
 
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;

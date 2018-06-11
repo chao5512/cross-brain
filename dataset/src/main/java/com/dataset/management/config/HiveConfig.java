@@ -1,12 +1,12 @@
 package com.dataset.management.config;
+
+import javax.sql.DataSource;
 import org.apache.hive.jdbc.HiveDriver;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-
-import javax.sql.DataSource;
 
 /**
  * @ClassName HiveConfig

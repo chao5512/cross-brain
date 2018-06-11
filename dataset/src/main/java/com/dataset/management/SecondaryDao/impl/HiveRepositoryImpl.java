@@ -1,6 +1,6 @@
-package com.dataset.management.Dao.impl;
+package com.dataset.management.SecondaryDao.impl;
 
-import com.dataset.management.Dao.HiveRepository;
+import com.dataset.management.SecondaryDao.HiveRepository;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
@@ -11,8 +11,6 @@ import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;

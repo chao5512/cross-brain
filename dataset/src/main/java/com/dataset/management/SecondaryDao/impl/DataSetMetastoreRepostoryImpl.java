@@ -1,6 +1,6 @@
-package com.dataset.management.Dao.impl;
+package com.dataset.management.SecondaryDao.impl;
 
-import com.dataset.management.Dao.DataSetMetastoreRepository;
+import com.dataset.management.SecondaryDao.DataSetMetastoreRepository;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import org.apache.commons.lang.StringEscapeUtils;

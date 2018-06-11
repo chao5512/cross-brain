@@ -1,9 +1,8 @@
 package com.dataset.management.service.impl;
 
-import com.dataset.management.Dao.DataSetMetastoreRepository;
-import com.dataset.management.Dao.HiveRepository;
+import com.dataset.management.SecondaryDao.DataSetMetastoreRepository;
+import com.dataset.management.SecondaryDao.HiveRepository;
 import com.dataset.management.entity.DataSet;
-import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.DataSetMetastoreService;
 import org.springframework.beans.factory.annotation.Autowired;
