@@ -1,7 +1,16 @@
 import com.alibaba.fastjson.JSON;
+import com.dataset.management.config.HdfsConfig;
+import com.dataset.management.config.HiveConfig;
 import com.dataset.management.entity.DataSetFile;
 import net.bytebuddy.matcher.FilterableList;
+import org.junit.Test;
 import org.omg.Messaging.SYNC_WITH_TRANSPORT;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
@@ -12,8 +21,22 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+
 public class TTTT {
-    public static void main(String[] args) {
+    @Autowired
+    HdfsConfig hdfsConfig;
+
+    @Autowired
+    HiveConfig hiveConfig;
+
+    @Test
+    public void url(){
+        hdfsConfig.getHdfsUrl();
+        System.out.println(hdfsConfig.getHdfsUrl());
+        System.out.println(hiveConfig);
+    }
+//    @Test
+//    public static void main(String args[]){
 //        long t2=System.currentTimeMillis();
 //        System.out.println(t2+"machen");
 //        long time = System.currentTimeMillis();     //当前时间戳
@@ -66,14 +89,14 @@ public class TTTT {
          * */
 
 
-        DataSetFile dd =new DataSetFile();
-        dd.setFileSortType("asc");
-        String json = JSON.toJSONString(dd);
-        String json2 = JSON.toJSONString(dd);
-        String jj ="["+json+","+json2+"]";
-        System.out.println(jj);
+//        DataSetFile dd =new DataSetFile();
+//        dd.setFileSortType("asc");
+//        String json = JSON.toJSONString(dd);
+//        String json2 = JSON.toJSONString(dd);
+//        String jj ="["+json+","+json2+"]";
+//        System.out.println(jj);
 
-    }
+//    }
 
 
     private static String GetFileSize(String Path){

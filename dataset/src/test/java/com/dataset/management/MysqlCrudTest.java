@@ -1,6 +1,6 @@
 package com.dataset.management;
 
-import com.dataset.management.Dao.HiveRepository;
+import com.dataset.management.SecondaryDao.HiveRepository;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;

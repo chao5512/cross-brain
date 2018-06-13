@@ -3,6 +3,7 @@ package com.dataset.management.rest;
 import com.alibaba.fastjson.JSON;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.consts.DataSetFileConsts;
 import com.dataset.management.entity.DataSet;
@@ -44,6 +45,9 @@ public class DataSetFileController {
     @Autowired
     HdfsService hdfsService;
 
+    @Autowired
+    private HdfsConfig hdfsConfig;
+
 
     private static Logger logger = LoggerFactory.getLogger(DataSetFileController.class);
 
@@ -70,10 +74,16 @@ public class DataSetFileController {
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_LOADING);
         dataSetService.save(contentdDataSet);
 
-        String hdfsTmpPath = "/tmp/user";
-        int dataSetnumId = contentdDataSet.getId();
-        String tmpPath = hdfsTmpPath+"/"+dataSetnumId;
+        //获取数据集存储路径
+        String hdfsUrl = hdfsConfig.getHdfsUrl();
+        Long hdfsPort = hdfsConfig.getHdfsProt();
 
+        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
+        logger.info("数据集当前根目录："+dataStoreUrl);
+
+        String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
 
         List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
         logger.info("获取当前数据集中已经存在的文件名称列表："+estsDataSetFiles);
@@ -96,6 +106,8 @@ public class DataSetFileController {
             setFile.setFileDesc("upload  success! ");
             if(!estsFilesNmaes.contains(name)){
                 setFile.setDataSetId(dataSetId);
+                // 文件的当前根目录
+                setFile.setFilePath(dataStoreUrl);
                 cntentDataSetFile = dataSetFileService.save(setFile);
                 logger.info("上传后的文件属性"+cntentDataSetFile);
                 addFileName.add(setFile.getFileName());
@@ -116,6 +128,7 @@ public class DataSetFileController {
         logger.info("修改时对应数据集上文件数：");
         contentdDataSet.setDataSetFileCount(dataSetFiles.size());
         contentdDataSet.setDataSetUpdateDesc("upload the file :"+addFileName);
+
         long timetmp = System.currentTimeMillis();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
