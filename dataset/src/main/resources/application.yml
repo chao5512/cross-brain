@@ -36,6 +36,8 @@ hive:
   password:
 ##hive表在hadoop中路径配置##
 hadoop:
+  url: hdfs://172.16.31.92
+  port: 9000
   hive-path: /tmp/user
 
 

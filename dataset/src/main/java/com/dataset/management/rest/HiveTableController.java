@@ -2,6 +2,7 @@ package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.FieldMeta;
@@ -33,6 +34,9 @@ public class HiveTableController {
 
     @Autowired
     private DataSetService dataSetService;
+
+    @Autowired
+    private HdfsConfig hdfsConfig;
 
     /**
      * 功能描述:创建或修改表
@@ -69,8 +73,12 @@ public class HiveTableController {
             String hiveTableID = hiveTableName+"_"+timetmp;
             dataSetConTent.setDataSetHiveTableName(hiveTableName);
             dataSetConTent.setDataSetHiveTableId(hiveTableID);
-            String HDSFPATH = DataSetConsts.DATASET_STOREURL+"/tmp/user/"+dataSetId;
-            dataSetConTent.setDataSetStoreUrl(HDSFPATH);
+
+            String hdfsUrl = hdfsConfig.getHdfsUrl();
+            Long hdfsPort = hdfsConfig.getHdfsProt();
+            String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                    +"/"+dataSetConTent.getUserName()+"/"+dataSetConTent.getDataSetName();
+            dataSetConTent.setDataSetStoreUrl(dataStoreUrl);
             dataSetService.save(dataSetConTent);
 
             if(table){
