@@ -70,6 +70,8 @@ public class DataSetFileController {
         List<DataSetFile> dataSetFiles = packageDataSetFiles(filesJson);
 
         contentdDataSet = dataSetService.findById(dataSetId);
+
+        int count = contentdDataSet.getDataSetFileCount();
         logger.info("修改当前数据集 "+contentdDataSet+"   上传文件状态：");
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_LOADING);
         dataSetService.save(contentdDataSet);
@@ -126,7 +128,8 @@ public class DataSetFileController {
         logger.info("上传完毕，数据集状态更改");
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
         logger.info("修改时对应数据集上文件数：");
-        contentdDataSet.setDataSetFileCount(dataSetFiles.size());
+        int newCount = count+dataSetFiles.size();
+        contentdDataSet.setDataSetFileCount(newCount);
         contentdDataSet.setDataSetUpdateDesc("upload the file :"+addFileName);
 
         long timetmp = System.currentTimeMillis();
