@@ -6,6 +6,7 @@ from result import Result
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from hiveutil import HiveClient
 
 import json
 
@@ -21,8 +22,15 @@ def health():
 # 显示数据前n行
 @app.route("/head", methods=['POST'])
 def head():
-    train_df = pd.read_csv(
-            '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
+    conection = HiveClient.getConection(database="default")
+    sql="select * from studentno limit 10"
+    with conection.cursor() as cursor:
+        cursor.execute(sql)
+        results=cursor.fetchall()
+    train_df=pd.DataFrame(data=results)
+    # print(type(result))
+    # train_df = pd.read_csv(
+    #         '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
     result = Result(data={'type': 'table',
                           'content': train_df.head().to_dict(orient='split')})
     return Response(json.dumps(result, default=lambda obj: obj.__dict__),

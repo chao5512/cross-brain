@@ -6,6 +6,7 @@ spring:
 sidecar:
   port: 8000
   health-uri: http://localhost:${sidecar.port}}/health
+
 #eureka
 #  client
 #    serviceUrl
