@@ -66,6 +66,7 @@
         <module>dataset</module>
         <module>component</module>
         <module>mining</module>
+        <module>management</module>
     </modules>
 
     <dependencyManagement>
