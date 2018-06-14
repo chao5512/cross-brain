@@ -103,7 +103,7 @@ public class DataSetFileController {
                  * 文件路径应该是，但是如何获取？？
                  * */
                 logger.info("远程 hdfs  文件上传中");
-                hdfsService.copyFileToHDFS(name,fileHdfsPath);
+//                hdfsService.copyFileToHDFS(name,fileHdfsPath);
 
             }else {
                 logger.info("改文件已经在数据库中，请重新命名后重新上传: "+setFile.getFileName());
