@@ -18,7 +18,7 @@ import java.util.List;
 
 public class HdfsTest {
 
-    private static String hdfs = "hdfs://172.16.11.222:9000";
+    private static String hdfs = "hdfs://172.16.31.92:9000";
     private static String username = "machen";
     private static String datasetname = "dataset";
 
@@ -167,7 +167,7 @@ public class HdfsTest {
         FileSystem fs = getFileSystem();
         System.out.println(fs.getUsed());
         //创建路径
-        mkdir("/tmp/user/76");        ///user/hadoop/machen
+        mkdir("/吗陈/machen");        ///user/hadoop/machen
         //删除路径
 //        rmdir("/tmp/user/23");
         //验证是否存在a
@@ -179,7 +179,7 @@ public class HdfsTest {
 //        // getFile(HDFSFile,localFile);
 //        //删除文件
 //        rmdir("/zhaojy2");
-        clearFiles("hdfs://172.16.11.222:9000/user/hadoop/ka");
+//        clearFiles("hdfs://172.16.11.222:9000/user/hadoop/ka");
 //        //读取文件
 //        readFile("/zhaojy/HDFSTest.txt");
     }

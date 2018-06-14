@@ -2,6 +2,7 @@ package com.dataset.management.rest;
 
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
@@ -49,6 +50,9 @@ public class DataSetSystemController {
     @Autowired
     HdfsService hdfsService;
 
+    @Autowired
+    HdfsConfig hdfsConfig;
+
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
@@ -66,11 +70,23 @@ public class DataSetSystemController {
         dataSet.setDataSetEnglishName(null);
         dataSet.setDataSetStoreUrl(null);
 
+        String hdfsUrl = hdfsConfig.getHdfsUrl();
+        Long hdfsPort = hdfsConfig.getHdfsProt();
+        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+userName+"/"+dataSetName;
+        dataSet.setDataSetStoreUrl(dataStoreUrl);
+
         Sort sort = basicSortBy();
         List<DataSet> dataSets = dataSetService.findAll(sort);
         List<String> cnDatasetNames = listName(dataSets);
         if(cnDatasetNames.contains(dataSet.getDataSetName())){
             return ResultUtil.error(-1,"数据集名称已经存在,请重新命名。。。");
+        }
+        logger.info("检测远程hdfs 相关目录");
+        if(!hdfsService.existDir(dataStoreUrl,false)){
+            hdfsService.mkdirHdfsDir(dataStoreUrl);
+        }else {
+            return ResultUtil.error(-1,"数据集文件夹已经存在，请在 hdfs 中删除后重新创建");
         }
         logger.info("准备创建的数据集: "+ JSON.toString(dataSet));
 
@@ -78,6 +94,7 @@ public class DataSetSystemController {
         logger.info("数据集基本表创建。。。。。。");
         DataSet dataSetcreate = dataSetService.save(dataSet);
         int datasetId = dataSetcreate.getId();
+
         DataSystem newDataSystem = packageDataSystem(dataSetcreate);
         logger.info("当前数据集Id"+datasetId);
         newDataSystem.setDataSetId(datasetId);
@@ -170,6 +187,8 @@ public class DataSetSystemController {
         dataSetOptService.deleteById(dataSetSystemId);
 
         DataSet dataSet = dataSetService.findById(dataSetId);
+        String userName = dataSet.getUserName();
+        String dataSetName = dataSet.getDataSetName();
         logger.info("获取数据集基本信息表：(对应表名)"+dataSet.getDataSetName());
         logger.info("准备从数据集基本信息表中删除数据集：");
         dataSetService.deleteById(dataSetId);
@@ -183,18 +202,21 @@ public class DataSetSystemController {
             dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
         }
 
-        String hdfsTmpPath = "/tmp/user";
-        String tmpPath = hdfsTmpPath+"/"+dataSetId;
-        String finalPath = DataSetConsts.DATASET_STOREURL+tmpPath;
+        String hdfsUrl = hdfsConfig.getHdfsUrl();
+        Long hdfsPort = hdfsConfig.getHdfsProt();
+        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+userName+"/"+dataSetName;
+        String tmpUrl = DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+userName+"/"+dataSetName;
 
 
         try {
             logger.info("hdfs 库中开始删除相关数据集：");
-            logger.info("hdfs:" +finalPath);
-            if(hdfsService.existDir(tmpPath,false)){
-                logger.info(hdfsService.existDir(tmpPath,false)+"  普安段");
+            logger.info("hdfs:" +dataStoreUrl);
+            if(hdfsService.existDir(tmpUrl,false)){
+                logger.info(hdfsService.existDir(tmpUrl,false)+"  判断目录是否存在");
                 logger.info("已找到 hdfs 对应文件夹");
-                hdfsService.deletedir(tmpPath);
+                hdfsService.deletedir(tmpUrl);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -239,7 +261,7 @@ public class DataSetSystemController {
         String sd = sdf.format(new Date(Long.parseLong(String.valueOf(time))));
         dataSet.setDataSetCreateTime(sd);
         dataSet.setDataSetLastUpdateTime(sd);
-        dataSet.setDataSetStoreUrl(DataSetConsts.DATASET_STOREURL);
+        dataSet.setDataSetStoreUrl(null);
         dataSet.setDataSetHiveTableName(DataSetConsts.DATASET_ENGLISH_NAME);
         String hivetableid = DataSetConsts.DATASET_ENGLISH_NAME+"_"+time;
         dataSet.setDataSetHiveTableId(hivetableid);

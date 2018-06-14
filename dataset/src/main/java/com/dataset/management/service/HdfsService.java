@@ -1,5 +1,6 @@
 package com.dataset.management.service;
 
+import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import org.apache.commons.lang.StringUtils;
@@ -8,6 +9,7 @@ import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -20,16 +22,20 @@ import java.util.List;
 
 @Service
 public class HdfsService {
+
+    @Autowired
+    private HdfsConfig hdfsConfig;
+
     private  String userName;
     private  String dataSetName;
-    String hdfsurl;
+    private  String hdfsurl;
 
-    public  FileSystem getFileSystem() {
+    private FileSystem getFileSystem() {
         //读取配置文件
         Configuration conf = new Configuration();
         // 文件系统
         FileSystem fs = null;
-        hdfsurl =  DataSetConsts.DATASET_STOREURL;
+        hdfsurl = hdfsConfig.getHdfsUrl()+":"+hdfsConfig.getHdfsProt();
         if(StringUtils.isBlank(hdfsurl)){
             // 返回默认文件系统  如果在 Hadoop集群下运行，使用此种方法可直接获取默认文件系统
             try {
