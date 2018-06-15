@@ -1,0 +1,44 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/stretch/eureka/
+server:
+  port: 7777
+  ip: localhost
+spring:
+  application:
+    name: account
+  #数据库配置mysql
+  primary:
+    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  secondary:
+    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    show-sql: true
+####hive数据源配置#####
+hive:
+  url: jdbc:hive2://172.16.31.91
+  port: 10000
+  schema: default
+  driver-name: org.apache.hive.jdbc.HiveDriver
+  user:
+  password:
+##hive表在hadoop中路径配置##
+hadoop:
+  url: hdfs://172.16.31.92
+  port: 9000
+  hive-path: /tmp/user
+
+
+
