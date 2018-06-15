@@ -1,7 +1,7 @@
 package com.bonc.pezy.flow;
 
 import org.activiti.bpmn.model.*;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;

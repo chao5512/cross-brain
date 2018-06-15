@@ -10,18 +10,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by 冯刚 on 2018/6/14.
+ * Created by 冯刚 on 2018/6/15.
  */
 
 @Controller
-@RequestMapping("/workflow")
-public class MachFlowController {
+@RequestMapping("work")
+public class WorkFlowController {
 
     private final Logger logger = LoggerFactory.getLogger(MachFlowController.class);
 
     @RequestMapping("/analysisCanvas")
     @ResponseBody
-    public String analysisCanvas(@RequestParam("json") String json,HttpServletResponse response){
+    public String analysisCanvas(@RequestParam("json") String json, HttpServletResponse response){
 
         System.out.println("ddddddd");
 /*
@@ -37,7 +37,7 @@ public class MachFlowController {
     }
 
 
-    @RequestMapping("/hello")
+    @RequestMapping(value="/hello")
     public void hello(){
         System.out.print("hello word!");
     }

@@ -2,8 +2,15 @@ package com.bonc.pezy.flow;
 
 import com.bonc.pezy.constants.Constants;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.BpmnModel;
+import org.activiti.bpmn.model.ExtensionAttribute;
+import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.engine.ProcessEngine;
+import org.activiti.engine.ProcessEngines;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
 import org.activiti.bpmn.model.Process;
+import org.activiti.bpmn.model.StartEvent;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -17,25 +24,25 @@ import java.util.Map;
  */
 public class MachFlow {
 
-    public void generateBpmnModel(){
+    public void generateBpmnModel(Map<String,String> map){
         //实例化BpmnModel对象
         BpmnModel bpmnModel=new BpmnModel();
         GenerateNode generateNode = new GenerateNode();
         //开始节点的属性
-        StartEvent startEvent = generateNode.createStartEvent("Logicalregression","Logicalregression");
+        StartEvent startEvent = generateNode.createStartEvent(map.get("id"),map.get("name"));
         ExtensionElement extensionElement= generateNode.createExtensionElement("start","activiti:executionListener");
 
         List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
         /*ExtensionAttribute extensionAttribute = generateNode.createExtensionAttribute("event", "take");
         ExtensionAttribute extensionAttribute1 = generateNode.createExtensionAttribute("class",);*/
-        Map<String,List<ExtensionAttribute>> map = new HashMap<String, List<ExtensionAttribute>>();
-        map.put("dd",list);
-        extensionElement.setAttributes(map);
+        Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
+        mapEA.put("dd",list);
+        extensionElement.setAttributes(mapEA);
         List<ExtensionElement> listE = new ArrayList<ExtensionElement>();
         listE.add(extensionElement);
-        Map<String,List<ExtensionElement>> mapE = new HashMap<String, List<ExtensionElement>>();
-        mapE.put("fisrt",listE);
-        startEvent.setExtensionElements(mapE);
+        Map<String,List<ExtensionElement>> mapEE = new HashMap<String, List<ExtensionElement>>();
+        mapEE.put("fisrt",listE);
+        startEvent.setExtensionElements(mapEE);
 
 
         Process process=new Process();
@@ -63,5 +70,18 @@ public class MachFlow {
         }
     }
 
+    public void startActiviti() {
+        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+        System.out.println("wwwwwww" + System.currentTimeMillis());
+        RuntimeService runtimeService = processEngine.getRuntimeService();
+        RepositoryService repositoryService = processEngine.getRepositoryService();
 
-}
+        repositoryService.createDeployment()
+                .addClasspathResource("process2.bpmn20.xml")
+                .deploy();
+
+        runtimeService.startProcessInstanceByKey("process2");
+    }
+
+
+    }
