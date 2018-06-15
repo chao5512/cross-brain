@@ -1,0 +1,14 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/stretch/eureka/
+server:
+  port: 8081
+  ip: localhost
+spring:
+  application:
+    name: machflow
+
+
+
+
