@@ -47,8 +47,6 @@ public class MachFlow {
 
         ExtensionElement extensionElementprocess = new ExtensionElement();
 
-
-
         *//*process.setExtensionElements();*//*
 */
         bpmnModel.addProcess(process);
