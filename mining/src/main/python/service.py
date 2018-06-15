@@ -25,7 +25,6 @@ def health():
 def head():
     datas = HiveClient.queryForAll(tablename="studentno")
     title=datas.columns.values.tolist()
-    len=datas.iloc[:,0].size
     result = Result(data={'type': 'table',
                           'title':title,
                            'content': datas.to_dict(orient='split')['data']})
