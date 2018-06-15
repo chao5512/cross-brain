@@ -16,19 +16,10 @@ class HiveClient:
     def queryForAll(tablename,database="default"):
         engine = HiveClient.getEngine(database=database)
         sql="select * from %s"%(tablename)
-        datas=pd.read_sql(sql, engine).head(10)
+        datas=pd.read_sql(sql, engine)
         return datas
 
 
 if __name__ == '__main__':
     results = HiveClient.queryForAll(tablename="studentno")
     print(results)
-    # conection = HiveClient.getConection(database="default")
-    # sql="select * from %s limit 10"
-    # with conection.cursor() as cursor:
-    #     cursor.execute(sql % "studentno")
-    #     results=cursor.fetchall()
-    #     for result in results:
-    #         print(result)
-        # time.sleep(1)
-        # time.sleep(1000)
