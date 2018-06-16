@@ -6,11 +6,14 @@ from result import Result
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from flask_cors import *
 from hiveutil import HiveClient
+
 
 import json
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 
 
 @app.route("/health")
@@ -22,27 +25,22 @@ def health():
 # 显示数据前n行
 @app.route("/head", methods=['POST'])
 def head():
-    conection = HiveClient.getConection(database="default")
-    sql="select * from studentno limit 10"
-    with conection.cursor() as cursor:
-        cursor.execute(sql)
-        results=cursor.fetchall()
-    train_df=pd.DataFrame(data=results)
-    # print(type(result))
-    # train_df = pd.read_csv(
-    #         '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
+    datas = HiveClient.queryForAll(tablename="titanic_orc")
+    title=datas.columns.values.tolist()
     result = Result(data={'type': 'table',
-                          'content': train_df.head().to_dict(orient='split')})
+                          'title':title,
+                           'content': datas.head().to_dict(orient='split')['data']})
     return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                     mimetype='application/json')
 
 
 @app.route("/tail", methods=['POST'])
 def tail():
-    train_df = pd.read_csv(
-            '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
+    datas = HiveClient.queryForAll(tablename="titanic_orc")
+    title=datas.columns.values.tolist()
     result = Result(data={'type': 'table',
-                          'content': train_df.tail().to_dict(orient='split')})
+                          'title':title,
+                          'content': datas.tail().to_dict(orient='split')['data']})
     return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                     mimetype='application/json')
 
@@ -50,13 +48,12 @@ def tail():
 # 简单统计量表
 @app.route("/sheet", methods=['POST'])
 def sheet():
-    train_df = pd.read_csv(
-            '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
-    test = train_df.describe()
-    print(test)
+    datas = HiveClient.queryForAll(tablename="titanic_orc")
+    title=datas.describe().columns.values.tolist()
     result = Result(data={'type': 'table',
-                          'content': train_df.describe().to_dict(
-                                  orient='split')})
+                          'title':title,
+                          'content': datas.describe().to_dict(
+                                  orient='split')['data']})
     return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                     mimetype='application/json')
 
@@ -64,11 +61,10 @@ def sheet():
 # 直方图
 @app.route("/hist", methods=['POST'])
 def hist():
-    train_df = pd.read_csv(
-            '/Users/hanwei/Documents/notebook/input/titanic/train.csv')
-    g = sns.FacetGrid(train_df, col='Survived')
-    g.map(plt.hist, 'Age', bins=20)
-    # plt.savefig("examples.jpg")
+    train_df = HiveClient.queryForAll(tablename="titanic_orc")
+    g = sns.FacetGrid(train_df, col='survived')
+    g.map(plt.hist, 'age', bins=20)
+    #plt.savefig("examples1.jpg")
     sio = BytesIO()
     plt.savefig(sio, format='png')
     image = base64.encodebytes(sio.getvalue()).decode()
