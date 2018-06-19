@@ -90,7 +90,7 @@ public class GenerateNode {
         return list;
     }
 
-    public List<ExtensionAttribute> createExtensionAttributes(String action,String actionclass ){
+    public List<ExtensionAttribute> createExtensionAttributes(String action,String actionclass){
 
         List<ExtensionAttribute> list = new ArrayList<ExtensionAttribute>();
         ExtensionAttribute act = new ExtensionAttribute();
@@ -103,4 +103,22 @@ public class GenerateNode {
         list.add(actclass);
         return list;
     }
+
+    /*public List<ExtensionAttribute> createExtensionAttributes(String action,String actionclass){
+
+        List<ExtensionAttribute> list = new ArrayList<ExtensionAttribute>();
+        ExtensionAttribute act = new ExtensionAttribute();
+        act.setName("event");
+        act.setValue(action);
+        ExtensionAttribute actclass = new ExtensionAttribute();
+        actclass.setName("class");
+        actclass.setValue(actionclass);
+        *//*ExtensionAttribute actexp = new ExtensionAttribute();
+        actexp.setName("expression");
+        actexp.setValue(data);*//*
+        list.add(act);
+        list.add(actclass);
+        *//*list.add(actexp);*//*
+        return list;
+    }*/
 }

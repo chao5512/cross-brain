@@ -1,16 +1,18 @@
 package com.bonc.pezy.flow;
 
+import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
+import com.bonc.pezy.dataconfig.DataConfig;
+import com.bonc.pezy.dataconfig.XmlConfig;
 import org.activiti.bpmn.converter.BpmnXMLConverter;
-import org.activiti.bpmn.model.BpmnModel;
-import org.activiti.bpmn.model.ExtensionAttribute;
-import org.activiti.bpmn.model.ExtensionElement;
+import org.activiti.bpmn.model.*;
+import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.activiti.bpmn.model.Process;
-import org.activiti.bpmn.model.StartEvent;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,15 +24,36 @@ import java.util.Map;
 /**
  * Created by 冯刚 on 2018/5/31.
  */
+@Service
 public class MachFlow {
 
-    public void generateBpmnModel(Map<String,String> map){
+
+    @Autowired
+    private DataConfig dataConfig;
+
+    @Autowired
+    private XmlConfig xmlConfig;
+
+    public void generateBpmnModel(String data){
         //实例化BpmnModel对象
         BpmnModel bpmnModel=new BpmnModel();
         GenerateNode generateNode = new GenerateNode();
+        Map jb = JSONObject.parseObject(data);
+        System.out.println(jb);
+
+        dataConfig.setJsondata(jb.get("data").toString());
+
+        dataConfig.setPath(jb.get("path").toString());
+
+        xmlConfig.setProcessId(jb.get("processid").toString());
+
+        xmlConfig.setId(jb.get("id").toString());
+
+        xmlConfig.setName(jb.get("name").toString());
+
         //开始节点的属性
-        StartEvent startEvent = generateNode.createStartEvent(map.get("id"),map.get("name"));
-        ExtensionElement extensionElement= generateNode.createExtensionElement("start","activiti:executionListener");
+        StartEvent startEvent = generateNode.createStartEvent(xmlConfig.getId(),xmlConfig.getName());
+        ExtensionElement extensionElement= generateNode.createExtensionElement("start",xmlConfig.getListenerType());
 
         List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
         /*ExtensionAttribute extensionAttribute = generateNode.createExtensionAttribute("event", "take");
@@ -47,7 +70,7 @@ public class MachFlow {
 
         Process process=new Process();
 
-        process.setId("process2");
+        process.setId(xmlConfig.getProcessId());
         process.addFlowElement(startEvent);
         /*extensionElement.setId("start");
         extensionElement.setName("activiti:taskListener");
@@ -71,8 +94,8 @@ public class MachFlow {
     }
 
     public void startActiviti() {
+        System.out.println("进来没有啊。。。。");
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-        System.out.println("wwwwwww" + System.currentTimeMillis());
         RuntimeService runtimeService = processEngine.getRuntimeService();
         RepositoryService repositoryService = processEngine.getRepositoryService();
 

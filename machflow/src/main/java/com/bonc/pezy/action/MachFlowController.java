@@ -1,5 +1,6 @@
 package com.bonc.pezy.action;
 
+import com.bonc.pezy.flow.MachFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
@@ -14,31 +15,28 @@ import javax.servlet.http.HttpServletResponse;
  */
 
 @Controller
-@RequestMapping("/workflow")
+@RequestMapping("/machflow")
 public class MachFlowController {
 
     private final Logger logger = LoggerFactory.getLogger(MachFlowController.class);
 
     @RequestMapping("/analysisCanvas")
     @ResponseBody
-    public String analysisCanvas(@RequestParam("json") String json,HttpServletResponse response){
+    public String analysisCanvas(@RequestParam("jsondata") String jsondata,HttpServletResponse response){
 
-        System.out.println("ddddddd");
-/*
-        Map jb = JSONObject.parseObject(json);
 
         MachFlow mf = new MachFlow();
-        mf.generateBpmnModel(jb);
-
-        mf.startActiviti();*/
+        mf.generateBpmnModel(jsondata);
 
         return "ssss";
 
     }
 
-
     @RequestMapping("/hello")
-    public void hello(){
+    @ResponseBody
+    public void hello(HttpServletResponse respons){
+        MachFlow mf = new MachFlow();
+        mf.startActiviti();
         System.out.print("hello word!");
     }
 }
