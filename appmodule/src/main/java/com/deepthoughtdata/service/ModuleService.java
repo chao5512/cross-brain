@@ -12,4 +12,6 @@ public interface ModuleService {
     public List<Module> findByUser(String userid);
 
     public long delModule(String id,String userid);
+
+    public List<Module> findModels(String startData,String endData,String type,String userid);
 }

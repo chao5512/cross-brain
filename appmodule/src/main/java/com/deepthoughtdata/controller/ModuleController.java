@@ -27,7 +27,7 @@ public class ModuleController {
     @ApiOperation(value = "创建模型",httpMethod = "POST")
     @RequestMapping(value= "/create")
     @ResponseBody
-    public void create(@RequestParam("modulename") String modulename,
+    public boolean create(@RequestParam("modulename") String modulename,
                        @RequestParam("moduletype") int moduletype,
                        @RequestParam("owner") long owner,
                        @RequestParam("createtime") String createtime, HttpServletResponse response){
@@ -37,13 +37,24 @@ public class ModuleController {
         module.setOwner(owner);
         module.setCreateTime(createtime);
         moduleService.create(module);
+        return true;
     }
 
     @ApiOperation(value = "模型查询",httpMethod = "POST")
     @RequestMapping(value= "/findByUser")
     @ResponseBody
-    public List<Module> findModule( @RequestParam("owner") String owner,HttpServletResponse response){
+    public List<Module> findModuleByUser( @RequestParam("owner") String owner,HttpServletResponse response){
         return moduleService.findByUser(owner);
+    }
+
+    @ApiOperation(value = "模型查询",httpMethod = "POST")
+    @RequestMapping(value= "/findModels")
+    @ResponseBody
+    public List<Module> findModules(@RequestParam("startData") String startData,
+                                    @RequestParam("endData") String endData,
+                                    @RequestParam("type") String type,
+                                    @RequestParam("owner") String owner,HttpServletResponse response){
+        return moduleService.findModels(startData,endData,type,owner);
     }
 
     @ApiOperation(value = "删除模型",httpMethod = "POST")

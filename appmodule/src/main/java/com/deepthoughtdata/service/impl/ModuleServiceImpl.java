@@ -28,8 +28,16 @@ public class ModuleServiceImpl implements ModuleService{
     }
 
     @Override
+    public List<Module> findModels(String startData,String endData,String type,String userid){
+        return moduleRepository.findByModeltypeAndOwnerAndCreateTimeAfterAndCreateTimeBefore(Integer.parseInt(type),
+                Long.parseLong(userid),startData,endData);
+    }
+
+    @Override
     @Transactional
     public long delModule(String id,String userid){
         return moduleRepository.deleteByIdAndOwner(Long.parseLong(id),Long.parseLong(userid));
     }
+
+
 }
