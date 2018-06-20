@@ -5,6 +5,15 @@ package com.bonc.pezy.constants;
  */
 public class Constants {
 
+    //监听器类型
+    public static final String LISTENER_E = "activiti:executionListener";
+
+    public static final String LISTENER_U = "activiti:taskListener";
+
+    //python微服务url
+    public static final String PY_SERVER = "http://localhost:3001/";
+
+    //监听类
     public static final String LOGINCAL_REGRESSION = "";
 
     public static final String LR_REGRESSION = "com.bonc.pezy.algorithmmodel.classification.LRExectuionListener";

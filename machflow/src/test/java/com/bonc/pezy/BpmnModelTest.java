@@ -5,14 +5,13 @@ package com.bonc.pezy;
  */
 
 import com.bonc.pezy.flow.MachFlow;
-import org.activiti.engine.*;
 
 public class BpmnModelTest {
 
     public static void main(String[] args){
 
        MachFlow mf = new MachFlow();
-        mf.generateBpmnModel();
+        /*mf.generateBpmnModel();*/
 
         System.currentTimeMillis();
 
@@ -20,7 +19,7 @@ public class BpmnModelTest {
 
 
         BpmnModelTest bpmnModelTest = new BpmnModelTest();
-        bpmnModelTest.startActiviti();
+        /*bpmnModelTest.startActiviti();*/
 
         /*ProcessEngineConfiguration processEngineConfiguration = ProcessEngineConfiguration.createProcessEngineConfigurationFromResource("activiti.cfg.xml");*/
         /*ProcessEngine processEngine = processEngineConfiguration.buildProcessEngine();*/
@@ -28,23 +27,23 @@ public class BpmnModelTest {
 
     }
 
-    public void startActiviti(){
+    /*public void startActiviti(){
         ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
         System.out.println("wwwwwww"+ System.currentTimeMillis());
         RuntimeService runtimeService = processEngine.getRuntimeService();
         RepositoryService repositoryService = processEngine.getRepositoryService();
-       /* TaskService taskService = processEngine.getTaskService();
+       *//* TaskService taskService = processEngine.getTaskService();
         ManagementService managementService = processEngine.getManagementService();
         IdentityService identityService = processEngine.getIdentityService();
         HistoryService historyService = processEngine.getHistoryService();
-        FormService formService = processEngine.getFormService();*/
+        FormService formService = processEngine.getFormService();*//*
 
         repositoryService.createDeployment()
                 .addClasspathResource("process2.bpmn20.xml")
                 .deploy();
 
-        /*runtimeService.startProcessInstanceByMessage("");*/
+        *//*runtimeService.startProcessInstanceByMessage("");*//*
         runtimeService.startProcessInstanceByKey("process2");
-    }
+    }*/
 
 }

@@ -1,20 +1,30 @@
 package com.bonc.pezy.dataconfig;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-
 /**
  * Created by 冯刚 on 2018/6/19.
  */
-@Configuration
 public class XmlConfig {
 
-    private String id;
-    private String name;
-    private String processId;
-    private String processName;
 
-    @Value("${listener.type}")
+    private static XmlConfig xmlConfig = null;
+
+    private XmlConfig(){
+
+    }
+
+    public static XmlConfig getXmlConfig(){
+        if(null == xmlConfig){
+            xmlConfig = new XmlConfig();
+        }
+
+        return xmlConfig;
+    }
+
+    private static String id;
+    private static String name;
+    private static String processId;
+    private static String processName;
+
     private String listenerType;
 
     public String getId() {

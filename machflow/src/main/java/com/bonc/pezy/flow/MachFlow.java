@@ -11,7 +11,6 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -27,12 +26,11 @@ import java.util.Map;
 @Service
 public class MachFlow {
 
+    private XmlConfig xmlConfig = XmlConfig.getXmlConfig();
 
-    @Autowired
-    private DataConfig dataConfig;
+    private DataConfig dataConfig = DataConfig.getDataConfig();
 
-    @Autowired
-    private XmlConfig xmlConfig;
+    private static String filename = "";
 
     public void generateBpmnModel(String data){
         //实例化BpmnModel对象
@@ -51,13 +49,13 @@ public class MachFlow {
 
         xmlConfig.setName(jb.get("name").toString());
 
+        filename = jb.get("processid").toString()+"."+"bpmn20.xml";
+
         //开始节点的属性
         StartEvent startEvent = generateNode.createStartEvent(xmlConfig.getId(),xmlConfig.getName());
-        ExtensionElement extensionElement= generateNode.createExtensionElement("start",xmlConfig.getListenerType());
+        ExtensionElement extensionElement= generateNode.createExtensionElement("start",Constants.LISTENER_E);
 
         List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
-        /*ExtensionAttribute extensionAttribute = generateNode.createExtensionAttribute("event", "take");
-        ExtensionAttribute extensionAttribute1 = generateNode.createExtensionAttribute("class",);*/
         Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
         mapEA.put("dd",list);
         extensionElement.setAttributes(mapEA);
@@ -83,8 +81,8 @@ public class MachFlow {
 
         BpmnXMLConverter bpmnXMLConverter=new BpmnXMLConverter();
         byte[] convertToXML = bpmnXMLConverter.convertToXML(bpmnModel);
-        String filename = "/Users/fenggang/work/boncprogram/AI/gitdocument/cross-brain/machflow/src/main/resources/"+bpmnModel.getMainProcess().getId() + ".bpmn20.xml";
-        File file = new File(filename);
+        String filepath = "/Users/fenggang/work/boncprogram/AI/gitdocument/cross-brain/machflow/src/main/resources/"+filename;
+        File file = new File(filepath);
         try {
             FileOutputStream out = new FileOutputStream(file);
             out.write(convertToXML);
@@ -99,12 +97,13 @@ public class MachFlow {
         RuntimeService runtimeService = processEngine.getRuntimeService();
         RepositoryService repositoryService = processEngine.getRepositoryService();
 
-        repositoryService.createDeployment()
-                .addClasspathResource("process2.bpmn20.xml")
-                .deploy();
+        if(!"".equals(filename)){
+            repositoryService.createDeployment()
+                    .addClasspathResource(filename)
+                    .deploy();
+            runtimeService.startProcessInstanceByKey(xmlConfig.getProcessId());
+        }
 
-        runtimeService.startProcessInstanceByKey("process2");
     }
-
 
     }

@@ -18,15 +18,16 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/machflow")
 public class MachFlowController {
 
+
     private final Logger logger = LoggerFactory.getLogger(MachFlowController.class);
 
     @RequestMapping("/analysisCanvas")
     @ResponseBody
     public String analysisCanvas(@RequestParam("jsondata") String jsondata,HttpServletResponse response){
 
-
         MachFlow mf = new MachFlow();
         mf.generateBpmnModel(jsondata);
+
 
         return "ssss";
 

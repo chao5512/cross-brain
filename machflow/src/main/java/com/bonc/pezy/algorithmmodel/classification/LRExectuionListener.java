@@ -1,10 +1,10 @@
 package com.bonc.pezy.algorithmmodel.classification;
 
+import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.DataConfig;
 import com.bonc.pezy.pyapi.JavaRequestPythonService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
 
@@ -18,8 +18,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
     private static final long serialVersionUID = 8513750196548027535L;
 
 
-    @Autowired
-    DataConfig dataConfig;
+
+    private  DataConfig dataConfig = DataConfig.getDataConfig();
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
@@ -27,8 +27,9 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
         if ("start".equals(eventName)) {
             System.out.println("start=========");
             System.out.println("执行逻辑回归计划:");
+           /* dataConfig.setJsondata(DataConfig.getDataConfig().getJsondata());*/
             String pipe = dataConfig.getJsondata();
-            String url = dataConfig.getUrl()+":"+dataConfig.getPort()+"/"+dataConfig.getPath();
+            String url = Constants.PY_SERVER+dataConfig.getPath();
             System.out.println(pipe);
             System.out.println(url);
 
@@ -38,6 +39,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
                     "\"HashingTF\": {\"inputCol\": \"words\",\"outputCol\": \"features\"}," +
                     "\"LogisticRegression\": {\"maxIter\": 10,\"regParam\": 0.001}}}";
             String url = "http://localhost:3001/LRDemo";*/
+
             JavaRequestPythonService jrps = new JavaRequestPythonService();
             jrps.requestPythonService(pipe,url);
 

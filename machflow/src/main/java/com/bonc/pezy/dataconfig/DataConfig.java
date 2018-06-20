@@ -1,27 +1,38 @@
 package com.bonc.pezy.dataconfig;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
-
 /**
  * Created by 冯刚 on 2018/6/19.
  */
 
-@Configuration
-public class DataConfig {
+public class  DataConfig {
+
+
+   private static DataConfig dataConfig = null;
+
+    private DataConfig(){
+
+    }
+
+    public static DataConfig getDataConfig(){
+        if(null == dataConfig){
+            dataConfig = new DataConfig();
+        }
+
+        return dataConfig;
+    }
 
     //python微服务链接
-    @Value("${pyserver.url}")
-    private String url;
+    /*@Value("${pyserver.url}")*/
+    private  static String url;
 
     //python微服务端口
-    @Value("${pyserver.port}")
-    private long port;
+    /*@Value("${pyserver.port}")*/
+    private static long port;
 
-    private String path;
+    private static String path;
 
 
-    private String jsondata;
+    private static String jsondata;
 
     public String getUrl() {
         return url;
