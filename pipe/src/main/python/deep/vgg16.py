@@ -113,7 +113,7 @@ class Vgg16(NeuralNetwork):
         model.save(self.model_path)
 
     def run(self):
-
+        self.printParams()
         X,Y = self.loadImage()
         softmax = self.buildNetwork(self.imageProcess())
         model = self.createModel(softmax)

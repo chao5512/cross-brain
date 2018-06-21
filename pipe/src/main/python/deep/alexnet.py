@@ -98,6 +98,7 @@ class Alexnet(NeuralNetwork):
         model.save(self.model_path)
 
     def run(self):
+        print('alexnet')
         self.printParams()
         X,Y = self.loadImage()
         network = self.buildNetwork()

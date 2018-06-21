@@ -14,8 +14,7 @@ class NeuralNetwork(object):
     model_path = ""
 
     def setJobParams(self,run_id,
-                  n_epoch,batch_size,num_class,optimizer,loss,
-                  checkpoint_path,tensorboard_dir,model_path):
+                  n_epoch,batch_size,num_class,optimizer,loss,model_path):
         self.run_id = run_id
         self.n_epoch = n_epoch
         self.batch_size = batch_size

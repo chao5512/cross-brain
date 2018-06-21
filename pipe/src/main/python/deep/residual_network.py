@@ -3,7 +3,7 @@ import tflearn.data_utils as du
 
 from deep.neuralnetwork import NeuralNetwork
 
-class Residual_network(NeuralNetwork):
+class Residual_Network(NeuralNetwork):
     train_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
     test_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
 

@@ -10,6 +10,7 @@ def testML():
     print(r.text)
 
 def testDL():
+    '''
     dlpipe = {
         "run_id": "testDL",
         "networktype":"alexnet",
@@ -25,6 +26,85 @@ def testDL():
         "shape":[None, 224, 224, 3],
         "learning_rate":"0.001",
         "validation_set":"0.1",
+        "snapshot_step":"200"
+    }
+    dlpipe = {
+        "run_id": "testDL",
+        "networktype":"cnn",
+        "n_epoch":"1",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "test_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":[None, 224, 224, 3],
+        "learning_rate":"0.001",
+        "snapshot_step":"200"
+    }
+    dlpipe = {
+        "run_id": "testDL",
+        "networktype":"dnn",
+        "n_epoch":"1",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "test_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":[None, 224, 224, 3],
+        "learning_rate":"0.001",
+        "lr_decay":"0.96",
+        "decay_step":"1000"
+    }
+    dlpipe = {
+        "run_id": "testDL",
+        "networktype":"googlenet",
+        "n_epoch":"1",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "checkpoint_path":"vgg-finetuning",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":[None, 224, 224, 3],
+        "learning_rate":"0.001",
+        "validation_set":"0.1",
+        "snapshot_step":"200"
+    }
+    dlpipe = {
+        "run_id": "testDL",
+        "networktype":"residual",
+        "n_epoch":"1",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "checkpoint_path":"vgg-finetuning",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "test_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":[None, 224, 224, 3],
+        "learning_rate":"0.001"
+    }
+    '''
+    dlpipe = {
+        "run_id": "testDL",
+        "networktype":"vgg16",
+        "n_epoch":"1",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "checkpoint_path":"vgg-finetuning",
+        "tensorboard_dir":"./logs",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":[None, 224, 224, 3],
+        "learning_rate":"0.001",
         "snapshot_step":"200"
     }
     r = requests.post("http://localhost:3002/deeplearning/execute", data=json.dumps(dlpipe))

@@ -11,7 +11,7 @@ from tflearn.data_utils import image_preloader
 
 from deep.neuralnetwork import NeuralNetwork
 
-class googlenet(NeuralNetwork):
+class GoogleNet(NeuralNetwork):
 
     train_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
 
@@ -50,7 +50,7 @@ class googlenet(NeuralNetwork):
         print('snapshot_step:',self.snapshot_step)
 
     def loadImage(self):
-        X, Y = image_preloader(self.train(), image_shape=(self.shape[1], self.shape[2]), mode='file',
+        X, Y = image_preloader(self.train_set, image_shape=(self.shape[1], self.shape[2]), mode='file',
                                categorical_labels=True, normalize=False,
                                files_extension=['.jpg', '.png'], filter_channel=True)
         return X,Y

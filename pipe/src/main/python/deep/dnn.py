@@ -21,17 +21,20 @@ class Dnn(NeuralNetwork):
 
     def setParams(self,run_id,
                   n_epoch,batch_size,num_class,optimizer,loss,
-                  model_path,train_set,test_set,shape,learning_rate):
+                  model_path,train_set,test_set,shape,learning_rate,lr_decay,decay_step):
         self.setJobParams(run_id,n_epoch,batch_size,num_class,optimizer,loss,model_path)
         self.train_set = train_set
         self.test_set = test_set
         self.shape = shape
         self.learning_rate = learning_rate
+        self.lr_decay = lr_decay
+        self.decay_step = decay_step
 
     def printParams(self):
         print('run_id:',self.run_id)
         print('n_epoch:',self.n_epoch)
         print('batch_size:',self.batch_size)
+        print('num_class:',self.num_class)
         print('optimizer:',self.optimizer)
         print('loss:',self.loss)
         print('model_path:',self.model_path)
@@ -39,6 +42,8 @@ class Dnn(NeuralNetwork):
         print('test_set:',self.test_set)
         print('shape:',self.shape)
         print('learning_rate:',self.learning_rate)
+        print('lr_decay:',self.lr_decay)
+        print('decay_step:',self.decay_step)
 
     def loadImage(self):
         X, Y = du.image_preloader(self.train_set, image_shape=(self.shape[1],self.shape[2]), mode='file',
