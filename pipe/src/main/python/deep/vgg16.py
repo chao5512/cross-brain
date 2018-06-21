@@ -20,10 +20,12 @@ class Vgg16(NeuralNetwork):
 
     snapshot_step = 200
 
+    validation_set = 0.1
+
     def setParams(self,run_id,
                   n_epoch,batch_size,num_class,optimizer,loss,
                   checkpoint_path,tensorboard_dir,model_path,train_set,shape,learning_rate,
-                  snapshot_step):
+                  snapshot_step,validation_set):
         self.setJobParams(run_id,n_epoch,batch_size,num_class,optimizer,loss,model_path)
         self.train_set = train_set
         self.shape = shape
@@ -31,6 +33,7 @@ class Vgg16(NeuralNetwork):
         self.snapshot_step = snapshot_step
         self.checkpoint_path = checkpoint_path
         self.tensorboard_dir = tensorboard_dir
+        self.validation_set = validation_set
 
     def printParams(self):
         print('run_id:',self.run_id)
@@ -105,7 +108,7 @@ class Vgg16(NeuralNetwork):
         return model
 
     def train(self,model,X,Y):
-        model.fit(X, Y, n_epoch=self.n_epoch, validation_set=0.1, shuffle=True,
+        model.fit(X, Y, n_epoch=self.n_epoch, validation_set=self.validation_set, shuffle=True,
                   show_metric=True, batch_size=self.batch_size, snapshot_epoch=False,
                   snapshot_step=self.snapshot_step, run_id=self.run_id)
 

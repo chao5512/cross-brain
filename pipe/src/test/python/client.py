@@ -105,7 +105,8 @@ def testDL():
         "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
         "shape":[None, 224, 224, 3],
         "learning_rate":"0.001",
-        "snapshot_step":"200"
+        "snapshot_step":"200",
+        "validation_set":0.1
     }
     r = requests.post("http://localhost:3002/deeplearning/execute", data=json.dumps(dlpipe))
     print(r.text)

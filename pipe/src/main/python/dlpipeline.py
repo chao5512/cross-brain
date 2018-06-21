@@ -76,5 +76,5 @@ class DLPipeline():
                               str(self.jsonData['model_path']),
                               str(self.jsonData['train_set']),list(self.jsonData['shape']),
                               float(self.jsonData['learning_rate']),
-                              int(self.jsonData['snapshot_step']))
+                              int(self.jsonData['snapshot_step']),float(self.jsonData['validation_set']))
         network.run()
