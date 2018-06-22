@@ -44,6 +44,7 @@ public class HiveRepositoryImpl implements HiveRepository {
      */
     @Override
     public void createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) {
+//        tableMeta.getLineDelim()==""
         StringBuffer sb = new StringBuffer("");
         sb.append("create external table if not exists ");
         String tableName = dataSet.getId()+"_"+tableMeta.getTableName();
@@ -52,8 +53,13 @@ public class HiveRepositoryImpl implements HiveRepository {
         for (int i = 0; i <fields.size() ; i++) {
             FieldMeta fieldMeta = fields.get(i);
             sb.append(fieldMeta.getFieldName()+" ");
-            sb.append(fieldMeta.getFieldType()+" comment '");
-            sb.append(fieldMeta.getFieldComment()+"'");
+            if(fieldMeta.getFieldType().equals("float")){
+                sb.append("decimal(10,2) comment '");
+                sb.append(fieldMeta.getFieldComment()+"'");
+            }else{
+                sb.append(fieldMeta.getFieldType()+" comment '");
+                sb.append(fieldMeta.getFieldComment()+"'");
+            }
             if (i!=(fields.size()-1)){
                 sb.append(",");
             }
@@ -64,8 +70,14 @@ public class HiveRepositoryImpl implements HiveRepository {
         sb.append("partitioned by(dt string) ");
         sb.append("row format delimited fields terminated by '");
         sb.append(tableMeta.getFieldDelim()+"' ");
-        sb.append("lines terminated by '");
-        sb.append(tableMeta.getLineDelim()+"' ");
+        //根据是否存在行分隔符进行创建表
+        if(tableMeta.getLineDelim()!=""){
+            //有行分隔符
+            sb.append("lines terminated by '");
+            sb.append(tableMeta.getLineDelim()+"' ");
+        }else{
+            //无行分隔符
+        }
         sb.append("stored as textfile ");
         sb.append("location '");
         sb.append(hivePath+user.getId()+"'");

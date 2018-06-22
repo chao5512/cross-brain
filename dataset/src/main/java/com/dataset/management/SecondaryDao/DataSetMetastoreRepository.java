@@ -10,5 +10,6 @@ import com.dataset.management.entity.HiveTableMeta;
  * @Version 1.0
  **/
 public interface DataSetMetastoreRepository {
+    public boolean isExistLineDelim(String tableName);
     HiveTableMeta getHiveTableMeta(String tableName);
 }
