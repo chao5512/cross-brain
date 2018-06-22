@@ -35,4 +35,17 @@ public class DataSetMetastoreServiceImpl implements DataSetMetastoreService {
         HiveTableMeta hiveTableMeta = metastoreRepository.getHiveTableMeta(tableName);
         return hiveTableMeta;
     }
+
+    /**
+     * 功能描述:根据表明查表信息
+     * @param tableName
+     * @return: com.dataset.management.entity.HiveTableMeta
+     * @auther: 王培文
+     * @date: 2018/6/22 11:27
+     */
+    @Override
+    public HiveTableMeta getHiveTableMeta(String tableName) {
+        HiveTableMeta hiveTableMeta = metastoreRepository.getHiveTableMeta(tableName);
+        return hiveTableMeta;
+    }
 }

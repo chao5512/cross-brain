@@ -13,4 +13,5 @@ import com.dataset.management.entity.HiveTableMeta;
  **/
 public interface DataSetMetastoreService {
     HiveTableMeta getHiveTableMeta(DataSet dataSet);
+    HiveTableMeta getHiveTableMeta(String tableName);
 }

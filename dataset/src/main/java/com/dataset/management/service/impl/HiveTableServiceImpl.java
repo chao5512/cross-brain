@@ -66,4 +66,16 @@ public class HiveTableServiceImpl implements HiveTableService {
     public boolean isExist(DataSet dataSet) {
         return hiveRepository.isExist(dataSet);
     }
+
+    /**
+     * 功能描述:根据数据集查表明
+     * @param dataSet
+     * @return: java.lang.String
+     * @auther: 王培文
+     * @date: 2018/6/22 10:36
+     */
+    @Override
+    public String getTableNameByDataSet(DataSet dataSet) {
+        return hiveRepository.getTableNameByDataSet(dataSet);
+    }
 }
