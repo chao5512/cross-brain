@@ -25,8 +25,6 @@ public class XmlConfig {
     private static String processId;
     private static String processName;
 
-    private String listenerType;
-
     public String getId() {
         return id;
     }
@@ -57,13 +55,5 @@ public class XmlConfig {
 
     public void setProcessName(String processName) {
         this.processName = processName;
-    }
-
-    public String getListenerType() {
-        return listenerType;
-    }
-
-    public void setListenerType(String listenerType) {
-        this.listenerType = listenerType;
     }
 }

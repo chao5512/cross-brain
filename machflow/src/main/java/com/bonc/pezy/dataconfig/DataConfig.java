@@ -21,34 +21,12 @@ public class  DataConfig {
         return dataConfig;
     }
 
-    //python微服务链接
-    /*@Value("${pyserver.url}")*/
-    private  static String url;
-
-    //python微服务端口
-    /*@Value("${pyserver.port}")*/
-    private static long port;
 
     private static String path;
 
 
     private static String jsondata;
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public long getPort() {
-        return port;
-    }
-
-    public void setPort(long port) {
-        this.port = port;
-    }
 
     public String getJsondata() {
         return jsondata;

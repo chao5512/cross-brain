@@ -1,5 +1,6 @@
 package com.bonc.pezy.flow;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.DataConfig;
@@ -36,7 +37,13 @@ public class MachFlow {
         //实例化BpmnModel对象
         BpmnModel bpmnModel=new BpmnModel();
         GenerateNode generateNode = new GenerateNode();
-        Map jb = JSONObject.parseObject(data);
+
+        /*DataEntity dataEntity = JSONObject.parseObject(data,DataEntity.class);
+
+        System.out.println(dataEntity.getData());*/
+
+        JSONObject jb = JSON.parseObject(data);
+
         System.out.println(jb);
 
         dataConfig.setJsondata(jb.get("data").toString());
@@ -54,7 +61,6 @@ public class MachFlow {
         //开始节点的属性
         StartEvent startEvent = generateNode.createStartEvent(xmlConfig.getId(),xmlConfig.getName());
         ExtensionElement extensionElement= generateNode.createExtensionElement("start",Constants.LISTENER_E);
-
         List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
         Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
         mapEA.put("dd",list);
@@ -65,20 +71,11 @@ public class MachFlow {
         mapEE.put("fisrt",listE);
         startEvent.setExtensionElements(mapEE);
 
-
         Process process=new Process();
-
         process.setId(xmlConfig.getProcessId());
         process.addFlowElement(startEvent);
-        /*extensionElement.setId("start");
-        extensionElement.setName("activiti:taskListener");
 
-        ExtensionElement extensionElementprocess = new ExtensionElement();
-
-        *//*process.setExtensionElements();*//*
-*/
         bpmnModel.addProcess(process);
-
         BpmnXMLConverter bpmnXMLConverter=new BpmnXMLConverter();
         byte[] convertToXML = bpmnXMLConverter.convertToXML(bpmnModel);
         String filepath = "/Users/fenggang/work/boncprogram/AI/gitdocument/cross-brain/machflow/src/main/resources/"+filename;

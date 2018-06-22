@@ -8,9 +8,9 @@ from tflearn.data_preprocessing import ImagePreprocessing
 from deep.neuralnetwork import NeuralNetwork
 
 class Vgg16(NeuralNetwork):
-    train_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
+    train_set = "/Users/fenggang/Desktop/deep/vgg/list.txt"
 
-    model_path = "/Users/mengxin/Desktop/vgg/vgg_model"
+    model_path = "/Users/fenggang/Desktop/deep/data"
 
     shape = [None, 224, 224, 3]
 
@@ -48,8 +48,11 @@ class Vgg16(NeuralNetwork):
         print('shape:',self.shape)
         print('learning_rate:',self.learning_rate)
         print('snapshot_step:',self.snapshot_step)
+        print('validation_set:',self.validation_set)
 
     def loadImage(self):
+
+        print(self.model_path)
         X, Y = image_preloader(self.train_set, image_shape=(self.shape[1], self.shape[2]), mode='file',
                                categorical_labels=True, normalize=False,
                                files_extension=['.jpg', '.png'], filter_channel=True)

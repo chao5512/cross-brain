@@ -28,6 +28,7 @@ def submit():
 @app.route("/LRDemo",methods=['POST'])
 def loadDataSet():
     # step1 create sparksession and dataframe
+    print(request.get_data())
     data = json.loads(request.get_data())
     appName = data['appName']
     pipe = MLPipeline(appName)
@@ -47,7 +48,15 @@ def loadDataSet():
         pipe.split([trainRatio, 1-trainRatio])
 
     # step3 构造模型
-    model = pipe.buildPipeline(data['originalStages'])
+    a = data['originalStages']
+    b={}
+    b['Tokenizer'] = a['Tokenizer']
+    b['HashingTF'] = a['HashingTF']
+    b['LogisticRegression'] = a['LogisticRegression']
+
+    print(b)
+    model = pipe.buildPipeline(b)
+    #model = pipe.buildPipeline(data['originalStages'])
 
     # step4 模型作用于测试集
     prediction = pipe.validator(model)
