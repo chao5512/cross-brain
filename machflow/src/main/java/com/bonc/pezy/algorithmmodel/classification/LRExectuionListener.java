@@ -26,20 +26,13 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
         String eventName = execution.getEventName();
         if ("start".equals(eventName)) {
             System.out.println("start=========");
-            System.out.println("执行逻辑回归计划:");
-           /* dataConfig.setJsondata(DataConfig.getDataConfig().getJsondata());*/
+
             String pipe = dataConfig.getJsondata();
-            String url = Constants.PY_SERVER+dataConfig.getPath();
+            /*String url = Constants.PY_SERVER+dataConfig.getPath();*/
+            String url = Constants.PY_SERVER_DEEP+dataConfig.getPath();
+
             System.out.println(pipe);
             System.out.println(url);
-
-            /*String pipe = "{\"appName\": \"testLD\", \"filePath\": \"hdfs://172.16.31.231:9000/data\",\"isSplitSample\":1," +
-                    "\"trainRatio\":0.6,\"evaluator\":\"MulticlassClassificationEvaluator\"," +
-                    "\"originalStages\": {\"Tokenizer\": {\"inputCol\": \"content\",\"outputCol\": \"words\"}," +
-                    "\"HashingTF\": {\"inputCol\": \"words\",\"outputCol\": \"features\"}," +
-                    "\"LogisticRegression\": {\"maxIter\": 10,\"regParam\": 0.001}}}";
-            String url = "http://localhost:3001/LRDemo";*/
-
             JavaRequestPythonService jrps = new JavaRequestPythonService();
             jrps.requestPythonService(pipe,url);
 

@@ -24,13 +24,22 @@ class DLPipeline():
 
     def run(self):
         network = Factory.network(str(self.jsonData['networktype']))
+
+        spape = self.jsonData['shape'].split(',')
+        s = []
+        for i in spape:
+            if(i=='None'):
+                s.append(None)
+                continue
+            s.append(int(i))
+
         if(isinstance(network,Alexnet)):
             print('execute alexnet!')
             network.setParams(str(self.jsonData['run_id']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['checkpoint_path']),str(self.jsonData['tensorboard_dir']),str(self.jsonData['model_path']),
-                              str(self.jsonData['train_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['train_set']),list(s),
                               float(self.jsonData['learning_rate']),float(self.jsonData['validation_set']),
                               int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Convnet)):
@@ -39,7 +48,7 @@ class DLPipeline():
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['model_path']),str(self.jsonData['train_set']),
-                              str(self.jsonData['test_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['test_set']),list(s),
                               float(self.jsonData['learning_rate']),int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Dnn)):
             print('execute dnn')
@@ -47,7 +56,7 @@ class DLPipeline():
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['model_path']),str(self.jsonData['train_set']),
-                              str(self.jsonData['test_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['test_set']),list(s),
                               float(self.jsonData['learning_rate']),float(self.jsonData['lr_decay']),
                               float(self.jsonData['decay_step']))
         elif(isinstance(network,GoogleNet)):
@@ -56,7 +65,7 @@ class DLPipeline():
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['checkpoint_path']),str(self.jsonData['model_path']),
-                              str(self.jsonData['train_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['train_set']),list(s),
                               float(self.jsonData['learning_rate']),float(self.jsonData['validation_set']),
                               int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Residual_Network)):
@@ -65,7 +74,7 @@ class DLPipeline():
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['model_path']),str(self.jsonData['train_set']),
-                              str(self.jsonData['test_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['test_set']),list(s),
                               float(self.jsonData['learning_rate']),str(self.jsonData['checkpoint_path']))
         elif(isinstance(network,Vgg16)):
             print('execute vgg16')
@@ -74,7 +83,7 @@ class DLPipeline():
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
                               str(self.jsonData['checkpoint_path']),str(self.jsonData['tensorboard_dir']),
                               str(self.jsonData['model_path']),
-                              str(self.jsonData['train_set']),list(self.jsonData['shape']),
+                              str(self.jsonData['train_set']),list(s),
                               float(self.jsonData['learning_rate']),
                               int(self.jsonData['snapshot_step']),float(self.jsonData['validation_set']))
         network.run()

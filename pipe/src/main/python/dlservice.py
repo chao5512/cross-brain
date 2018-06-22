@@ -1,6 +1,5 @@
 import json
 from flask import Flask, Response,jsonify, request, abort
-import json
 from dlpipeline import DLPipeline
 
 app = Flask(__name__)
@@ -11,7 +10,9 @@ def health():
 
 @app.route("/deeplearning/execute",methods=['POST'])
 def execute():
+    print(request.get_data())
     data = json.loads(request.get_data())
+    print(data)
     pipe = DLPipeline(data)
     pipe.run()
     result = {'result': 'sucess'}
