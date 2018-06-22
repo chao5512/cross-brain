@@ -12,7 +12,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class AppModuleApplication {
 
     public static void main(String[] args) {
-        // TODO Auto-generated method stub
+        // TODO Autoredis-server redis.conf-generated method stub
         new SpringApplicationBuilder(AppModuleApplication.class).run(args);
     }
 }
