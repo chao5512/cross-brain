@@ -21,6 +21,8 @@ public class DataSetConsts {
 
     public static final String SORT_BY_DATASET_UPDATE_TIME = "dataSetLastUpdateTime";
 
+    public static final String SORT_BY_DATASET_POWER = "dataSetPower";
+
     public static final String SORTTYPE_ASC = "asc";
 
     public static final String SORTTYPE_DESC = "desc";

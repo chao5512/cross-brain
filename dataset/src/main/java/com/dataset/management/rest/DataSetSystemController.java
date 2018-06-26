@@ -111,8 +111,9 @@ public class DataSetSystemController {
         Sort sort;
         //默认根据英文名字排序
         if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
-                && sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
-                && sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)){
+                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
+                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)
+                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)){
             return ResultUtil.error(-1,"排序规则不符合规定");
         }
         if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
