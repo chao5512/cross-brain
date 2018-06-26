@@ -3,6 +3,7 @@ package com.dataset.management.service;
 import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
+import com.dataset.management.util.DateUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
@@ -11,6 +12,8 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -18,7 +21,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class HdfsService {
@@ -118,14 +123,15 @@ public class HdfsService {
         return names;
     }
 
-    public void copyFileToHDFS(String srcFile,String datasetUserandNameUrl)throws Exception{
-        FileInputStream fis=new FileInputStream(new File(srcFile));//读取本地文件
-        Configuration config=new Configuration();
-        FileSystem fs=FileSystem.get(URI.create(hdfsurl+datasetUserandNameUrl), config);
-        OutputStream os=fs.create(new Path(datasetUserandNameUrl));
-        //copy
-        IOUtils.copyBytes(fis, os, 4096, true);
-        System.out.println("拷贝完成...");
+    //包含了他的路径
+    public void copyFileToHDFS(String sourceFileName, String tmpPath)throws Exception{
+        FileSystem fs = getFileSystem();
+        Path source = new Path(sourceFileName);
+        String filePath = hdfsurl+"/"+tmpPath+"/"+source.getName();
+        Path  finalPath = new Path(filePath);
+        if(!fs.exists(finalPath) && !fs.isDirectory(finalPath)){
+            fs.copyFromLocalFile(false,true,source,finalPath);
+        }
         fs.close();
     }
 
