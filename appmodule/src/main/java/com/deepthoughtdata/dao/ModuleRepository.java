@@ -11,5 +11,7 @@ public interface ModuleRepository extends JpaRepository<Module, Long> {
 
     long deleteByIdAndOwner(long id,long owner);//根据用户ID查询Module
 
+    Module findById(long id);
+
     List<Module> findByModeltypeAndOwnerAndCreateTimeAfterAndCreateTimeBefore(int type,long owner,String startData,String endData);//根据用户ID查询Module
 }
