@@ -39,5 +39,9 @@ public class ModuleServiceImpl implements ModuleService{
         return moduleRepository.deleteByIdAndOwner(Long.parseLong(id),Long.parseLong(userid));
     }
 
+    @Override
+    public Module findById(long modelid){
+        return moduleRepository.findById(modelid);
+    }
 
 }

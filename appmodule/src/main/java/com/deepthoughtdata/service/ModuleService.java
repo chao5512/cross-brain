@@ -9,6 +9,8 @@ import java.util.List;
 public interface ModuleService {
     public Module create(Module module);
 
+    public Module findById(long modelid);
+
     public List<Module> findByUser(String userid);
 
     public long delModule(String id,String userid);

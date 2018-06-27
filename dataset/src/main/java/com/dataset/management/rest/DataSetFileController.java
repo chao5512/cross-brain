@@ -18,9 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.transform.Result;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.text.DecimalFormat;
@@ -58,18 +61,17 @@ public class DataSetFileController {
 
      * */
     @ResponseBody
-    @RequestMapping(value = "/upload/{filesJson}/{datasetId}",method = RequestMethod.POST)
-    public ApiResult uploadFilestoDataSet(@PathVariable(value = "filesJson") String filesJson,
-                                          @PathVariable(value = "datasetId")int dataSetId) throws IOException,Exception{
+    @RequestMapping(value = "/upload",method = RequestMethod.POST)
+    public ApiResult uploadFilestoDataSet(@RequestParam(value = "filesJson")MultipartFile[] multipartFiles,
+                                          @RequestParam(value = "datasetId")int dataSetId) throws IOException,Exception{
 
 
         DataSet contentdDataSet;
         DataSetFile cntentDataSetFile;
-        List<String> addFileName = new ArrayList<>();
+        BufferedOutputStream outputStream;
+        int upload =0;
 
-        List<DataSetFile> dataSetFiles = packageDataSetFiles(filesJson);
-
-        contentdDataSet = dataSetService.findById(dataSetId);
+        contentdDataSet = dataSetService.findById(183);
 
         int count = contentdDataSet.getDataSetFileCount();
         logger.info("修改当前数据集 "+contentdDataSet+"   上传文件状态：");
@@ -82,55 +84,80 @@ public class DataSetFileController {
 
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
                 +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
+        //hdfs:8.8.8.8:900/DATASETSYSTEM/user/datasetName
+
         logger.info("数据集当前根目录："+dataStoreUrl);
 
         String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
                 +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
-
+        logger.info("hdfs中数据集路径："+tmpPath);
+        //校验文件是否存在
         List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
-        logger.info("获取当前数据集中已经存在的文件名称列表："+estsDataSetFiles);
+        logger.info("获取当前数据集中已经存在的文件列表："+estsDataSetFiles);
 
+        //已经存在的数据集中文件名称：
         List<String> estsFilesNmaes = isExistsFiles(estsDataSetFiles);
-        logger.info("当前数据集存在文件列表："+estsDataSetFiles);
-
+        logger.info("当前数据集存在文件名称列表："+estsDataSetFiles);
         logger.info("上传数据集文件列表：");
-        for(DataSetFile setFile: dataSetFiles){
-            String name = setFile.getFileName();
-            //hdfs 中的全路径
-            String fileHdfsPath = tmpPath+"/"+name;
 
-            long timetmp = System.currentTimeMillis();
-            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+        if(multipartFiles.length<=0){
+            return ResultUtil.error(-1,"没有获取到文件");
+        }
+        for(int i=0;i<multipartFiles.length;i++){
+            //遍历每一个媒体文件
+            MultipartFile setFile = multipartFiles[i];
+            //路径还是文件名称？？？
+            String name = setFile.getOriginalFilename();
+            logger.info("看看是路径还是文件名："+name);
+            String nameTRUE = name.substring(name.lastIndexOf("/")+1,name.length());
+            logger.info("字段切分后的文件名："+nameTRUE);
 
-            logger.info("修改文件的默认属性：");
-            setFile.setOnloadTimeDate(newTime);
-            setFile.setFileDesc("upload  success! ");
+            //不存在的话 就准备上传
             if(!estsFilesNmaes.contains(name)){
-                setFile.setDataSetId(dataSetId);
-                // 文件的当前根目录
-                setFile.setFilePath(dataStoreUrl);
-                cntentDataSetFile = dataSetFileService.save(setFile);
-                logger.info("上传后的文件属性"+cntentDataSetFile);
-                addFileName.add(setFile.getFileName());
-                /**
-                 * 文件路径应该是，但是如何获取？？
-                 * */
-                logger.info("远程 hdfs  文件上传中");
-//                hdfsService.copyFileToHDFS(name,fileHdfsPath);
+                cntentDataSetFile = new DataSetFile();
 
-            }else {
-                logger.info("改文件已经在数据库中，请重新命名后重新上传: "+setFile.getFileName());
+                long timetmp = System.currentTimeMillis();
+                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+
+                //构造 DatasetFile
+                cntentDataSetFile.setFilePath(tmpPath);
+                cntentDataSetFile.setFileDesc(null);
+                cntentDataSetFile.setFileSortType(DataSetFileConsts.FILE_SORT_BY_FILENAME);
+                cntentDataSetFile.setFileSortBy(DataSetFileConsts.FILE_SORT_TYPE_ASC);
+                cntentDataSetFile.setFileName(name);
+                File file = new File(name);
+                String filesize = GetFileSize(file);
+                cntentDataSetFile.setOnloadTimeDate(newTime);
+                cntentDataSetFile.setFileSize(filesize);
+                cntentDataSetFile.setDataSetId(dataSetId);
+
+                outputStream = new BufferedOutputStream(
+                        new FileOutputStream(
+                                new File(name)
+                        )
+                );
+                outputStream.write(setFile.getBytes());
+                outputStream.flush();
+                logger.info("准备hdfs  上传数据文件");
+                hdfsService.copyFileToHDFS(name,tmpPath);
+
+                logger.info("数据库中添加文件信息——");
+                estsFilesNmaes.add(name);
+                dataSetFileService.save(cntentDataSetFile);
+                upload = upload+1;
+                outputStream.close();
             }
         }
+
 
         //修改数据集必要参数
         logger.info("上传完毕，数据集状态更改");
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
         logger.info("修改时对应数据集上文件数：");
-        int newCount = count+dataSetFiles.size();
+        int newCount = count + upload;
         contentdDataSet.setDataSetFileCount(newCount);
-        contentdDataSet.setDataSetUpdateDesc("upload the file :"+addFileName);
+        contentdDataSet.setDataSetUpdateDesc("upload the files ");
 
         long timetmp = System.currentTimeMillis();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -138,7 +165,7 @@ public class DataSetFileController {
         contentdDataSet.setDataSetLastUpdateTime(newTime);
         dataSetService.save(contentdDataSet);
 
-        return ResultUtil.success("upload  success");
+        return ResultUtil.success("upload files success");
     }
 
     //查询

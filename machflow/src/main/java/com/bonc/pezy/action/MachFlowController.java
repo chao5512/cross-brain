@@ -27,17 +27,13 @@ public class MachFlowController {
 
         MachFlow mf = new MachFlow();
         mf.generateBpmnModel(jsondata);
-
-
-        return "ssss";
-
+        return "sucess";
     }
 
-    @RequestMapping("/hello")
+    @RequestMapping("/run")
     @ResponseBody
-    public void hello(HttpServletResponse respons){
+    public void run(HttpServletResponse respons){
         MachFlow mf = new MachFlow();
         mf.startActiviti();
-        System.out.print("hello word!");
     }
 }

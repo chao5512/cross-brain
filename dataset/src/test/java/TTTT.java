@@ -1,42 +1,19 @@
-import com.alibaba.fastjson.JSON;
 import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.config.HiveConfig;
-import com.dataset.management.entity.DataSetFile;
-import net.bytebuddy.matcher.FilterableList;
+import org.apache.hadoop.fs.Path;
 import org.junit.Test;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.nio.file.Path;
 import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
-
+@Controller
 public class TTTT {
-    @Autowired
-    HdfsConfig hdfsConfig;
 
-    @Autowired
-    HiveConfig hiveConfig;
-
-    @Test
-    public void url(){
-        hdfsConfig.getHdfsUrl();
-        System.out.println(hdfsConfig.getHdfsUrl());
-        System.out.println(hiveConfig);
-    }
 //    @Test
-//    public static void main(String args[]){
+    public static void main(String args[]){
 //        long t2=System.currentTimeMillis();
 //        System.out.println(t2+"machen");
 //        long time = System.currentTimeMillis();     //当前时间戳
@@ -96,7 +73,14 @@ public class TTTT {
 //        String jj ="["+json+","+json2+"]";
 //        System.out.println(jj);
 
-//    }
+        Path source = new Path("D:\\machen\\kkkk");
+        System.out.println(source.getName()+"   "+source);
+
+        String name = "D:/shbhs/scbs/scbh.xs";
+        String namef = name.substring(name.lastIndexOf("/")+1,name.length());
+        System.out.println(namef);
+
+    }
 
 
     private static String GetFileSize(String Path){

@@ -47,6 +47,13 @@ public class ModuleController {
         return moduleService.findByUser(owner);
     }
 
+    @ApiOperation(value = "根据ID查询模型",httpMethod = "POST")
+    @RequestMapping(value= "/findById")
+    @ResponseBody
+    public Module findModuleById( @RequestParam("modelid") String modelid,HttpServletResponse response){
+        return moduleService.findById(Long.parseLong(modelid));
+    }
+
     @ApiOperation(value = "模型查询",httpMethod = "POST")
     @RequestMapping(value= "/findModels")
     @ResponseBody
