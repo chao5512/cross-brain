@@ -1,3 +1,4 @@
+#coding=utf-8
 import json
 from flask import Flask, Response,jsonify, request, abort
 import json
@@ -8,8 +9,10 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.ml import Pipeline
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from flask_cors import *
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
@@ -30,10 +33,17 @@ def loadDataSet():
     # step1 create sparksession and dataframe
     print(request.get_data())
     data = json.loads(request.get_data())
+    print(data)
     appName = data['appName']
     pipe = MLPipeline(appName)
     spark = pipe.create()
-    textRDD = spark.sparkContext.textFile(data['filePath'])
+    #数据元路径
+    datasource = json.loads(data['datasource'])
+    print(datasource)
+    filepath = datasource['filepath']
+    print(filepath)
+
+    textRDD = spark.sparkContext.textFile(filepath)
     lastRDD = textRDD.map(lambda x: [x[0:1], x[2:]])
     schema = StructType([
         StructField("label", StringType(), True),
@@ -43,16 +53,16 @@ def loadDataSet():
     pipe.loadDataSet(lastDF)
 
     # step2 切分数据
-    if data['isSplitSample'] :
-        trainRatio = data['trainRatio']
+    isSplitSample = json.loads(data['isSplitSample'])
+    if  isSplitSample['fault']:
+        trainRatio = isSplitSample['trainRatio']
         pipe.split([trainRatio, 1-trainRatio])
 
     # step3 构造模型
-    a = data['originalStages']
     b={}
-    b['Tokenizer'] = a['Tokenizer']
-    b['HashingTF'] = a['HashingTF']
-    b['LogisticRegression'] = a['LogisticRegression']
+    b['Tokenizer'] = json.loads(data['Tokenizer'])
+    b['HashingTF'] = json.loads(data['HashingTF'])
+    b['LogisticRegression'] = json.loads(data['LogisticRegression'])
 
     print(b)
     model = pipe.buildPipeline(b)

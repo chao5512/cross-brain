@@ -57,7 +57,7 @@ public class MachFlow {
             nodeData.setName(key.toString());
             nodeData.setInputNodeId(((Map)value).get("InputNodeId").toString());
             nodeData.setOutputNodeId(((Map)value).get("outputNodeId").toString());
-            nodeData.setPath(((Map)value).get("path").toString());
+           /* nodeData.setPath(((Map)value).get("path").toString());*/
             nodeData.setParam(((Map)value).get("param").toString());
             nodeData.setSno(((Map)value).get("sno").toString());
             map.put(key.toString(),nodeData);
@@ -141,6 +141,7 @@ public class MachFlow {
             sequenceFlow.setSourceRef(listnode.get(i).getId());
             sequenceFlow.setTargetRef(listnode.get(i+1).getId());
             sequenceFlows.add(sequenceFlow);
+            process.addFlowElement(sequenceFlow);
         }
 
         for (int i=0;i<listnode.size();i++){
@@ -161,7 +162,6 @@ public class MachFlow {
             }
             process.addFlowElement(listnode.get(i));
         }
-
 
         filename = jb.get("processId").toString()+"."+"bpmn20.xml";
         bpmnModel.addProcess(process);
@@ -187,7 +187,7 @@ public class MachFlow {
             repositoryService.createDeployment()
                     .addClasspathResource(filename)
                     .deploy();
-            runtimeService.startProcessInstanceByKey(xmlConfig.getProcessId());
+            runtimeService.startProcessInstanceByKey(appData.getProcessId());
         }
 
     }

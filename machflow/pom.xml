@@ -75,6 +75,11 @@
             <artifactId>swagger-annotations</artifactId>
             <version>1.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.1.6</version>
+        </dependency>
     </dependencies>
 
 	<build>
