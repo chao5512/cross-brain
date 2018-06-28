@@ -8,6 +8,7 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from flask_cors import *
 from hiveutil import HiveClient
+from jsoncustom import JsonCustomEncoder
 
 
 import json
@@ -44,7 +45,7 @@ def head():
     print("tableName:"+tableName)
     number = requestData['number']
     print("number:"+number)
-    datas = HiveClient.queryForAll(tablename="titanic_orc",rownums=number)
+    datas = HiveClient.queryByRowNums(tablename="titanic_orc",rownums=number)
     title=datas.columns.values.tolist()
     result = Result(data={'type': 'table',
                           'title':title,
@@ -55,7 +56,7 @@ def head():
 
 @app.route("/tail", methods=['POST'])
 def tail():
-    datas = HiveClient.queryForAll(tablename="titanic_orc")
+    datas = HiveClient.queryByRowNums(tablename="titanic_orc")
     title=datas.columns.values.tolist()
     result = Result(data={'type': 'table',
                           'title':title,
@@ -67,13 +68,29 @@ def tail():
 # 简单统计量表
 @app.route("/sheet", methods=['POST'])
 def sheet():
-    datas = HiveClient.queryForAll(tablename="titanic_orc")
-    title=datas.describe().columns.values.tolist()
-    result = Result(data={'type': 'table',
-                          'title':title,
-                          'content': datas.describe().to_dict(
+    requestData = request.form.to_dict()
+    tableName = requestData['tableName']
+    type = requestData['type']
+    datas = HiveClient.queryForAll(tablename=tableName)
+    if type == '1':
+        tempData=datas.describe()
+        title=tempData.columns.values.tolist()
+        index=tempData.to_dict(orient='split')['index']
+        result = Result(data={'type': 'table',
+                              'title':title,
+                              'index':index,
+                              'content': tempData.to_dict(
                                   orient='split')['data']})
-    return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+    else:
+        tempData = datas.describe(include=['O'])
+        title=tempData.columns.values.tolist()
+        index=tempData.to_dict(orient='split')['index']
+        result = Result(data={'type': 'table',
+                              'title':title,
+                              'index':index,
+                              'content': tempData.to_dict(
+                                  orient='split')['data']});
+    return Response(json.dumps(result,cls= JsonCustomEncoder),
                     mimetype='application/json')
 
 

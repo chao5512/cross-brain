@@ -13,9 +13,15 @@ class HiveClient:
         HiveClient.engine = create_engine('hive://172.16.31.91:10000/%s'%(database))
         return HiveClient.engine
     @staticmethod
-    def queryForAll(tablename,rownums=1000,database="default"):
+    def queryByRowNums(tablename,rownums=1000,database="default"):
         engine = HiveClient.getEngine(database=database)
         sql="select * from %s limit %s"%(tablename,rownums)
+        datas=pd.read_sql(sql, engine,coerce_float=False)
+        return datas
+    @staticmethod
+    def queryForAll(tablename,database="default"):
+        engine = HiveClient.getEngine(database=database)
+        sql="select * from %s"%(tablename)
         datas=pd.read_sql(sql, engine,coerce_float=False)
         return datas
     @staticmethod
