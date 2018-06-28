@@ -1,6 +1,6 @@
 import base64
 
-from flask import Flask, Response
+from flask import Flask, Response,request
 from io import BytesIO
 from result import Result
 import pandas as pd
@@ -11,6 +11,7 @@ from hiveutil import HiveClient
 
 
 import json
+import simplejson
 
 app = Flask(__name__)
 CORS(app, supports_credentials=True)
@@ -21,16 +22,34 @@ def health():
     result = {'status': 'UP'}
     return Response(json.dumps(result), mimetype='application/json')
 
+# 显示数据总行数
+@app.route("/count", methods=['POST'])
+def count():
+    data = request.form.to_dict()
+    tableName = data['tableName']
+    print("tableName:"+tableName)
+    datas = HiveClient.queryRowNumber(tablename=tableName)
+    title=datas.columns.values.tolist()
+    result = Result(data={'type': 'table',
+                          'title':title,
+                          'content': datas.to_dict(orient='split')['data']})
+    return Response(json.dumps(result,default=lambda obj: obj.__dict__),
+                    mimetype='application/json')
 
 # 显示数据前n行
 @app.route("/head", methods=['POST'])
 def head():
-    datas = HiveClient.queryForAll(tablename="titanic_orc")
+    requestData = request.form.to_dict()
+    tableName = requestData['tableName']
+    print("tableName:"+tableName)
+    number = requestData['number']
+    print("number:"+number)
+    datas = HiveClient.queryForAll(tablename="titanic_orc",rownums=number)
     title=datas.columns.values.tolist()
     result = Result(data={'type': 'table',
                           'title':title,
-                           'content': datas.head().to_dict(orient='split')['data']})
-    return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                           'content': datas.to_dict(orient='split')['data']})
+    return Response(simplejson.dumps(result,default=lambda obj: obj.__dict__),
                     mimetype='application/json')
 
 

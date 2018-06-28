@@ -54,7 +54,7 @@ public class HiveRepositoryImpl implements HiveRepository {
             FieldMeta fieldMeta = fields.get(i);
             sb.append(fieldMeta.getFieldName()+" ");
             if(fieldMeta.getFieldType().equals("float")){
-                sb.append("decimal(10,2) comment '");
+                sb.append("float comment '");
                 sb.append(fieldMeta.getFieldComment()+"'");
             }else{
                 sb.append(fieldMeta.getFieldType()+" comment '");
