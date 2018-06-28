@@ -62,7 +62,7 @@ public class DataSetFileController {
      * */
     @ResponseBody
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
-    public ApiResult uploadFilestoDataSet(@RequestParam(value = "filesJson")MultipartFile[] multipartFiles,
+    public ApiResult uploadFilestoDataSet(@RequestParam(value = "files")MultipartFile[] multipartFiles,
                                           @RequestParam(value = "datasetId")int dataSetId) throws IOException,Exception{
 
 
