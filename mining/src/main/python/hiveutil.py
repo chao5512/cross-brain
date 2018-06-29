@@ -22,7 +22,7 @@ class HiveClient:
     def queryForAll(tablename,database="default"):
         engine = HiveClient.getEngine(database=database)
         sql="select * from %s"%(tablename)
-        datas=pd.read_sql(sql, engine,coerce_float=False)
+        datas=pd.read_sql(sql, engine)
         return datas
     @staticmethod
     def queryRowNumber(tablename,database="default"):

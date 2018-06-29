@@ -3,7 +3,6 @@ import base64
 from flask import Flask, Response,request
 from io import BytesIO
 from result import Result
-import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 from flask_cors import *
@@ -98,8 +97,33 @@ def sheet():
 @app.route("/hist", methods=['POST'])
 def hist():
     train_df = HiveClient.queryForAll(tablename="titanic_orc")
-    g = sns.FacetGrid(train_df, col='survived')
-    g.map(plt.hist, 'age', bins=20)
+    # 设置主题，可选项有darkgrid , whitegrid , dark , white ,和 ticks
+    sns.set(style="dark", palette="muted", color_codes=True)
+    g = sns.FacetGrid(train_df, hue='survived')
+    # alpha颜色对比度
+    g.map(plt.hist,'age',alpha=0.7,bins=20)
+    g.add_legend()
+    #plt.savefig("examples1.jpg")
+    sio = BytesIO()
+    plt.savefig(sio, format='png')
+    image = base64.encodebytes(sio.getvalue()).decode()
+    print(image)
+    imagehtml = '<img src="data:image/png;base64,{}" />'
+    plt.close()
+    result = Result(data={'type': 'image', 'content': imagehtml.format(image)})
+    return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                    mimetype='application/json')
+
+
+@app.route("/hist1", methods=['POST'])
+def hist1():
+    train_df = HiveClient.queryForAll(tablename="titanic_orc")
+    # 设置主题，可选项有darkgrid , whitegrid , dark , white ,和 ticks
+    sns.set(style="dark", palette="muted", color_codes=True)
+    g = sns.FacetGrid(train_df, col='survived',row='pclass',size=2.2,aspect=1.6)
+    # alpha颜色对比度
+    g.map(plt.hist,'age',alpha=0.7,bins=20)
+    g.add_legend()
     #plt.savefig("examples1.jpg")
     sio = BytesIO()
     plt.savefig(sio, format='png')
