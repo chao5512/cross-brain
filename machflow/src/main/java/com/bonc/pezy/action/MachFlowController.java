@@ -32,8 +32,8 @@ public class MachFlowController {
 
     @RequestMapping("/run")
     @ResponseBody
-    public void run(HttpServletResponse respons){
+    public void run(@RequestParam("processId") String processId,HttpServletResponse respons){
         MachFlow mf = new MachFlow();
-        mf.startActiviti();
+        mf.startActiviti(processId);
     }
 }

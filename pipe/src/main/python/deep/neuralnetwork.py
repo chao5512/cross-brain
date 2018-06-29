@@ -1,3 +1,5 @@
+from PIL import Image
+
 class NeuralNetwork(object):
     run_id = ""
 
@@ -22,3 +24,10 @@ class NeuralNetwork(object):
         self.optimizer = optimizer
         self.loss = loss
         self.model_path = model_path
+
+    def predict(self,network):
+        img = Image.open("/home/hadoop")
+        model = self.createmodel(network)
+        model.load("")
+        prediction = model.predict(img)
+        print(prediction)
