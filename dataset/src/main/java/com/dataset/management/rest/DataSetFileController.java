@@ -12,29 +12,30 @@ import com.dataset.management.service.HdfsService;
 import com.dataset.management.service.IntDataSetFileService;
 import com.dataset.management.service.IntDataSetOptService;
 import com.dataset.management.service.IntDataSetService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.xml.transform.Result;
+import io.swagger.annotations.ApiOperation;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 @RequestMapping("datasetFile")
-@CrossOrigin
 public class DataSetFileController {
     @Autowired
     IntDataSetService dataSetService;
@@ -60,12 +61,16 @@ public class DataSetFileController {
      {"fileName":"files","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"ss","fileSize":"ddd","onloadTimedate":"sss"}]
 
      * */
+    @ApiOperation(value = "上传文件",httpMethod = "POST")
     @ResponseBody
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
-    public ApiResult uploadFilestoDataSet(@RequestParam(value = "files")MultipartFile[] multipartFiles,
+    public ApiResult uploadFilestoDataSet(@RequestParam(value = "files")MultipartFile[]  multipartFiles,
                                           @RequestParam(value = "datasetId")int dataSetId) throws IOException,Exception{
 
-
+        logger.info("begin");
+        for (MultipartFile file : multipartFiles) {    //循环保存文件
+            logger.info("file："+file.getName());
+        }
         DataSet contentdDataSet;
         DataSetFile cntentDataSetFile;
         BufferedOutputStream outputStream;

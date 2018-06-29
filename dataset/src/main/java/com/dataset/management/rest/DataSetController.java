@@ -29,7 +29,6 @@ import java.util.List;
  * */
 @Controller
 @RequestMapping("dataset")
-@CrossOrigin
 public class DataSetController {
 
     private static Logger logger = LoggerFactory.getLogger(DataSetController.class);

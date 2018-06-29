@@ -24,7 +24,6 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping(value = "mining")
-@CrossOrigin
 public class DataSetMiningController {
 
     private static Logger logger = LoggerFactory.getLogger(DataSetMiningController.class);
