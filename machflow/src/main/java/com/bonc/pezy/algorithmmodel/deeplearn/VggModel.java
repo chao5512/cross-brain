@@ -17,7 +17,5 @@ public class VggModel implements Serializable, ExecutionListener {
 
 
 
-
-
     }
 }

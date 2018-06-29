@@ -3,10 +3,10 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <bean id="processEngineConfiguration" class="org.activiti.engine.impl.cfg.StandaloneProcessEngineConfiguration">
-        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/exampleactiviti"/>
+        <property name="jdbcUrl" value="jdbc:mysql://182.92.82.3/ai_studio"/>
         <property name="jdbcDriver" value="com.mysql.jdbc.Driver"/>
         <property name="jdbcUsername" value="root"/>
-        <property name="jdbcPassword" value="123456"/>
+        <property name="jdbcPassword" value="111111"/>
 
         <property name="databaseSchemaUpdate" value="true"/>
         <!--<property name="jobExecutorActivate" value="false"/>
