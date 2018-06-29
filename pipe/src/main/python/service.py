@@ -1,3 +1,4 @@
+#coding=utf-8
 import json
 from flask import Flask, Response,jsonify, request, abort
 import json
@@ -8,8 +9,10 @@ from pyspark.ml.classification import LogisticRegression
 from pyspark.ml.feature import HashingTF, Tokenizer
 from pyspark.ml import Pipeline
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from flask_cors import *
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
