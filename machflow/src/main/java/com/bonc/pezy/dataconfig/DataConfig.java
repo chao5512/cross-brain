@@ -22,22 +22,11 @@ public class  DataConfig {
     }
 
 
-    private static String path;
-
-
     private static String jsondata;
 
 
     public String getJsondata() {
         return jsondata;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 
     public void setJsondata(String jsondata) {

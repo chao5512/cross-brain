@@ -3,6 +3,7 @@ package com.bonc.pezy.algorithmmodel.classification;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.AppData;
+import com.bonc.pezy.dataconfig.DataConfig;
 import com.bonc.pezy.dataconfig.NodeData;
 import com.bonc.pezy.pyapi.JavaRequestPythonService;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -23,6 +24,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
 
 
     private AppData appData = AppData.getAppData();
+    private DataConfig dataConfig = DataConfig.getDataConfig();
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
@@ -32,37 +34,36 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             System.out.println("===xxxx===="+execution.getEventName());
 
             String url = null;
+            Map<String,String> param = new HashMap<String, String>();
+            String pipe = null;
             if("ml".equals(appData.getAppType())){
                 url = Constants.PY_SERVER;
 
+                param.put("appName",appData.getAppName());
+
+                Map<String, NodeData> nodeMap = appData.getNodeMap();
+
+                nodeMap.forEach((key,value)->{
+
+                    param.put(key,value.getParam());
+
+                });
+                pipe = JSONUtils.toJSONString(param);
+
             }
+
             if("deep".equals(appData.getAppType())){
                 url = Constants.PY_SERVER_DEEP;
+                pipe = dataConfig.getJsondata();
+
             }
-
-            Map<String,String> param = new HashMap<String, String>();
-
-            param.put("appName",appData.getAppName());
-
-            Map<String, NodeData> nodeMap = appData.getNodeMap();
-
-            nodeMap.forEach((key,value)->{
-
-                param.put(key,value.getParam());
-
-            });
-
-            String pipe =JSONUtils.toJSONString(param);
-
-
-            /*String pipe = dataConfig.getJsondata();
-            String url = Constants.PY_SERVER+dataConfig.getPath();
-            String url = Constants.PY_SERVER_DEEP;*/
-
             System.out.println(pipe);
             System.out.println(url);
-            JavaRequestPythonService jrps = new JavaRequestPythonService();
-            jrps.requestPythonService(pipe,url);
+            if ("".equals(pipe)){
+                JavaRequestPythonService jrps = new JavaRequestPythonService();
+                jrps.requestPythonService(pipe,url);
+
+            }
 
         }else if ("end".equals(eventName)) {
             System.out.println("end=========");
