@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 
-public class ManagementApplication {
+public class DateSetApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(ManagementApplication.class, args);
+		SpringApplication.run(DateSetApplication.class, args);
 	}
 }

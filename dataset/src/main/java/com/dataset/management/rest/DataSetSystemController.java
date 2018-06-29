@@ -27,7 +27,6 @@ import java.util.concurrent.Executors;
 import java.util.List;
 @Controller
 @RequestMapping("datasetSystem")
-@CrossOrigin
 public class DataSetSystemController {
 /***
  * 空值最外面的系统数据集的展示和操作

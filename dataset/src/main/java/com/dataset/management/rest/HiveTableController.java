@@ -5,16 +5,16 @@ import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
-import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName HiveTableController
@@ -25,7 +25,6 @@ import java.util.List;
  **/
 @RestController
 @RequestMapping("hive")
-@CrossOrigin
 public class HiveTableController {
     @Autowired
     private HiveTableService hiveTableService;

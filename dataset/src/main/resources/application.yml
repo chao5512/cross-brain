@@ -5,9 +5,18 @@ eureka:
 server:
   port: 7777
   ip: localhost
+token:
+  client_id: client_1
+  type: client_credentials
+  scope: select
+  client_secret: 123456
+  url: http://localhost:8082/oauth/token
 spring:
   application:
-    name: account
+    name: dataset
+  cloud:
+    client:
+      ipAddress: localhost
   #数据库配置mysql
   primary:
     url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
