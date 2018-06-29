@@ -16,7 +16,7 @@ public class Constants {
     public static final String PY_SERVER_DEEP = "http://localhost:3002/deeplearning/execute";
 
     //监听类
-    public static final String LOGINCAL_REGRESSION = "";
+    public static final String LR_LISTENER_U = "com.bonc.pezy.algorithmmodel.classification.LRUserTask";
 
     public static final String LR_REGRESSION = "com.bonc.pezy.algorithmmodel.classification.LRExectuionListener";
 

@@ -59,7 +59,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             }
             System.out.println(pipe);
             System.out.println(url);
-            if ("".equals(pipe)){
+            if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
                 jrps.requestPythonService(pipe,url);
 

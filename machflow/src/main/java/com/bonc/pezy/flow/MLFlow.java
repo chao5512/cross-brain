@@ -55,7 +55,7 @@ public class MLFlow {
             if(!"".equals(value.getInputNodeId())&&!"".equals(value.getOutputNodeId())){
                 UserTask userTask = generateNode.createUserTask(key,key);
                 ExtensionElement extensionElement= generateNode.createExtensionElement("create", Constants.LISTENER_U);
-                List<ExtensionAttribute> list = generateNode.createExtensionAttributes("create",Constants.LR_REGRESSION);
+                List<ExtensionAttribute> list = generateNode.createExtensionAttributes("create",Constants.LR_LISTENER_U);
                 Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
                 mapEA.put(key,list);
                 extensionElement.setAttributes(mapEA);
