@@ -105,3 +105,5 @@ class Alexnet(NeuralNetwork):
         model = self.createmodel(network)
         self.train(model,X,Y)
         self.save(model)
+
+        self.predict(network)

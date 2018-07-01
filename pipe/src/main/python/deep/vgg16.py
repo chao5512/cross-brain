@@ -4,6 +4,7 @@ import tflearn
 
 from tflearn.data_utils import image_preloader
 from tflearn.data_preprocessing import ImagePreprocessing
+from PIL import Image
 
 from deep.neuralnetwork import NeuralNetwork
 
@@ -121,6 +122,14 @@ class Vgg16(NeuralNetwork):
     def save(self,model):
         model.save(self.model_path)
 
+    def predict(self,network):
+        print("prediction")
+        img = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
+        model = self.createModel(network)
+        model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
+        prediction = model.predict(img)
+        print(prediction)
+
     def run(self):
         self.printParams()
         X,Y = self.loadImage()
@@ -128,4 +137,6 @@ class Vgg16(NeuralNetwork):
         model = self.createModel(softmax)
         self.train(model,X,Y)
         self.save(model)
+
+        self.predict(softmax)
 

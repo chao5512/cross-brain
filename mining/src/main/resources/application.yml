@@ -2,12 +2,15 @@ server:
   port: 5678
 spring:
   application:
-    name: py-sidecar
+    name: mining
 sidecar:
   port: 8000
   health-uri: http://localhost:${sidecar.port}}/health
+logging:
+  level:
+    org.springframework.web: INFO
 
-#eureka
-#  client
-#    serviceUrl
-#      defaultZone=http://localhost:8000/eureka/
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8081/stretch/eureka/
