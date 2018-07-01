@@ -4,8 +4,8 @@ spring:
   application:
     name: mining
 sidecar:
-  port: 8000
-  health-uri: http://localhost:${sidecar.port}}/health
+  port: 3002
+  health-uri: http://localhost:${sidecar.port}/health
 logging:
   level:
     org.springframework.web: INFO
