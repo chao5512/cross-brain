@@ -160,6 +160,7 @@ public class DataSetSystemController {
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/selectByUser/{UserName}",method = RequestMethod.GET)
+    // TODO: 2018/7/2 马辰修复 
     public ApiResult selectByUserName(@PathVariable(value = "UserName") String userName) throws IOException{
         List<DataSystem> dataSystems = dataSetOptService.findByUserName(userName);
         logger.info("获取用户名："+dataSystems.get(0).getUserName());

@@ -66,17 +66,12 @@ public class DataSetFileController {
     @RequestMapping(value = "/upload",method = RequestMethod.POST)
     public ApiResult uploadFilestoDataSet(@RequestParam(value = "files")MultipartFile[]  multipartFiles,
                                           @RequestParam(value = "datasetId")int dataSetId) throws IOException,Exception{
-
-        logger.info("begin");
-        for (MultipartFile file : multipartFiles) {    //循环保存文件
-            logger.info("file："+file.getName());
-        }
         DataSet contentdDataSet;
         DataSetFile cntentDataSetFile;
         BufferedOutputStream outputStream;
         int upload =0;
 
-        contentdDataSet = dataSetService.findById(183);
+        contentdDataSet = dataSetService.findById(dataSetId);
 
         int count = contentdDataSet.getDataSetFileCount();
         logger.info("修改当前数据集 "+contentdDataSet+"   上传文件状态：");

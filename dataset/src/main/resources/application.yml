@@ -19,14 +19,14 @@ spring:
       ipAddress: localhost
   #数据库配置mysql
   primary:
-    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://182.92.82.3/ai_studio?useUnicode=true&characterEncoding=utf-8
     username: root
-    password: 123456
+    password: 111111
     driver-class-name: com.mysql.jdbc.Driver
   secondary:
-    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
+    url: jdbc:mysql://182.92.82.3:3306/hive_91?createDatabaseIfNotExist=true
     username: root
-    password: 123456
+    password: 111111
     driver-class-name: com.mysql.jdbc.Driver
   jpa:
     properties:
@@ -37,7 +37,7 @@ spring:
     show-sql: true
 ####hive数据源配置#####
 hive:
-  url: jdbc:hive2://172.16.31.91
+  url: jdbc:hive2://182.92.82.3
   port: 10000
   schema: default
   driver-name: org.apache.hive.jdbc.HiveDriver
@@ -45,8 +45,8 @@ hive:
   password:
 ##hive表在hadoop中路径配置##
 hadoop:
-  url: hdfs://172.16.31.92
-  port: 9000
+  url: hdfs://182.92.82.3
+  port: 8020
   hive-path: /tmp/user
 
 
