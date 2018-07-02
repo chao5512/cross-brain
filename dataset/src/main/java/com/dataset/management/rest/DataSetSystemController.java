@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.List;
+
 @Controller
 @RequestMapping("datasetSystem")
 public class DataSetSystemController {
@@ -55,14 +56,16 @@ public class DataSetSystemController {
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create/{dataSetName}/{userName}/{dataSetDesc}",method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{dataSetName}/{userName}_{userId}/{dataSetDesc}",method = RequestMethod.POST)
     public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
                                    @PathVariable(value = "userName") String userName,
-                                   @PathVariable(value = "dataSetDesc") String datSetDesc) throws IOException{
+                                   @PathVariable(value = "dataSetDesc") String datSetDesc,
+                                   @PathVariable(value = "userId") int userId) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
         dataSet.setUserName(userName);
+        dataSet.setUserId(userId);
         dataSet.setDataSetBasicDesc(datSetDesc);
         dataSet.setDataSetHiveTableName(null);
         dataSet.setDataSetHiveTableId(null);
@@ -156,13 +159,12 @@ public class DataSetSystemController {
         return ResultUtil.success(dataSystem);
     }
 
-    //查询  userName
+    //查询  userId
     @ResponseBody
     @Transactional
-    @RequestMapping(value = "/selectByUser/{UserName}",method = RequestMethod.GET)
-    // TODO: 2018/7/2 马辰修复 
-    public ApiResult selectByUserName(@PathVariable(value = "UserName") String userName) throws IOException{
-        List<DataSystem> dataSystems = dataSetOptService.findByUserName(userName);
+    @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
+    public ApiResult selectByUserId(@PathVariable(value = "UserId") int userId) throws IOException{
+        List<DataSystem> dataSystems = dataSetOptService.findByUserId(userId);
         logger.info("获取用户名："+dataSystems.get(0).getUserName());
         if (dataSystems.get(0).getUserName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
@@ -232,6 +234,7 @@ public class DataSetSystemController {
         dataSystem.setDatasetName(dataSet.getDataSetName());
         dataSystem.setDatasetEnglishName(dataSet.getDataSetEnglishName());
         dataSystem.setUserName(dataSet.getUserName());
+        dataSystem.setUserId(dataSet.getUserId());
         dataSystem.setDatasetCreateDate(dataSet.getDataSetCreateTime());
         dataSystem.setDatasetStoreurl(dataSet.getDataSetStoreUrl());
         dataSystem.setDatasetDesc(dataSet.getDataSetBasicDesc());
@@ -246,6 +249,7 @@ public class DataSetSystemController {
         DataSet dataSet = new DataSet();
         //总计 17项
         dataSet.setUserName(DataSetConsts.DATASET_USER_NAME);
+        dataSet.setUserId(DataSetConsts.DATASET_USER_ID);
         dataSet.setDataSetEnglishName(DataSetConsts.DATASET_ENGLISH_NAME);
         dataSet.setDataSetName(DataSetConsts.DATASET_CHINA_NAME);
         dataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);

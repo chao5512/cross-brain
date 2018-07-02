@@ -249,13 +249,12 @@ public class DataSetFileController {
     }
 
 
-    //删除  多个
+    //删除
     @ResponseBody
-    @RequestMapping(value = {"/deleteSomeFiles/{deleteFilesIdJson}"},method = RequestMethod.POST)
-    public ApiResult deleteFiles(@PathVariable(value = "deleteFilesIdJson") String filesJson){
+    @RequestMapping(value = {"/deleteSomeFiles/{deleteFileId}"},method = RequestMethod.POST)
+    public ApiResult deleteFiles(@PathVariable(value = "deleteFileId") int fileId){
         logger.info("获取数据集：");
-        List<DataSetFile> dataSetFileList = JSON.parseArray(filesJson,DataSetFile.class);
-        for(DataSetFile dataSetFile:dataSetFileList){
+        DataSetFile dataSetFile = dataSetFileService.findDataSetFileById(fileId);
             if(dataSetFile.getFileName().isEmpty() || dataSetFile.getId() == 0){
                 logger.info("数据集中没有文件："+dataSetFile.getFileName());
             }else {
@@ -265,7 +264,7 @@ public class DataSetFileController {
                 hdfsService.deletedir(hdfsfilepath);
                 dataSetFileService.deleteById(dataSetFile.getId());
             }
-        }
+
         return ResultUtil.success();
     }
 
