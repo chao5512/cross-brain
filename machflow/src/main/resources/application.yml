@@ -1,13 +1,13 @@
-#eureka:
- # client:
-  #  serviceUrl:
-   #   defaultZone: http://localhost:8081/stretch/eureka/
+eureka:
+ client:
+   serviceUrl:
+     defaultZone: http://localhost:8081/stretch/eureka/
 server:
   port: 8080
   ip: localhost
-#spring:
- # application:
-    #name: workflow
+spring:
+  application:
+    name: machflow
 pyserver:
   url: http://localhost
   port: 3001
