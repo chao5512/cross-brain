@@ -68,6 +68,17 @@ public class DataSetController {
         }
         return ResultUtil.success(dataSet);
     }
+    //查询  datasetName
+    @ResponseBody
+    @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
+    public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
+        logger.info("开始罗列数据据基本信息");
+        DataSet dataSet = dataSetService.findByDataSetName(dataSetName);
+        if(dataSet.getId() ==0 ){
+            return ResultUtil.error(-1,"没有找到对应的数据集 Id");
+        }
+        return ResultUtil.success(dataSet);
+    }
 
     //查询  userName
     @ResponseBody
@@ -75,6 +86,15 @@ public class DataSetController {
     public ApiResult listInfoDataSetByUserName(@PathVariable("UserName") String userName){
         logger.info("开始依据用户名【 "+userName+" 】罗列数据据基本信息");
         List<DataSet> dataSets = dataSetService.findByUserName(userName);
+        return ResultUtil.success(dataSets);
+    }
+
+    //查询  user  Id
+    @ResponseBody
+    @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
+    public ApiResult listInfoDataSetByUserName(@PathVariable("UserId") int userId){
+        logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
+        List<DataSet> dataSets = dataSetService.findByUserId(userId);
         return ResultUtil.success(dataSets);
     }
 
@@ -230,6 +250,7 @@ public class DataSetController {
         dataSystem.setDatasetEnglishName(dataSet.getDataSetEnglishName());
         dataSystem.setDataSetId(dataSet.getId());
         dataSystem.setUserName(dataSet.getUserName());
+        dataSystem.setUserId(dataSet.getUserId());
         dataSystem.setDatasetCreateDate(dataSet.getDataSetCreateTime());
         dataSystem.setDatasetStoreurl(dataSet.getDataSetStoreUrl());
         dataSystem.setDatasetDesc(dataSet.getDataSetBasicDesc());

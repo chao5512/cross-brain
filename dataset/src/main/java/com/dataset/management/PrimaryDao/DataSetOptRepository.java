@@ -23,7 +23,7 @@ public interface DataSetOptRepository extends JpaRepository <DataSystem,String>{
 
     public List<DataSystem> findByDataSetName (String datasetName)throws IOException;
 
-    public List<DataSystem> findByUserName(String userName);
+    public List<DataSystem> findByUserId(int userId);
 
     public List<DataSystem> findAll(Sort sort);
 

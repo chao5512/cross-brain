@@ -31,8 +31,14 @@ public class DataSetService implements IntDataSetService {
     public DataSet findByDataSetEnglishName(String datasetName){
         return dataSetRepository.findByDataSetEnglishName(datasetName);
     }
+    public DataSet findByDataSetName(String datasetName){
+        return dataSetRepository.findByDataSetName(datasetName);
+    }
     public List<DataSet> findByUserName(String userName){
         return dataSetRepository.findByUserName(userName);
+    }
+    public List<DataSet> findByUserId(int userId){
+        return dataSetRepository.findByUserId(userId);
     }
 
     /**

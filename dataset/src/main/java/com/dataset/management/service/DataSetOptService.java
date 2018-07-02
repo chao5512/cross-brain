@@ -36,8 +36,8 @@ public class DataSetOptService implements IntDataSetOptService {
         return dataSetOptRepository.findByDataSetName(datasetName);
     }
     @Override
-    public List<DataSystem> findByUserName(String userName){
-        return dataSetOptRepository.findByUserName(userName);
+    public List<DataSystem> findByUserId(int userId){
+        return dataSetOptRepository.findByUserId(userId);
     }
 
     @Override

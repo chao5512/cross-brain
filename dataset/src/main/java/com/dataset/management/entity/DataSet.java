@@ -18,6 +18,8 @@ public class DataSet implements Serializable{
     private int id;
     @Column(name = "user_name")
     private String userName;
+    @Column(name ="user_Id")
+    private int userId;
     //数据集英文名称
     @Column(name = "dataset_english_name")
     private String dataSetEnglishName;
@@ -204,12 +206,11 @@ public class DataSet implements Serializable{
         datatype = datatype1;
     }
 
-//
-//    public Hiveinfo getHiveinfo() {
-//        return hiveinfo;
-//    }
-//    public void setHiveinfo(Hiveinfo hiveinfo) {
-//        DataSet.hiveinfo = hiveinfo;
-//    }
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
 
 }

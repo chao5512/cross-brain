@@ -36,6 +36,8 @@ public class DataSystem implements Serializable{
     private String dataSetSortType;
     @Column(name ="user_name")
     private String userName;
+    @Column(name ="user_Id")
+    private int userId;
 
 //    //用户名
 //    public String getDataSetUserId() {
@@ -146,5 +148,12 @@ public class DataSystem implements Serializable{
     }
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+    public void setUserId(int userId) {
+        this.userId = userId;
     }
 }
