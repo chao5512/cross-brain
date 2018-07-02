@@ -56,15 +56,13 @@ public class DataSetSystemController {
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create/{dataSetName}/{userName}_{userId}/{dataSetDesc}",method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{dataSetName}/{userId}/{dataSetDesc}",method = RequestMethod.POST)
     public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
-                                   @PathVariable(value = "userName") String userName,
                                    @PathVariable(value = "dataSetDesc") String datSetDesc,
                                    @PathVariable(value = "userId") int userId) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
-        dataSet.setUserName(userName);
         dataSet.setUserId(userId);
         dataSet.setDataSetBasicDesc(datSetDesc);
         dataSet.setDataSetHiveTableName(null);
@@ -75,7 +73,7 @@ public class DataSetSystemController {
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+userName+"/"+dataSetName;
+                +"/"+userId+"/"+dataSetName;
         dataSet.setDataSetStoreUrl(dataStoreUrl);
 
         Sort sort = basicSortBy();
@@ -153,7 +151,7 @@ public class DataSetSystemController {
         List<DataSystem> dataSystem = dataSetOptService.findByDataSetName(datasetName);
         logger.info("......."+dataSystem);
         logger.info("查询当前数据集名称："+dataSystem.get(0).getDatasetName());
-        if (dataSystem.get(0).getUserName().isEmpty()){
+        if (dataSystem.get(0).getUserId()==0){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystem);
@@ -165,8 +163,8 @@ public class DataSetSystemController {
     @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
     public ApiResult selectByUserId(@PathVariable(value = "UserId") int userId) throws IOException{
         List<DataSystem> dataSystems = dataSetOptService.findByUserId(userId);
-        logger.info("获取用户名："+dataSystems.get(0).getUserName());
-        if (dataSystems.get(0).getUserName().isEmpty()){
+        logger.info("获取用户Id："+dataSystems.get(0).getUserId());
+        if (dataSystems.get(0).getUserId()==0){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystems);
@@ -190,7 +188,7 @@ public class DataSetSystemController {
         dataSetOptService.deleteById(dataSetSystemId);
 
         DataSet dataSet = dataSetService.findById(dataSetId);
-        String userName = dataSet.getUserName();
+        int userId =dataSet.getUserId();
         String dataSetName = dataSet.getDataSetName();
         logger.info("获取数据集基本信息表：(对应表名)"+dataSet.getDataSetName());
         logger.info("准备从数据集基本信息表中删除数据集：");
@@ -208,9 +206,9 @@ public class DataSetSystemController {
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+userName+"/"+dataSetName;
+                +"/"+userId+"/"+dataSetName;
         String tmpUrl = DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+userName+"/"+dataSetName;
+                +"/"+userId+"/"+dataSetName;
 
 
         try {

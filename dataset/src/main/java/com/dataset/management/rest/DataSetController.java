@@ -92,7 +92,7 @@ public class DataSetController {
     //查询  user  Id
     @ResponseBody
     @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByUserName(@PathVariable("UserId") int userId){
+    public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
         logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
         List<DataSet> dataSets = dataSetService.findByUserId(userId);
         return ResultUtil.success(dataSets);

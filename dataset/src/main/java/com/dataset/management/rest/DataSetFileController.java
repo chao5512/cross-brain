@@ -83,13 +83,13 @@ public class DataSetFileController {
         Long hdfsPort = hdfsConfig.getHdfsProt();
 
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
+                +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
         //hdfs:8.8.8.8:900/DATASETSYSTEM/user/datasetName
 
         logger.info("数据集当前根目录："+dataStoreUrl);
 
         String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+contentdDataSet.getUserName()+"/"+contentdDataSet.getDataSetName();
+                +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
         logger.info("hdfs中数据集路径："+tmpPath);
         //校验文件是否存在
         List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);

@@ -9,9 +9,7 @@ spark = SparkSession \
     .appName("FPgrowth test") \
     .config("executor-memory", "512m") \
     .getOrCreate()
-data=(spark.read.text("/machen/data/sample_fpgrowth.txt")
-      .select(split("value","\s+")
-      .alias("items")))
+data = spark.read.csv("/machen/data/movie/ratings.csv", header=True)
 
 data.show(truncate=False)
 
