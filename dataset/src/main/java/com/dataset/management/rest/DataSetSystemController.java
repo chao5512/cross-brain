@@ -137,7 +137,7 @@ public class DataSetSystemController {
     @RequestMapping(value = "/selectByDataSetId/{dataSetId}",method = RequestMethod.GET)
     public ApiResult selectBydatasetId(@PathVariable(value = "dataSetId") int datasetId) throws IOException{
         DataSystem dataSystem = dataSetOptService.findByDataSetId(datasetId);
-        if (dataSystem.getDatasetEnglishName().isEmpty()){
+        if (dataSystem.getDatasetName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystem);
