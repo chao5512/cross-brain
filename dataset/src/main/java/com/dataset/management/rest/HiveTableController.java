@@ -52,6 +52,7 @@ public class HiveTableController {
         user.setId(id);
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(dataSetId));
+        System.out.println(dataSet.getId());
         boolean exist = hiveTableService.isExist(dataSet);
         if(exist){
             boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);

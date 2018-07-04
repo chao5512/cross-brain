@@ -3,10 +3,12 @@ package com.dataset.management;
 import com.dataset.management.SecondaryDao.DataSetMetastoreRepository;
 import com.dataset.management.SecondaryDao.HiveRepository;
 import com.dataset.management.entity.DataSet;
+import com.dataset.management.entity.DataSystem;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.HiveTableService;
+import com.dataset.management.service.IntDataSetOptService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -31,11 +34,20 @@ public class MetaData {
 
     @Autowired
     HiveRepository hiveRepository;
-    /*@Test
+
+    @Autowired
+    IntDataSetOptService dataSetOptService;
+    @Test
     public void test(){
-        boolean existLineDelim = repository.isExistLineDelim("203_titanic_orc");
-        System.out.println(existLineDelim);
-    }*/
+        try {
+            DataSystem byDataSetId = dataSetOptService.findByDataSetId(33);
+            System.out.println(byDataSetId.getDatasetStoreurl());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        /*boolean existLineDelim = repository.isExistLineDelim("203_titanic_orc");
+        System.out.println(existLineDelim);*/
+    }
 
    /* @Test
     public void test03(){
