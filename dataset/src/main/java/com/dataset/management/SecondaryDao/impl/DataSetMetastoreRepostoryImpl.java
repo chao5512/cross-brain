@@ -3,6 +3,7 @@ package com.dataset.management.SecondaryDao.impl;
 import com.dataset.management.SecondaryDao.DataSetMetastoreRepository;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
+import com.dataset.management.util.TableTypeTransform;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -78,7 +79,7 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                 StringBuffer sb = new StringBuffer("");
                 boolean existLineDelim = isExistLineDelim(tableName);
                 if(!existLineDelim){
-                    sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME,C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM,PT.PART_NAME\n" +
+                    sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME,C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM,PT.PART_NAME,S.INPUT_FORMAT\n" +
                             "FROM TBLS T " +
                             "LEFT JOIN TABLE_PARAMS P " +
                             "ON T.TBL_ID = P.TBL_ID " +
@@ -96,7 +97,7 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                 }else{
                     sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME," +
                             "C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM," +
-                            "D2.PARAM_VALUE LINE_DELIM,PT.PART_NAME " +
+                            "D2.PARAM_VALUE LINE_DELIM,PT.PART_NAME,S.INPUT_FORMAT " +
                             "FROM TBLS T " +
                             "JOIN TABLE_PARAMS P " +
                             "JOIN SDS S " +
@@ -127,6 +128,7 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                     if (n == 0) {
                         tableMeta.setTableName(resultSet.getString("TBL_NAME"));
                         tableMeta.setTableComment(resultSet.getString("TABLE_COMMENT"));
+                        tableMeta.setFiletype(TableTypeTransform.getFileType(resultSet.getString("INPUT_FORMAT")));
                         tableMeta.setFieldDelim(StringEscapeUtils.escapeJava(resultSet.getString("FIELD_DELIM")));
                         if (existLineDelim){
                             tableMeta.setLineDelim(StringEscapeUtils.escapeJava(resultSet.getString("LINE_DELIM")));
