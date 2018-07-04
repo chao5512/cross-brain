@@ -51,7 +51,7 @@ public class AIModelController {
     @RequestMapping(value= "/findByModelId")
     @ResponseBody
     public Model findModuleById(@RequestParam("modelid") String modelid, HttpServletResponse response){
-        return modelService.findById(Long.parseLong(modelid));
+        return modelService.findById(modelid);
     }
 
     @ApiOperation(value = "模型查询",httpMethod = "POST")
