@@ -1,0 +1,16 @@
+2018-06-21 21:01:04 [restartedMain] [org.springframework.boot.diagnostics.LoggingFailureAnalysisReporter] [ERROR] [42]- 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Field metastoreRepository in com.dataset.management.service.impl.DataSetMetastoreServiceImpl required a bean of type 'com.dataset.management.SecondaryDao.DataSetMetastoreRepository' that could not be found.
+
+
+Action:
+
+Consider defining a bean of type 'com.dataset.management.SecondaryDao.DataSetMetastoreRepository' in your configuration.
+
+ 

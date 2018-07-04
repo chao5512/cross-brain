@@ -5,9 +5,12 @@ import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.HiveTableService;
+import com.dataset.management.service.IntDataSetOptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
 
 /**
  * @ClassName HiveTableServiceImpl
@@ -31,7 +34,7 @@ public class HiveTableServiceImpl implements HiveTableService {
      */
     @Override
     @Transactional
-    public boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) {
+    public boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) throws IOException {
         boolean exist = hiveRepository.isExist(dataSet);
         if(!exist){
             hiveRepository.createTable(tableMeta,user,dataSet);
