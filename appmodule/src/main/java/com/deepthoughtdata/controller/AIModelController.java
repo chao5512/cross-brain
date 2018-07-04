@@ -1,6 +1,6 @@
 package com.deepthoughtdata.controller;
 
-import com.deepthoughtdata.entity.Module;
+import com.deepthoughtdata.entity.Model;
 import com.deepthoughtdata.service.ModuleService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -17,9 +17,9 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("module")
-@Api(value = "模型管理",description = "应用模块模型管理")
-public class ModuleController {
-    private final Logger logger = LoggerFactory.getLogger(ModuleController.class);
+@Api(value = "AI模型管理",description = "AI模型管理,模型相当于AI应用,用户在使用画板构建内容之前必须先创建模型")
+public class AIModelController {
+    private final Logger logger = LoggerFactory.getLogger(AIModelController.class);
 
     @Autowired
     private ModuleService moduleService;
@@ -28,12 +28,12 @@ public class ModuleController {
     @RequestMapping(value= "/create")
     @ResponseBody
     public boolean create(@RequestParam("modulename") String modulename,
-                       @RequestParam("moduletype") int moduletype,
+                       @RequestParam("moduletype") short moduletype,
                        @RequestParam("owner") long owner,
                        @RequestParam("createtime") String createtime, HttpServletResponse response){
-        Module module = new Module();
-        module.setModelname(modulename);
-        module.setModeltype(moduletype);
+        Model module = new Model();
+        module.setModelName(modulename);
+        module.setModelype(moduletype);
         module.setOwner(owner);
         module.setCreateTime(createtime);
         moduleService.create(module);
@@ -43,24 +43,24 @@ public class ModuleController {
     @ApiOperation(value = "模型查询",httpMethod = "POST")
     @RequestMapping(value= "/findByUser")
     @ResponseBody
-    public List<Module> findModuleByUser( @RequestParam("owner") String owner,HttpServletResponse response){
+    public List<Model> findModuleByUser(@RequestParam("owner") String owner, HttpServletResponse response){
         return moduleService.findByUser(owner);
     }
 
     @ApiOperation(value = "根据ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findById")
     @ResponseBody
-    public Module findModuleById( @RequestParam("modelid") String modelid,HttpServletResponse response){
+    public Model findModuleById(@RequestParam("modelid") String modelid, HttpServletResponse response){
         return moduleService.findById(Long.parseLong(modelid));
     }
 
     @ApiOperation(value = "模型查询",httpMethod = "POST")
     @RequestMapping(value= "/findModels")
     @ResponseBody
-    public List<Module> findModules(@RequestParam("startData") String startData,
-                                    @RequestParam("endData") String endData,
-                                    @RequestParam("type") String type,
-                                    @RequestParam("owner") String owner,HttpServletResponse response){
+    public List<Model> findModules(@RequestParam("startData") String startData,
+                                   @RequestParam("endData") String endData,
+                                   @RequestParam("type") String type,
+                                   @RequestParam("owner") String owner, HttpServletResponse response){
         return moduleService.findModels(startData,endData,type,owner);
     }
 
