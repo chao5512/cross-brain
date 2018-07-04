@@ -148,10 +148,10 @@ public class DataSetSystemController {
     @Transactional
     @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
     public ApiResult selectBydatasetName(@PathVariable(value = "dataSetName") String datasetName) throws IOException{
-        List<DataSystem> dataSystem = dataSetOptService.findByDataSetName(datasetName);
+        DataSystem dataSystem = dataSetOptService.findByDataSetName(datasetName);
         logger.info("......."+dataSystem);
-        logger.info("查询当前数据集名称："+dataSystem.get(0).getDatasetName());
-        if (dataSystem.get(0).getUserId()==0){
+        logger.info("查询当前数据集名称："+dataSystem.getDatasetName());
+        if (dataSystem.getDatasetName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystem);
