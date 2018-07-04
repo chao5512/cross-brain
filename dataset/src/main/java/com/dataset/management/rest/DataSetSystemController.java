@@ -101,7 +101,7 @@ public class DataSetSystemController {
         //体统表信息
         logger.info("数据集系统表开始创建：。。。。。");
         dataSetOptService.save(newDataSystem);
-        return  ResultUtil.success();
+        return  ResultUtil.success(dataSetOptService.save(newDataSystem));
     }
     //查询
     @ResponseBody
