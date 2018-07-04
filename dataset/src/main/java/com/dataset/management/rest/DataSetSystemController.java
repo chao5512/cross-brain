@@ -101,7 +101,7 @@ public class DataSetSystemController {
         //体统表信息
         logger.info("数据集系统表开始创建：。。。。。");
         dataSetOptService.save(newDataSystem);
-        return  ResultUtil.success();
+        return  ResultUtil.success(dataSetOptService.save(newDataSystem));
     }
     //查询
     @ResponseBody
@@ -137,7 +137,7 @@ public class DataSetSystemController {
     @RequestMapping(value = "/selectByDataSetId/{dataSetId}",method = RequestMethod.GET)
     public ApiResult selectBydatasetId(@PathVariable(value = "dataSetId") int datasetId) throws IOException{
         DataSystem dataSystem = dataSetOptService.findByDataSetId(datasetId);
-        if (dataSystem.getDatasetEnglishName().isEmpty()){
+        if (dataSystem.getDatasetName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystem);
@@ -148,10 +148,10 @@ public class DataSetSystemController {
     @Transactional
     @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
     public ApiResult selectBydatasetName(@PathVariable(value = "dataSetName") String datasetName) throws IOException{
-        List<DataSystem> dataSystem = dataSetOptService.findByDataSetName(datasetName);
+        DataSystem dataSystem = dataSetOptService.findByDataSetName(datasetName);
         logger.info("......."+dataSystem);
-        logger.info("查询当前数据集名称："+dataSystem.get(0).getDatasetName());
-        if (dataSystem.get(0).getUserId()==0){
+        logger.info("查询当前数据集名称："+dataSystem.getDatasetName());
+        if (dataSystem.getDatasetName().isEmpty()){
             return ResultUtil.error(-1,"所查找的数据集不存在");
         }
         return ResultUtil.success(dataSystem);

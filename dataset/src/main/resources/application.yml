@@ -47,7 +47,6 @@ hive:
 hadoop:
   url: hdfs://182.92.82.3
   port: 8020
-  hive-path: /tmp/user
 
 
 
