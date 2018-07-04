@@ -194,6 +194,9 @@ public class DataSetFileController {
         sort = basicSortBy();
         logger.info("查看数据集文件的列表：");
         List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
+        if(fileList.isEmpty()){
+            return ResultUtil.error(-1,"没有文件");
+        }
         return ResultUtil.success(fileList);
     }
 
