@@ -21,7 +21,7 @@ public interface DataSetOptRepository extends JpaRepository <DataSystem,String>{
 
     public DataSystem findByDataSetId(int datasetId) throws IOException;
 
-    public List<DataSystem> findByDataSetName (String datasetName)throws IOException;
+    public DataSystem findByDataSetName (String datasetName)throws IOException;
 
     public List<DataSystem> findByUserId(int userId);
 
