@@ -1,7 +1,7 @@
 package com.deepthoughtdata.service.impl;
 
-import com.deepthoughtdata.dao.ModuleRepository;
-import com.deepthoughtdata.service.ModuleService;
+import com.deepthoughtdata.dao.ModelRepository;
+import com.deepthoughtdata.service.ModelService;
 import com.deepthoughtdata.entity.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +14,11 @@ import javax.transaction.Transactional;
 import java.util.Date;
 
 @Service
-public class ModuleServiceImpl implements ModuleService{
-    private final Logger logger = LoggerFactory.getLogger(ModuleServiceImpl.class);
+public class ModelServiceImpl implements ModelService {
+    private final Logger logger = LoggerFactory.getLogger(ModelServiceImpl.class);
 
     @Autowired
-    private ModuleRepository moduleRepository;
+    private ModelRepository moduleRepository;
 
     @Override
     public Model create(Model module){

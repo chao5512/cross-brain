@@ -4,7 +4,7 @@ import com.deepthoughtdata.entity.Model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
-public interface ModuleRepository extends JpaRepository<Model, Long> {
+public interface ModelRepository extends JpaRepository<Model, Long> {
     Model save(Model module); //增加&修改用户
 
     List<Model> findByOwner(long owner);//根据用户ID查询Module
