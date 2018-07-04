@@ -33,18 +33,18 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public List<Model> findModels(String startData, String endData, String type, String userid){
-        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeAfterAndCreateTimeBefore(Integer.parseInt(type),
+        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Integer.parseInt(type),
                 Long.parseLong(userid),startData,endData);
     }
 
     @Override
     @Transactional
     public long delModule(String id,String userid){
-        return moduleRepository.deleteByModelIdAndOwner(Long.parseLong(id),Long.parseLong(userid));
+        return moduleRepository.deleteByModelIdAndOwner(id,Long.parseLong(userid));
     }
 
     @Override
-    public Model findById(long modelid){
+    public Model findById(String modelid){
         return moduleRepository.findByModelId(modelid);
     }
 

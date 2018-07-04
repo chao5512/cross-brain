@@ -26,9 +26,6 @@ public class NodeData {
     //节点名称，可以根据名称判断出节点类型
     private String name;
 
-   /* //节点执行方法路径
-    private String path;*/
-
     //节点出度，下一个节点id
     private String outputNodeId;
 
@@ -64,14 +61,6 @@ public class NodeData {
     public void setName(String name) {
         this.name = name;
     }
-
-   /* public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
-    }*/
 
     public String getOutputNodeId() {
         return outputNodeId;

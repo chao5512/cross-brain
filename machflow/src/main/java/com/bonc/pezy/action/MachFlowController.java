@@ -4,6 +4,7 @@ import com.bonc.pezy.flow.MachFlow;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -13,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by 冯刚 on 2018/6/14.
  */
-
+@CrossOrigin
 @Controller
 @RequestMapping("/machflow")
 public class MachFlowController {
@@ -32,8 +33,11 @@ public class MachFlowController {
 
     @RequestMapping("/run")
     @ResponseBody
-    public void run(@RequestParam("processId") String processId,HttpServletResponse respons){
+    public String run(@RequestParam("processId") String processId,HttpServletResponse respons){
+
+        System.out.println("111111111111111111111111");
         MachFlow mf = new MachFlow();
         mf.startActiviti(processId);
+        return "sucess";
     }
 }

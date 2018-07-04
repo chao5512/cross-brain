@@ -5,6 +5,7 @@ import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.AppData;
 import com.bonc.pezy.dataconfig.DataConfig;
 import com.bonc.pezy.dataconfig.NodeData;
+import com.bonc.pezy.dataconfig.NodeSet;
 import com.bonc.pezy.pyapi.JavaRequestPythonService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
@@ -24,6 +25,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
 
 
     private AppData appData = AppData.getAppData();
+    private NodeSet nodeSet = NodeSet.getNodeSet();
     private DataConfig dataConfig = DataConfig.getDataConfig();
 
     @Override
@@ -41,7 +43,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
 
                 param.put("appName",appData.getAppName());
 
-                Map<String, NodeData> nodeMap = appData.getNodeMap();
+                Map<String, NodeData> nodeMap = nodeSet.getNodeMap();
 
                 nodeMap.forEach((key,value)->{
 
