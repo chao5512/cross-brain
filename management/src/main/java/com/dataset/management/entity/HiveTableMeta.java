@@ -4,13 +4,6 @@ package com.dataset.management.entity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-/**
- * @ClassName HiveTableMeta
- * @Description 表实体类
- * @Auther: 王培文
- * @Date: 2018/6/5
- * @Version 1.0
- **/
 @Component
 public class HiveTableMeta {
     //表名
@@ -23,16 +16,6 @@ public class HiveTableMeta {
     private String fieldDelim;
     //行分隔符
     private String lineDelim;
-    //文件存储类型
-    private String filetype;
-
-    public String getFiletype() {
-        return filetype;
-    }
-
-    public void setFiletype(String filetype) {
-        this.filetype = filetype;
-    }
 
     public String getTableName() {
         return tableName;
