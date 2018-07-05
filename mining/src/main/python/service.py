@@ -96,6 +96,10 @@ def sheet():
 # 直方图
 @app.route("/hist", methods=['POST'])
 def hist():
+    requestData = request.form.to_dict()
+    tableName = requestData['tableName']
+    x = requestData['x']
+    y = requestData['y']
     train_df = HiveClient.queryForAll(tablename="titanic_orc")
     # 设置主题，可选项有darkgrid , whitegrid , dark , white ,和 ticks
     sns.set(style="dark", palette="muted", color_codes=True)
