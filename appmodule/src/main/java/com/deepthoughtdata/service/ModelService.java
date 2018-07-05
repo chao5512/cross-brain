@@ -6,10 +6,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public interface ModuleService {
+public interface ModelService {
     public Model create(Model module);
 
-    public Model findById(long modelid);
+    public Model findById(String modelid);
 
     public List<Model> findByUser(String userid);
 

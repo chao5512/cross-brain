@@ -3,6 +3,9 @@ package com.dataset.management.service;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
+
+import java.io.IOException;
+
 /**
  * @ClassName HiveTableService
  * @Description 操作hive接口
@@ -11,7 +14,7 @@ import com.dataset.management.entity.User;
  * @Version 1.0
  **/
 public interface HiveTableService {
-    boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet);
+    boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) throws IOException;
     boolean alterTableStructure(HiveTableMeta tableMeta,DataSet dataSet);
     boolean isExist(DataSet dataSet);
     String getTableNameByDataSet(DataSet dataSet);

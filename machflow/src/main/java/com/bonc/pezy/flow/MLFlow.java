@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.AppData;
 import com.bonc.pezy.dataconfig.NodeData;
+import com.bonc.pezy.dataconfig.NodeSet;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 
@@ -18,6 +19,7 @@ import java.util.Map;
 public class MLFlow {
 
     private AppData appData = AppData.getAppData();
+    private NodeSet nodeSet = NodeSet.getNodeSet();
 
     public Process generateMLBpmnModel(JSONObject jb){
 
@@ -44,14 +46,15 @@ public class MLFlow {
         });
 
         if(map.size()>0){
-            appData.setNodeMap(map);
+            /*appData.setNodeMap(map);*/
+            nodeSet.setNodeMap(map);
         }
         process.setId(appData.getProcessId());
         ArrayList<FlowElement> listnode = new ArrayList<FlowElement>();
         FlowElement[] flowElements = new FlowElement[100];
         List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
 
-        appData.getNodeMap().forEach((key,value)->{
+        nodeSet.getNodeMap().forEach((key,value)->{
             if(!"".equals(value.getInputNodeId())&&!"".equals(value.getOutputNodeId())){
                 UserTask userTask = generateNode.createUserTask(key,key);
                 ExtensionElement extensionElement= generateNode.createExtensionElement("create", Constants.LISTENER_U);

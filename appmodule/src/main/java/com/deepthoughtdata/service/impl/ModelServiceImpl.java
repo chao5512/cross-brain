@@ -1,7 +1,7 @@
 package com.deepthoughtdata.service.impl;
 
-import com.deepthoughtdata.dao.ModuleRepository;
-import com.deepthoughtdata.service.ModuleService;
+import com.deepthoughtdata.dao.ModelRepository;
+import com.deepthoughtdata.service.ModelService;
 import com.deepthoughtdata.entity.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,11 +14,11 @@ import javax.transaction.Transactional;
 import java.util.Date;
 
 @Service
-public class ModuleServiceImpl implements ModuleService{
-    private final Logger logger = LoggerFactory.getLogger(ModuleServiceImpl.class);
+public class ModelServiceImpl implements ModelService {
+    private final Logger logger = LoggerFactory.getLogger(ModelServiceImpl.class);
 
     @Autowired
-    private ModuleRepository moduleRepository;
+    private ModelRepository moduleRepository;
 
     @Override
     public Model create(Model module){
@@ -33,18 +33,18 @@ public class ModuleServiceImpl implements ModuleService{
 
     @Override
     public List<Model> findModels(String startData, String endData, String type, String userid){
-        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeAfterAndCreateTimeBefore(Integer.parseInt(type),
+        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Integer.parseInt(type),
                 Long.parseLong(userid),startData,endData);
     }
 
     @Override
     @Transactional
     public long delModule(String id,String userid){
-        return moduleRepository.deleteByModelIdAndOwner(Long.parseLong(id),Long.parseLong(userid));
+        return moduleRepository.deleteByModelIdAndOwner(id,Long.parseLong(userid));
     }
 
     @Override
-    public Model findById(long modelid){
+    public Model findById(String modelid){
         return moduleRepository.findByModelId(modelid);
     }
 

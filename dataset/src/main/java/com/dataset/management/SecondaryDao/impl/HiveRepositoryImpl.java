@@ -1,16 +1,16 @@
 package com.dataset.management.SecondaryDao.impl;
 
 import com.dataset.management.SecondaryDao.HiveRepository;
-import com.dataset.management.entity.DataSet;
-import com.dataset.management.entity.FieldMeta;
-import com.dataset.management.entity.HiveTableMeta;
-import com.dataset.management.entity.User;
+import com.dataset.management.entity.*;
+import com.dataset.management.service.IntDataSetOptService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -30,8 +30,12 @@ public class HiveRepositoryImpl implements HiveRepository {
     @Resource(name = "secondaryJdbcTemplate")
     private JdbcTemplate jdbcTemplate;
 
-    @Value("${hadoop.hive-path}")
-    private String hivePath;
+    @Autowired
+    private IntDataSetOptService dataSetOptService;
+
+
+    /*@Value("${hadoop.hive-path}")
+    private String hivePath;*/
 
     /**
      * 功能描述:创建表
@@ -43,7 +47,7 @@ public class HiveRepositoryImpl implements HiveRepository {
      * @date: 2018/6/5 15:58
      */
     @Override
-    public void createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) {
+    public void createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) throws IOException {
 //        tableMeta.getLineDelim()==""
         StringBuffer sb = new StringBuffer("");
         sb.append("create external table if not exists ");
@@ -78,9 +82,11 @@ public class HiveRepositoryImpl implements HiveRepository {
         }else{
             //无行分隔符
         }
-        sb.append("stored as textfile ");
-        sb.append("location '");
-        sb.append(hivePath+user.getId()+"'");
+        sb.append("stored as ");
+        sb.append(tableMeta.getFiletype());
+        sb.append(" location '");
+        DataSystem dataSystem = dataSetOptService.findByDataSetId(dataSet.getId());
+        sb.append(dataSystem.getDatasetStoreurl()+"'");
         String sql = sb.toString();
         System.out.println(sql);
         hiveJdbcTemplate.execute(sql);
@@ -216,6 +222,17 @@ public class HiveRepositoryImpl implements HiveRepository {
         System.out.println("修改表字段信息语句："+updateTableFieldsSql);
         int alterTableFieldsUpateCount = hiveJdbcTemplate.update(updateTableFieldsSql);
         System.out.println("更改表字段信息影响行数："+alterTableFieldsUpateCount);
+        //更改表的存储类型
+        //ALTER TABLE table_name SET FILEFORMAT file_format
+        StringBuffer updateTableStoreType = new StringBuffer("");
+        updateTableStoreType.append("ALTER TABLE ");
+        updateTableStoreType.append(newTableName);
+        updateTableStoreType.append(" SET FILEFORMAT ");
+        updateTableStoreType.append(tableMeta.getFiletype());
+        String updateTableStoreTypeSql = updateTableStoreType.toString();
+        System.out.println("修改表存储类型语句："+updateTableStoreTypeSql);
+        int updateTableStoreTypeCount = hiveJdbcTemplate.update(updateTableStoreTypeSql);
+        System.out.println("更改表存储类型影响行数："+updateTableStoreTypeCount);
         return true;
     }
 }

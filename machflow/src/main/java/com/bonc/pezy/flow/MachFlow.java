@@ -50,6 +50,8 @@ public class MachFlow {
                     .addClasspathResource(filename)
                     .deploy();
             runtimeService.startProcessInstanceByKey(processId);
+        }else {
+            System.out.println("NO task is start");
         }
 
     }

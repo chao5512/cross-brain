@@ -31,7 +31,7 @@ public class ModelIdGenerator implements IdentifierGenerator {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 int id = rs.getInt("nextval");
-                String code = prefix + StringUtils.leftPad("" + id,3, '0');
+                String code = prefix + StringUtils.leftPad("" + id,5, '0');
                 //logger.debug("Generated Stock Code: " + code);
                 System.out.println(code);
                 return code;

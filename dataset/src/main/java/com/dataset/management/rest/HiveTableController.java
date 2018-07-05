@@ -11,10 +11,9 @@ import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 /**
  * @ClassName HiveTableController
@@ -53,6 +52,7 @@ public class HiveTableController {
         user.setId(id);
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(dataSetId));
+        System.out.println(dataSet.getId());
         boolean exist = hiveTableService.isExist(dataSet);
         if(exist){
             boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
@@ -62,27 +62,34 @@ public class HiveTableController {
             }
             return ResultUtil.error(-1,"更新失败");
         }else{
-            boolean table = hiveTableService.createTable(tableMeta, user, dataSet);
-            //更新hive 表名称和其他相关
-            DataSet dataSetConTent = dataSetService.findById(Integer.parseInt(dataSetId));
-            String hiveTableName = tableMeta.getTableName();
-            long timetmp = System.currentTimeMillis();
-            String hiveTableID = hiveTableName+"_"+timetmp;
-            dataSetConTent.setDataSetHiveTableName(hiveTableName);
-            dataSetConTent.setDataSetHiveTableId(hiveTableID);
+            boolean table = false;
+            try {
+                table = hiveTableService.createTable(tableMeta, user, dataSet);
+                //更新hive 表名称和其他相关
+                DataSet dataSetConTent = dataSetService.findById(Integer.parseInt(dataSetId));
+                String hiveTableName = tableMeta.getTableName();
+                long timetmp = System.currentTimeMillis();
+                String hiveTableID = hiveTableName+"_"+timetmp;
+                dataSetConTent.setDataSetHiveTableName(hiveTableName);
+                dataSetConTent.setDataSetHiveTableId(hiveTableID);
 
-            String hdfsUrl = hdfsConfig.getHdfsUrl();
-            Long hdfsPort = hdfsConfig.getHdfsProt();
-            String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                    +"/"+dataSetConTent.getUserName()+"/"+dataSetConTent.getDataSetName();
-            dataSetConTent.setDataSetStoreUrl(dataStoreUrl);
-            dataSetService.save(dataSetConTent);
+                String hdfsUrl = hdfsConfig.getHdfsUrl();
+                Long hdfsPort = hdfsConfig.getHdfsProt();
+                String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                        +"/"+dataSetConTent.getUserName()+"/"+dataSetConTent.getDataSetName();
+                dataSetConTent.setDataSetStoreUrl(dataStoreUrl);
+                dataSetService.save(dataSetConTent);
 
-            if(table){
-                return ResultUtil.success();
-            }else {
-                return ResultUtil.error(-1,"表已经存在");
+                if(table){
+                    return ResultUtil.success();
+                }else {
+                    return ResultUtil.error(-1,"表已经存在");
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return ResultUtil.error(-1,"更新失败");
             }
+
         }
     }
 
