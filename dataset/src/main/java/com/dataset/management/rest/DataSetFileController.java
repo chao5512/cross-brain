@@ -165,7 +165,7 @@ public class DataSetFileController {
         contentdDataSet.setDataSetLastUpdateTime(newTime);
         dataSetService.save(contentdDataSet);
 
-        return ResultUtil.success("upload files success");
+        return ResultUtil.success(dataSetFileService.findDataSetFilesByDataSetId(dataSetId));
     }
 
     //查询
