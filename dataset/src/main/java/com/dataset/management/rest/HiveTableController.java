@@ -11,10 +11,7 @@ import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -55,6 +52,7 @@ public class HiveTableController {
         user.setId(id);
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(dataSetId));
+        System.out.println(dataSet.getId());
         boolean exist = hiveTableService.isExist(dataSet);
         if(exist){
             boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);

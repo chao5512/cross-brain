@@ -85,7 +85,7 @@ public class HiveRepositoryImpl implements HiveRepository {
         sb.append("stored as ");
         sb.append(tableMeta.getFiletype());
         sb.append(" location '");
-        DataSystem dataSystem = dataSetOptService.findById(dataSet.getId());
+        DataSystem dataSystem = dataSetOptService.findByDataSetId(dataSet.getId());
         sb.append(dataSystem.getDatasetStoreurl()+"'");
         String sql = sb.toString();
         System.out.println(sql);
