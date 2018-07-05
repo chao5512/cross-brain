@@ -41,12 +41,12 @@ public class Model implements Serializable{
         this.modelName = modelName;
     }
 
-    public short getModelype() {
+    public short getModelType() {
         return modelType;
     }
 
-    public void setModelype(short modelype) {
-        this.modelType = modelype;
+    public void setModelType(short modelType) {
+        this.modelType = modelType;
     }
 
     public long getOwner() {
