@@ -33,7 +33,7 @@ public class AIModelController {
                        @RequestParam("createtime") String createtime, HttpServletResponse response){
         Model module = new Model();
         module.setModelName(modulename);
-        module.setModelype(moduletype);
+        module.setModelType(moduletype);
         module.setOwner(owner);
         module.setCreateTime(createtime);
         modelService.create(module);
