@@ -39,16 +39,16 @@ public class DataSetMiningController {
 
 
     /**
-     * 功能描述:根据用户名查询数据集名字
-     * @param userName
+     * 功能描述:根据用户Id查询数据集名字
+     * @param userId
      * @return: com.dataset.management.common.ApiResult
      * @auther: 王培文
      * @date: 2018/6/21 15:22
      */
     @RequestMapping(value = "dataSetTableName")
-    public ApiResult getDataSetName(@RequestParam("userName") String userName){
+    public ApiResult getDataSetName(@RequestParam("userId") String userId){
         logger.info("执行了。。。。。。。。");
-        List<DataSet> dataSets = dataSetService.findByUserName(userName);
+        List<DataSet> dataSets = dataSetService.findByUserId(Integer.parseInt(userId));
         List<String> dataSetTableNameList = new ArrayList<>();
         for (DataSet dataSet:dataSets) {
             String tableName = tableService.getTableNameByDataSet(dataSet);
