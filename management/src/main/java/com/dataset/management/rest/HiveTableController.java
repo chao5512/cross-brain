@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("hive")
-@CrossOrigin
 public class HiveTableController {
     @Autowired
     private HiveTableService hiveTableService;

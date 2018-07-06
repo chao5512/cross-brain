@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * Created by 冯刚 on 2018/6/14.
  */
-@CrossOrigin
 @Controller
 @RequestMapping("/machflow")
 public class MachFlowController {
