@@ -112,10 +112,11 @@ public class DataSetSystemController {
         if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
                 && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
                 && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)
-                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)){
+                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)
+                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_NAME)){
             return ResultUtil.error(-1,"排序规则不符合规定");
         }
-        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
+        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_NAME)
                 || !sortType.equals(DataSetConsts.SORTTYPE_ASC)){
             logger.info("排序方式需要变更");
             sort = changSortBy(sortType,sortBy);
@@ -251,7 +252,7 @@ public class DataSetSystemController {
         dataSet.setDataSetName(DataSetConsts.DATASET_CHINA_NAME);
         dataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
         dataSet.setDataSetUpdateDesc(null);
-        dataSet.setDataSetSortBY(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME);
+        dataSet.setDataSetSortBY(DataSetConsts.SORT_BY_DATASET_NAME);
         dataSet.setDataSetSortType(DataSetConsts.SORTTYPE_ASC);
         dataSet.setDataSetSize(DataSetConsts.MAX_CONTENER);
         dataSet.setDataSetFileCount(DataSetConsts.DATASET_FILECOUNT_ZERO);
