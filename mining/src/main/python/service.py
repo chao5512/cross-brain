@@ -5,7 +5,6 @@ from io import BytesIO
 from result import Result
 import seaborn as sns
 import matplotlib.pyplot as plt
-from flask_cors import *
 from hiveutil import HiveClient
 from jsoncustom import JsonCustomEncoder
 import numpy as np
@@ -13,11 +12,7 @@ from stringutils import StringTolist
 
 import json
 import simplejson
-
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
-
-
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
@@ -143,24 +138,31 @@ def boxplot():
     y = data['y']
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                     mimetype='application/json')
-    if (len(y) == 1):
+    if (len(y) == 1 and y[0]!=''):
         y = y[0]
+    elif (len(y) == 1 and y[0]==''):
+        y = None
     else:
-        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
-    sns.boxplot(y=y, x=x, hue=hue, data=train_df, palette="muted")
+    try:
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
+        sns.boxplot(y=y, x=x, hue=hue, data=train_df, palette="muted")
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -173,25 +175,32 @@ def violinplot():
     y = data['y']
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    if (len(y) == 1):
+    if (len(y) == 1 and y[0]!=''):
         y = y[0]
+    elif (len(y) == 1 and y[0]==''):
+        y = None
     else:
-        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
-    sns.violinplot(y=y, x=x, hue=hue, data=train_df,
+    try:
+        sns.violinplot(y=y, x=x, hue=hue, data=train_df,
                    palette="muted")
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -204,25 +213,32 @@ def swarmplot():
     y = data['y']
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    if (len(y) == 1):
+    if (len(y) == 1 and y[0]!=''):
         y = y[0]
+    elif (len(y) == 1 and y[0]==''):
+        y = None
     else:
-        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
-    sns.swarmplot(y=y, x=x, hue=hue, data=train_df,
+    try:
+        sns.swarmplot(y=y, x=x, hue=hue, data=train_df,
                   palette="muted")
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -235,26 +251,33 @@ def barplot():
     y = data['y']
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    if (len(y) == 1):
+    if (len(y) == 1 and y[0]!=''):
         y = y[0]
+    elif (len(y) == 1 and y[0]==''):
+        y = None
     else:
-        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     # estimator=median,mean
-    sns.barplot(y=y, x=x, hue=hue, data=train_df, palette="muted",
+    try:
+        sns.barplot(y=y, x=x, hue=hue, data=train_df, palette="muted",
                 estimator=np.median, ci=0)
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -265,19 +288,24 @@ def countplot():
     tableName = data['tableName']
     x = data['x']
     x=StringTolist.toList(x)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
 
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
-    sns.countplot(x=x, hue=hue, data=train_df, palette="muted")
+    try:
+        sns.countplot(x=x, hue=hue, data=train_df, palette="muted")
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -288,18 +316,23 @@ def factorplot():
     tableName = data['tableName']
     x = data['x']
     x=StringTolist.toList(x)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         col = None
     elif (len(x) == 2):
         x, col = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
-    sns.factorplot(x=x, col=col, data=train_df, kind="count")
+    try :
+        sns.factorplot(x=x, col=col, data=train_df, kind="count")
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 
@@ -312,25 +345,32 @@ def lmplot():
     y = data['y']
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
-    if (len(x) == 1):
+    if (len(x) == 1 and x[0]!=''):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    if (len(y) == 1):
+    if (len(y) == 1 and y[0]!=''):
         y = y[0]
+    elif (len(y) == 1 and y[0]==''):
+        y = None
     else:
-        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
-    sns.lmplot(y=y, x=x, hue=hue,
+    try:
+        sns.lmplot(y=y, x=x, hue=hue,
                data=train_df, palette="muted", order=2)
+    except BaseException as e:
+        result= Result(code=1002, data=None, message=e.args)
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     return base64image()
 
 

@@ -10,7 +10,7 @@ class HiveClient:
         """
         创建 engine
         """
-        HiveClient.engine = create_engine('hive://172.16.31.91:10000/%s'%(database))
+        HiveClient.engine = create_engine('hive://182.92.82.3:10000/%s'%(database))
         return HiveClient.engine
     @staticmethod
     def queryByRowNums(tablename,rownums=1000,database="default"):
