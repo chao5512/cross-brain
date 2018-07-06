@@ -101,7 +101,7 @@ public class DataSetController {
 
     //查询全部
     @ResponseBody
-    @RequestMapping(value = "/selectAll/{dataSetSortBy},{dataSetSortType}",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectAll/{dataSetSortBy}/{dataSetSortType}",method = RequestMethod.GET)
     public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSortBy") String sortBy,
                                       @PathVariable(value = "dataSetSortType") String sortType) throws IOException{
         Sort sort;
@@ -188,6 +188,7 @@ public class DataSetController {
         dataSetOptService.save(newDataSystem);
         return ResultUtil.success(newDataSet);
     }
+
 
     /**
      * 清空

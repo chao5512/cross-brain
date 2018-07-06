@@ -149,8 +149,7 @@ public class DataSetFileController {
                 outputStream.close();
             }
         }
-
-
+        List<DataSetFile> newDatasetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
         //修改数据集必要参数
         logger.info("上传完毕，数据集状态更改");
         contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
@@ -164,8 +163,7 @@ public class DataSetFileController {
         String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
         contentdDataSet.setDataSetLastUpdateTime(newTime);
         dataSetService.save(contentdDataSet);
-
-        return ResultUtil.success(dataSetFileService.findDataSetFilesByDataSetId(dataSetId));
+        return ResultUtil.success(newDatasetFiles);
     }
 
     //查询
