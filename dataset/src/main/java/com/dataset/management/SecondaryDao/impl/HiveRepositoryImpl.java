@@ -71,7 +71,6 @@ public class HiveRepositoryImpl implements HiveRepository {
         sb.append(")");
         sb.append("comment '");
         sb.append(tableMeta.getTableComment()+"' ");
-        sb.append("partitioned by(dt string) ");
         sb.append("row format delimited fields terminated by '");
         sb.append(tableMeta.getFieldDelim()+"' ");
         //根据是否存在行分隔符进行创建表
