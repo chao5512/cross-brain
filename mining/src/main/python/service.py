@@ -9,6 +9,7 @@ from flask_cors import *
 from hiveutil import HiveClient
 from jsoncustom import JsonCustomEncoder
 import numpy as np
+from stringutils import StringTolist
 
 import json
 import simplejson
@@ -102,30 +103,36 @@ def hist():
     requestData = request.form.to_dict()
     tableName = requestData['tableName']
     x = requestData['x']
-    y = requestData['y']
-    train_df = HiveClient.queryForAll(tablename="titanic_orc")
+    x=StringTolist.toList(x)
+    print(x)
+    print(len(x))
+    if (len(x) == 2):
+        xlabel = x[0]
+        row = x[1]
+        col = None
+        hue = None
+    elif (len(x) == 3):
+        xlabel = x[0]
+        row = x[1]
+        col = x[2]
+        hue = None
+    elif (len(x) == 4):
+        xlabel = x[0]
+        row = x[1]
+        col = x[2]
+        hue = x[3]
+    else :
+        result= Result(code=1001, data=None, message="横坐标值不能超过3个或者少于1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
+    train_df = HiveClient.queryForAll(tablename=tableName)
     # 设置主题，可选项有darkgrid , whitegrid , dark , white ,和 ticks
     sns.set(style="dark", palette="muted", color_codes=True)
-    g = sns.FacetGrid(train_df, hue='survived')
+    g = sns.FacetGrid(row=row, col=col, hue=hue,data=train_df)
     # alpha颜色对比度
-    g.map(plt.hist, 'age', alpha=0.7, bins=20)
+    g.map(plt.hist, xlabel, alpha=0.7, bins=20)
     g.add_legend()
     return base64image()
-
-
-@app.route("/hist1", methods=['POST'])
-def hist1():
-    train_df = HiveClient.queryForAll(tablename="titanic_orc")
-    # 设置主题，可选项有darkgrid , whitegrid , dark , white ,和 ticks
-    sns.set(style="dark", palette="muted", color_codes=True)
-    g = sns.FacetGrid(train_df, col='survived', row='pclass', size=2.2,
-                      aspect=1.6)
-    # alpha颜色对比度
-    g.map(plt.hist, 'age', alpha=0.7, bins=20)
-    g.add_legend()
-    # plt.savefig("examples1.jpg")
-    return base64image()
-
 
 # 箱线图
 @app.route("/boxplot", methods=['POST'])
@@ -134,17 +141,23 @@ def boxplot():
     tableName = data['tableName']
     x = data['x']
     y = data['y']
+    x=StringTolist.toList(x)
+    y=StringTolist.toList(y)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                    mimetype='application/json')
     if (len(y) == 1):
         y = y[0]
     else:
-        return Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.boxplot(y=y, x=x, hue=hue, data=train_df, palette="muted")
@@ -158,17 +171,23 @@ def violinplot():
     tableName = data['tableName']
     x = data['x']
     y = data['y']
+    x=StringTolist.toList(x)
+    y=StringTolist.toList(y)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     if (len(y) == 1):
         y = y[0]
     else:
-        return Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.violinplot(y=y, x=x, hue=hue, data=train_df,
@@ -183,17 +202,23 @@ def swarmplot():
     tableName = data['tableName']
     x = data['x']
     y = data['y']
+    x=StringTolist.toList(x)
+    y=StringTolist.toList(y)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     if (len(y) == 1):
         y = y[0]
     else:
-        return Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.swarmplot(y=y, x=x, hue=hue, data=train_df,
@@ -208,17 +233,23 @@ def barplot():
     tableName = data['tableName']
     x = data['x']
     y = data['y']
+    x=StringTolist.toList(x)
+    y=StringTolist.toList(y)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     if (len(y) == 1):
         y = y[0]
     else:
-        return Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     # estimator=median,mean
@@ -233,14 +264,17 @@ def countplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    x=StringTolist.toList(x)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
+
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.countplot(x=x, hue=hue, data=train_df, palette="muted")
@@ -253,12 +287,16 @@ def factorplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    x=StringTolist.toList(x)
     if (len(x) == 1):
         x = x[0]
         col = None
     elif (len(x) == 2):
         x, col = x
+    else:
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.factorplot(x=x, col=col, data=train_df, kind="count")
@@ -272,17 +310,23 @@ def lmplot():
     tableName = data['tableName']
     x = data['x']
     y = data['y']
+    x=StringTolist.toList(x)
+    y=StringTolist.toList(y)
     if (len(x) == 1):
         x = x[0]
         hue = None
     elif (len(x) == 2):
         x, hue = x
     else:
-        return Result(code=1001, data=None, message="横坐标值不能超过2个")
+        result= Result(code=1001, data=None, message="横坐标值不能超过2个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     if (len(y) == 1):
         y = y[0]
     else:
-        return Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        result= Result(code=1001, data=None, message="纵坐标值不能超过1个")
+        return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
     train_df = HiveClient.queryForAll(tablename=tableName)
     sns.set_style("whitegrid")
     sns.lmplot(y=y, x=x, hue=hue,

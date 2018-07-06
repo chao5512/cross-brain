@@ -10,7 +10,7 @@ class HiveClient:
         """
         创建 engine
         """
-        HiveClient.engine = create_engine('hive://172.16.31.92:10000/%s'%(database))
+        HiveClient.engine = create_engine('hive://172.16.31.91:10000/%s'%(database))
         return HiveClient.engine
     @staticmethod
     def queryByRowNums(tablename,rownums=1000,database="default"):
@@ -32,7 +32,7 @@ class HiveClient:
         return number
 
 if __name__ == '__main__':
-    datas = HiveClient.queryForAll(tablename="203_titanic_orc",rownums=10)
+    datas = HiveClient.queryByRowNums(tablename="titanic_orc",rownums=10)
     # number = HiveClient.queryRowNumber(tablename='studentno')
     # list=number.head().to_dict(orient='split')['data']
     # print(list)
