@@ -1,2 +1,1 @@
-# cross-brain
-人工智能模型算法服务
+version:beh-7.0

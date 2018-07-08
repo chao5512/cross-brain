@@ -12,6 +12,9 @@ from stringutils import StringTolist
 
 import json
 import simplejson
+
+plt.switch_backend('agg')
+
 app = Flask(__name__)
 @app.route("/health")
 def health():
