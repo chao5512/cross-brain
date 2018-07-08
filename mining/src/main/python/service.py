@@ -160,6 +160,7 @@ def boxplot():
         sns.set_style("whitegrid")
         sns.boxplot(y=y, x=x, hue=hue, data=train_df, palette="muted")
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -192,12 +193,13 @@ def violinplot():
         result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
     try:
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
         sns.violinplot(y=y, x=x, hue=hue, data=train_df,
                    palette="muted")
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -230,12 +232,13 @@ def swarmplot():
         result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
     try:
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
         sns.swarmplot(y=y, x=x, hue=hue, data=train_df,
                   palette="muted")
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -268,13 +271,14 @@ def barplot():
         result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
-    # estimator=median,mean
     try:
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
+        # estimator=median,mean
         sns.barplot(y=y, x=x, hue=hue, data=train_df, palette="muted",
                 estimator=np.median, ci=0)
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -297,12 +301,13 @@ def countplot():
         result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
     try:
+
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
         sns.countplot(x=x, hue=hue, data=train_df, palette="muted")
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -325,11 +330,12 @@ def factorplot():
         result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
     try :
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
         sns.factorplot(x=x, col=col, data=train_df, kind="count")
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
@@ -362,12 +368,13 @@ def lmplot():
         result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
-    train_df = HiveClient.queryForAll(tablename=tableName)
-    sns.set_style("whitegrid")
     try:
+        train_df = HiveClient.queryForAll(tablename=tableName)
+        sns.set_style("whitegrid")
         sns.lmplot(y=y, x=x, hue=hue,
                data=train_df, palette="muted", order=2)
     except BaseException as e:
+        print(e.args)
         result= Result(code=1002, data=None, message=e.args)
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
