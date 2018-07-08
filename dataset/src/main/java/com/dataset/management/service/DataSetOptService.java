@@ -32,8 +32,8 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public DataSystem findByDataSetName(String datasetName)throws IOException{
-        return dataSetOptRepository.findByDataSetName(datasetName);
+    public DataSystem findByDataSetNameAndUserId(String datasetName,int userId)throws IOException{
+        return dataSetOptRepository.findByDataSetNameAndUserId(datasetName,userId);
     }
     @Override
     public List<DataSystem> findByUserId(int userId){

@@ -31,6 +31,7 @@ public class MLFlow {
         appData.setAppType(jb.get("appType").toString());
         appData.setProcessId(jb.get("processId").toString());
 
+
         Map<String,NodeData> map = new HashMap<String, NodeData>();
 
         //组装各个节点数据

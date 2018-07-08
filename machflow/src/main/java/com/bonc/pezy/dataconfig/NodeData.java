@@ -5,20 +5,9 @@ package com.bonc.pezy.dataconfig;
  */
 public class NodeData {
 
-    /*private static NodeData nodeData = null;
 
-    private NodeData(){
-
-    }
-
-
-    public static NodeData getNodeData(){
-        if(null==nodeData){
-            nodeData = new NodeData();
-        }
-
-        return nodeData;
-    }*/
+    //模型id
+    private String modelid;
 
     //节点id，标识唯一
     private String id;
