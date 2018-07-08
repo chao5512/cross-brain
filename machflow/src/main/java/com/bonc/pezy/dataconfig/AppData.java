@@ -1,5 +1,7 @@
 package com.bonc.pezy.dataconfig;
 
+import java.util.Map;
+
 /**
  * Created by 冯刚 on 2018/6/22.
  */
@@ -25,7 +27,7 @@ public class AppData {
 
     private String processId;
 
-    /*private Map<String,NodeData> nodeMap;*/
+    private Map<String,NodeData> nodeMap;
 
 
     public String getAppType() {
@@ -52,11 +54,11 @@ public class AppData {
         this.processId = processId;
     }
 
-    /*public Map<String, NodeData> getNodeMap() {
+    public Map<String, NodeData> getNodeMap() {
         return nodeMap;
     }
 
     public void setNodeMap(Map<String, NodeData> nodeMap) {
         this.nodeMap = nodeMap;
-    }*/
+    }
 }

@@ -31,6 +31,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
     @Override
     public void notify(DelegateExecution execution) throws Exception {
         String eventName = execution.getEventName();
+        System.out.println("========="+execution.getProcessInstanceId()+"========="+execution.getProcessDefinitionId());
         if ("start".equals(eventName)) {
             System.out.println("start=========");
             System.out.println("===xxxx===="+execution.getEventName());
@@ -38,14 +39,14 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             String url = null;
             Map<String,String> param = new HashMap<String, String>();
             String pipe = null;
-            if("ml".equals(appData.getAppType())){
+            if("机器学习模型".equals(appData.getAppType())){
                 url = Constants.PY_SERVER;
 
                 param.put("appName",appData.getAppName());
 
                 Map<String, NodeData> nodeMap = nodeSet.getNodeMap();
 
-                nodeMap.forEach((key,value)->{
+                nodeMap.forEach((key,value)-> {
 
                     param.put(key,value.getParam());
 
@@ -54,7 +55,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
 
             }
 
-            if("deep".equals(appData.getAppType())){
+            if("深度学习模型".equals(appData.getAppType())){
                 url = Constants.PY_SERVER_DEEP;
                 pipe = dataConfig.getJsondata();
 
