@@ -9,13 +9,14 @@ from hiveutil import HiveClient
 from jsoncustom import JsonCustomEncoder
 import numpy as np
 from stringutils import StringTolist
-
+from flask_cors import *
 import json
 import simplejson
 
 plt.switch_backend('agg')
 
 app = Flask(__name__)
+CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
@@ -45,13 +46,13 @@ def head():
     print("tableName:" + tableName)
     number = requestData['number']
     print("number:" + number)
-    datas = HiveClient.queryByRowNums(tablename="titanic_orc", rownums=number)
+    datas = HiveClient.queryByRowNums(tablename=tableName, rownums=number)
     title = datas.columns.values.tolist()
     result = Result(data={'type': 'table',
                           'title': title,
                           'content': datas.to_dict(orient='split')['data']})
-    return Response(simplejson.dumps(result, default=lambda obj: obj.__dict__),
-                    mimetype='application/json')
+    return Response(simplejson.dumps(result,default=lambda obj: obj.__dict__),
+                     mimetype='application/json')
 
 
 @app.route("/tail", methods=['POST'])
