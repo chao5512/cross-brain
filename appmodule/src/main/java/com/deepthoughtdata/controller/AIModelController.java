@@ -11,7 +11,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -31,12 +34,13 @@ public class AIModelController {
                        @RequestParam("moduletype") short moduletype,
                        @RequestParam("owner") long owner,
                        @RequestParam("createtime") String createtime, HttpServletResponse response){
-        Model module = new Model();
-        module.setModelName(modulename);
-        module.setModelType(moduletype);
-        module.setOwner(owner);
-        module.setCreateTime(createtime);
-        modelService.create(module);
+        Model model = new Model();
+        model.setModelName(modulename);
+        model.setModelType(moduletype);
+        model.setOwner(owner);
+        model.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        model.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        modelService.create(model);
         return true;
     }
 
@@ -67,7 +71,7 @@ public class AIModelController {
     @ApiOperation(value = "删除模型",httpMethod = "POST")
     @RequestMapping(value= "/delByModelId")
     @ResponseBody
-    public long delModule( @RequestParam("id") String id,@RequestParam("owner") String owner,HttpServletResponse response){
+    public long delModule( @RequestParam(name="id[]") String[] id,@RequestParam("owner") String owner,HttpServletResponse response){
         return modelService.delModule(id,owner);
     }
 }

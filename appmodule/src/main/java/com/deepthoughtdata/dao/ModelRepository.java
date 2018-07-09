@@ -2,6 +2,12 @@ package com.deepthoughtdata.dao;
 
 import com.deepthoughtdata.entity.Model;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.repository.query.Param;
+import java.util.List;
+
 import java.util.List;
 
 public interface ModelRepository extends JpaRepository<Model, Long> {
@@ -9,9 +15,11 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     List<Model> findByOwner(long owner);//根据用户ID查询Module
 
-    long deleteByModelIdAndOwner(String modelId,long owner);//根据用户ID查询Module
+    @Modifying
+    @Transactional
+    @Query(value="delete from Model where modelid in (:ids) and owner = :owner ") int deleteByIds(@Param("ids")List<String> ids,@Param("owner")long owner);
 
     Model findByModelId(String modelId);
 
-    List<Model> findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(int type, long owner, String startData, String endData);//根据用户ID查询Module
+    List<Model> findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(short type, long owner, String startData, String endData);//根据用户ID查询Module
 }
