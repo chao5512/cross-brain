@@ -17,7 +17,7 @@ public interface IntDataSetOptService {
 
     public DataSystem findByDataSetId(int datasetId) throws IOException;
 
-    public DataSystem findByDataSetName(String datasetName)throws IOException;
+    public DataSystem findByDataSetNameAndUserId(String datasetName,int userId)throws IOException;
 
     public List<DataSystem> findByUserId(int userId);
 

@@ -146,9 +146,10 @@ public class DataSetSystemController {
     //查询  datasetName
     @ResponseBody
     @Transactional
-    @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
-    public ApiResult selectBydatasetName(@PathVariable(value = "dataSetName") String datasetName) throws IOException{
-        DataSystem dataSystem = dataSetOptService.findByDataSetName(datasetName);
+    @RequestMapping(value = "/selectByDataSetName/{userId}/{dataSetName}",method = RequestMethod.GET)
+    public ApiResult selectBydatasetName(@PathVariable(value = "dataSetName") String datasetName,
+                                         @PathVariable(value = "userId") int userId) throws IOException{
+        DataSystem dataSystem = dataSetOptService.findByDataSetNameAndUserId(datasetName,userId);
         logger.info("......."+dataSystem);
         logger.info("查询当前数据集名称："+dataSystem.getDatasetName());
         if (dataSystem.getDatasetName().isEmpty()){

@@ -1,7 +1,5 @@
 package com.dataset.management.entity;
 
-import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component

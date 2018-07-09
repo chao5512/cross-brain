@@ -1,8 +1,6 @@
 package com.bonc.pezy.flow;
 
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bonc.pezy.util.BpmnToXml;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.engine.ProcessEngine;
@@ -17,42 +15,45 @@ public class MachFlow {
 
     private static String filename = "";
 
-    public void generateBpmnModel(String data){
-        System.out.println(data);
-        JSONObject jb = JSON.parseObject(data);
+    private ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
+    private RuntimeService runtimeService = processEngine.getRuntimeService();
+    private RepositoryService repositoryService = processEngine.getRepositoryService();
+
+    public void generateBpmnModel(JSONObject jb){
+        /*System.out.println(data);
+        JSONObject jb = JSON.parseObject(data);*/
         System.out.println(jb);
         Process process = null;
-        if("ml".equals(jb.get("appType").toString())){
+        if("机器学习模型".equals(jb.get("appType").toString())){
             MLFlow mlFlow = new MLFlow();
             process = mlFlow.generateMLBpmnModel(jb);
         }
-        if("deep".equals(jb.get("appType").toString())){
+        if("深度学习模型".equals(jb.get("appType").toString())){
             DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
             process = deepLearnFlow.generateDLBpmnModel(jb);
         }
-        filename = jb.get("processId").toString()+"."+"bpmn20.xml";
+        filename = jb.get("processId").toString()+"."+"bpmn20.bpmn";
         //实例化BpmnModel对象
         BpmnModel bpmnModel=new BpmnModel();
         bpmnModel.addProcess(process);
-        BpmnToXml bpmnToXml = new BpmnToXml();
-        bpmnToXml.createXMLStream(bpmnModel,filename);
+        repositoryService.createDeployment().addBpmnModel(filename,bpmnModel)
+                .name("deply").deploy();
 
     }
 
     public void startActiviti(String processId) {
         System.out.println("进来没有啊。。。。");
-        ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
-        RuntimeService runtimeService = processEngine.getRuntimeService();
-        RepositoryService repositoryService = processEngine.getRepositoryService();
 
-        if(!"".equals(filename)){
+        runtimeService.startProcessInstanceByKey(processId);
+
+        /*if(!"".equals(filename)){
             repositoryService.createDeployment()
                     .addClasspathResource(filename)
                     .deploy();
             runtimeService.startProcessInstanceByKey(processId);
         }else {
             System.out.println("NO task is start");
-        }
+        }*/
 
     }
 
