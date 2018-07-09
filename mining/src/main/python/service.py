@@ -51,8 +51,10 @@ def head():
     result = Result(data={'type': 'table',
                           'title': title,
                           'content': datas.to_dict(orient='split')['data']})
-    return Response(simplejson.dumps(result,default=lambda obj: obj.__dict__),
-                     mimetype='application/json')
+    # return Response(simplejson.dumps(result,default=lambda obj: obj.__dict__),
+    #                  mimetype='application/json')
+    return Response(json.dumps(result, cls=JsonCustomEncoder),
+                    mimetype='application/json')
 
 
 @app.route("/tail", methods=['POST'])
