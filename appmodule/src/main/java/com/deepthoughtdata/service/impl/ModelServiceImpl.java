@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.List;
 import javax.transaction.Transactional;
 import java.util.Date;
@@ -33,14 +34,14 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public List<Model> findModels(String startData, String endData, String type, String userid){
-        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Integer.parseInt(type),
+        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Short.parseShort(type),
                 Long.parseLong(userid),startData,endData);
     }
 
     @Override
     @Transactional
-    public long delModule(String id,String userid){
-        return moduleRepository.deleteByModelIdAndOwner(id,Long.parseLong(userid));
+    public long delModule(String[] id,String userid){
+        return moduleRepository.deleteByIds(Arrays.asList(id),Long.parseLong(userid));
     }
 
     @Override
