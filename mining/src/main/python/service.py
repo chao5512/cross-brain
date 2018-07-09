@@ -16,7 +16,6 @@ import simplejson
 plt.switch_backend('agg')
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
