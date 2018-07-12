@@ -41,8 +41,13 @@ public class DataSetOptService implements IntDataSetOptService {
     }
 
     @Override
-    public List<DataSystem> findAll(Sort sort)throws IOException{
-        return dataSetOptRepository.findAll(sort);
+    public List<DataSystem> findByDataSetNameLike(int userId,String nameLike){
+        return dataSetOptRepository.findByUserIdAndDataSetNameLike(userId,nameLike);
+    }
+
+    @Override
+    public List<DataSystem> findAllByUserId(int userId,Sort sort)throws IOException{
+        return dataSetOptRepository.findAllByUserId(userId,sort);
     }
 
     public void deleteAll(){

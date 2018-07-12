@@ -9,6 +9,7 @@ import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.entity.DataSystem;
 import com.dataset.management.service.*;
 
+import com.netflix.eureka.V1AwareInstanceInfoConverter;
 import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,9 +105,10 @@ public class DataSetSystemController {
     }
     //查询
     @ResponseBody
-    @RequestMapping(value = "/selectAll/{dataSetSystemSortBy},{dataSetSystemSortType}",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectAll/{dataSetSystemSortBy}/{dataSetSystemSortType}/{userId}",method = RequestMethod.GET)
     public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSystemSortBy") String sortBy,
-                                      @PathVariable(value = "dataSetSystemSortType") String sortType) throws IOException{
+                                      @PathVariable(value = "dataSetSystemSortType") String sortType,
+                                      @PathVariable(value = "userId") int userId) throws IOException{
         Sort sort;
         //默认根据英文名字排序
         if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
@@ -128,7 +130,7 @@ public class DataSetSystemController {
             logger.info("按照默认方式排序");
         }
         logger.info("开始罗列所有数据集系统表：");
-        List<DataSystem> dataSystemList = dataSetOptService.findAll(sort);
+        List<DataSystem> dataSystemList = dataSetOptService.findAllByUserId(userId,sort);
         return ResultUtil.success(dataSystemList);
     }
 
@@ -157,6 +159,24 @@ public class DataSetSystemController {
         }
         return ResultUtil.success(dataSystem);
     }
+
+    //模糊查询  dataSetNameLike
+    @ResponseBody
+    @Transactional
+    @RequestMapping(value = "/selectByDataSetNameLike/{userId}/{dataSetNameLike}",method = RequestMethod.GET)
+    public ApiResult selectBydatasetNameLike(@PathVariable(value = "dataSetNameLike") String datasetNameLike,
+                                         @PathVariable(value = "userId") int userId) throws IOException{
+        List<DataSystem> dataSystems = dataSetOptService.findByDataSetNameLike(userId,"%"+datasetNameLike+"%");
+        logger.info("......."+dataSystems);
+        if (dataSystems.size()==0){
+            return ResultUtil.error(-1,"所查找的数据集不存在");
+        }
+        for(DataSystem dataSystem:dataSystems){
+            logger.info("所查询当前存在的数据集名称："+dataSystem.getDatasetName());
+        }
+        return ResultUtil.success(dataSystems);
+    }
+
 
     //查询  userId
     @ResponseBody

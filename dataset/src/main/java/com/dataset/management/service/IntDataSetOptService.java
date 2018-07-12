@@ -21,7 +21,9 @@ public interface IntDataSetOptService {
 
     public List<DataSystem> findByUserId(int userId);
 
-    public List<DataSystem> findAll(Sort sort)throws IOException;
+    public List<DataSystem> findByDataSetNameLike(int userId,String nameLike);
+
+    public List<DataSystem> findAllByUserId(int userId,Sort sort)throws IOException;
 
     public void deleteById (int datasetId) throws IOException;
 
