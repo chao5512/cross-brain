@@ -40,8 +40,7 @@ def loadDataSet():
         # split("value","\s+")  只要i有空格就当作切分符
         # .alias  命名
         dataRdd = (spark.read.text("/machen/data/sample_fpgrowth.txt")
-                .select(split("value","\s+")
-                .alias("items")))
+                .select(split("value","\s+").alias("items")))
         # 数据展示
         print ("数据展示")
         dataRdd.show(truncate=False)
