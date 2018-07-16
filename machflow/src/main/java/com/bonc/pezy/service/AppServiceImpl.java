@@ -1,4 +1,4 @@
-package com.bonc.pezy.service.impl;
+package com.bonc.pezy.service;
 
 import com.bonc.pezy.dao.AppDataRepository;
 import com.bonc.pezy.entity.App;
@@ -21,7 +21,6 @@ public class AppServiceImpl implements AppService {
     @Autowired
     private AppDataRepository appDataRepository;
 
-
     @Override
     public App save(App app) {
         app.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
@@ -42,4 +41,16 @@ public class AppServiceImpl implements AppService {
     public App findByUserAndAppId(String userid, int appid) {
         return appDataRepository.findByOwnerAndAppId(Long.parseLong(userid),appid);
     }
+
+    @Override
+    public App findByProcessId(String processId) {
+        return appDataRepository.findByProcessId(processId);
+    }
+
+    @Override
+    public App findByProcessId(String processId, int appid) {
+        return appDataRepository.findByprocessIdAndAppId(processId,appid);
+    }
+
+
 }

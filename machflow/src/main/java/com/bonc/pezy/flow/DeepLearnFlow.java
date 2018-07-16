@@ -2,8 +2,9 @@ package com.bonc.pezy.flow;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
-import com.bonc.pezy.dataconfig.AppData;
-import com.bonc.pezy.dataconfig.DataConfig;
+import com.bonc.pezy.entity.App;
+import com.bonc.pezy.entity.Node;
+import com.bonc.pezy.service.NodeService;
 import org.activiti.bpmn.model.ExtensionAttribute;
 import org.activiti.bpmn.model.ExtensionElement;
 import org.activiti.bpmn.model.Process;
@@ -19,19 +20,18 @@ import java.util.Map;
  */
 public class DeepLearnFlow {
 
-    private DataConfig dataConfig = DataConfig.getDataConfig();
-    private AppData appData = AppData.getAppData();
-
-    public Process generateDLBpmnModel(JSONObject jb){
+    public Process generateDLBpmnModel(JSONObject jb, App app, NodeService nodeService){
 
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
-        process.setId(jb.get("processId").toString());
+        process.setId(app.getProcessId());
+        Node node = new Node();
+        node.setAppId(app.getAppId());
+        node.setNodeName(jb.get("name").toString());
+        node.setParam(jb.get("data").toString());
+        nodeService.save(node);
 
-        appData.setAppType(jb.get("appType").toString());
-        dataConfig.setJsondata(jb.get("data").toString());
-        System.out.println(dataConfig.getJsondata());
-        StartEvent startEvent = generateNode.createStartEvent(jb.get("id").toString(),jb.get("name").toString());
+        StartEvent startEvent = generateNode.createStartEvent(node.getNodeName(),node.getNodeName());
         ExtensionElement extensionElement= generateNode.createExtensionElement("start", Constants.LISTENER_E);
         List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
         Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
