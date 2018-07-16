@@ -12,7 +12,7 @@ from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from flask_cors import *
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+#CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
