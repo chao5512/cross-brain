@@ -2,6 +2,8 @@ package com.bonc.pezy.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 ;
 
@@ -34,6 +36,18 @@ public class App implements Serializable {
 
     @Column(nullable = false,length = 14,name = "lastmodifytime")
     private String lastModifyTime;//模型最后修改时间
+
+    @OneToMany
+    @JoinColumn(name = "appId")
+    private Set<Node> nodes = new HashSet<Node>();
+
+    public Set<Node> getNodes() {
+        return nodes;
+    }
+
+    public void setNodes(Set<Node> nodes) {
+        this.nodes = nodes;
+    }
 
     public int getAppId() {
         return appId;

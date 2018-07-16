@@ -16,4 +16,8 @@ public interface AppDataRepository extends JpaRepository<App,String> {
 
     App findByOwnerAndAppId(long owner,int appid);
 
+    App findByProcessId(String processId);
+
+    App findByprocessIdAndAppId(String processId,int appid);
+
 }
