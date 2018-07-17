@@ -2,10 +2,15 @@ package com.bonc.pezy.action;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bonc.pezy.dataconfig.ServiceMap;
 import com.bonc.pezy.entity.App;
+import com.bonc.pezy.flow.DeepLearnFlow;
+import com.bonc.pezy.flow.MLFlow;
 import com.bonc.pezy.flow.MachFlow;
-import com.bonc.pezy.service.impl.AppService;
+import com.bonc.pezy.service.AppService;
+import com.bonc.pezy.service.NodeService;
 import io.swagger.annotations.ApiOperation;
+import org.activiti.bpmn.model.Process;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +36,14 @@ public class MachFlowController {
     @Autowired
     private AppService appService;
 
+    @Autowired
+    private NodeService nodeService;
+
+
+    private static String filename = "";
+
+    private ServiceMap serviceMap = ServiceMap.getServiceMap();
+
     @RequestMapping("/analysisCanvas")
     @ResponseBody
     public String analysisCanvas(@RequestParam("jsondata") String jsondata,
@@ -38,21 +51,41 @@ public class MachFlowController {
                                  @RequestParam("appId") int appid,
                                  @RequestParam("userId") String userid,HttpServletResponse response){
 
+        serviceMap.setAppService(appService);
+        serviceMap.setNodeService(nodeService);
         MachFlow mf = new MachFlow();
+        System.out.print(jsondata);
         JSONObject jb = JSON.parseObject(jsondata);
         App app = appService.findByUserAndAppId(userid,appid);
+        app.setAppName(jb.get("appName").toString());
         app.setProcessId(processId);
         appService.save(app);
-        mf.generateBpmnModel(jb);
-        return "sucess";
+        Process process = null;
+        if("机器学习模型".equals(jb.get("appType").toString())){
+            MLFlow mlFlow = new MLFlow();
+            process = mlFlow.generateMLBpmnModel(jb,app,nodeService);
+        }
+        if("深度学习模型".equals(jb.get("appType").toString())){
+            DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
+            process = deepLearnFlow.generateDLBpmnModel(jb,app,nodeService);
+        }
+        filename = jb.get("processId").toString()+"."+"bpmn20.bpmn";
+        if(process != null&&(!"".equals(filename))){
+            mf.generateBpmnModel(process,filename);
+            return "sucess";
+        }else{
+            return "error";
+        }
+
     }
 
     @RequestMapping("/run")
     @ResponseBody
-    public String run(@RequestParam("processId") String processId,HttpServletResponse respons){
-
+    public String run(@RequestParam("processId") String processId,
+                      @RequestParam("appId") int appid,HttpServletResponse respons){
+        String aid = String.valueOf(appid);
         MachFlow mf = new MachFlow();
-        mf.startActiviti(processId);
+        mf.startActiviti(processId,aid);
         return "sucess";
     }
 

@@ -24,6 +24,7 @@ class MLPipeline(Pipe):
             .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName)\
             .getOrCreate()
+
         print(self.spark.version)
         return self.spark
 

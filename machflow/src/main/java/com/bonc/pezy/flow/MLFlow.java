@@ -2,105 +2,91 @@ package com.bonc.pezy.flow;
 
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
-import com.bonc.pezy.dataconfig.AppData;
-import com.bonc.pezy.dataconfig.NodeData;
-import com.bonc.pezy.dataconfig.NodeSet;
+import com.bonc.pezy.entity.App;
+import com.bonc.pezy.entity.Node;
+import com.bonc.pezy.service.NodeService;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by 冯刚 on 2018/6/28.
  */
 public class MLFlow {
 
-    private AppData appData = AppData.getAppData();
-    private NodeSet nodeSet = NodeSet.getNodeSet();
-
-    public Process generateMLBpmnModel(JSONObject jb){
+    public Process generateMLBpmnModel(JSONObject jb,App app,NodeService nodeService){
 
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
 
-        //组装app参数数据实体类
-        appData.setAppName(jb.get("appName").toString());
-        appData.setAppType(jb.get("appType").toString());
-        appData.setProcessId(jb.get("processId").toString());
-
-
-        Map<String,NodeData> map = new HashMap<String, NodeData>();
-
-        //组装各个节点数据
-        ((Map)jb.get("node")).forEach((key,value)->{
-            NodeData nodeData = new NodeData();
-            nodeData.setId(key.toString());
-            nodeData.setName(key.toString());
-            nodeData.setInputNodeId(((Map)value).get("InputNodeId").toString());
-            nodeData.setOutputNodeId(((Map)value).get("outputNodeId").toString());
-            nodeData.setParam(((Map)value).get("param").toString());
-            nodeData.setSno(((Map)value).get("sno").toString());
-            map.put(key.toString(),nodeData);
-        });
-
-        if(map.size()>0){
-            /*appData.setNodeMap(map);*/
-            nodeSet.setNodeMap(map);
-        }
-        process.setId(appData.getProcessId());
+        List<Node> nodes = new ArrayList<Node>();
+        process.setId(app.getProcessId());
         ArrayList<FlowElement> listnode = new ArrayList<FlowElement>();
         FlowElement[] flowElements = new FlowElement[100];
         List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
 
-        nodeSet.getNodeMap().forEach((key,value)->{
-            if(!"".equals(value.getInputNodeId())&&!"".equals(value.getOutputNodeId())){
-                UserTask userTask = generateNode.createUserTask(key,key);
+        ((Map)jb.get("node")).forEach((key,value)->{
+
+            Node node = new Node();
+            node.setId(Integer.parseInt(((Map)value).get("sno").toString()));
+            node.setAppId(app.getAppId());
+            node.setNodeName(key.toString());
+            node.setInputNodeId(((Map)value).get("InputNodeId").toString());
+            node.setOutputNodeId(((Map)value).get("outputNodeId").toString());
+            node.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
+            node.setParam(((Map)value).get("param").toString());
+            nodes.add(node);
+        });
+        Collections.sort(nodes);
+        nodeService.save(nodes);
+        for(Node node: nodes){
+            /*nodeService.save(node);*/
+            if(!"".equals(node.getInputNodeId())&&!"".equals(node.getOutputNodeId())){
+                UserTask userTask = generateNode.createUserTask(node.getNodeName(),node.getNodeName());
                 ExtensionElement extensionElement= generateNode.createExtensionElement("create", Constants.LISTENER_U);
                 List<ExtensionAttribute> list = generateNode.createExtensionAttributes("create",Constants.LR_LISTENER_U);
                 Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
-                mapEA.put(key,list);
+                mapEA.put(node.getNodeName(),list);
                 extensionElement.setAttributes(mapEA);
                 List<ExtensionElement> listE = new ArrayList<ExtensionElement>();
                 listE.add(extensionElement);
                 Map<String,List<ExtensionElement>> mapEE = new HashMap<String, List<ExtensionElement>>();
-                mapEE.put(key,listE);
+                mapEE.put(node.getNodeName(),listE);
                 userTask.setExtensionElements(mapEE);
-                int i = Integer.parseInt(value.getSno());
+                int i = node.getSno();
                 flowElements[i] = userTask;
-            }else if(!"".equals(value.getOutputNodeId())){
-                StartEvent startEvent = generateNode.createStartEvent(key,key);
+            }else if(!"".equals(node.getOutputNodeId())){
+                StartEvent startEvent = generateNode.createStartEvent(node.getNodeName(),node.getNodeName());
                 ExtensionElement extensionElement= generateNode.createExtensionElement("start",Constants.LISTENER_E);
                 List<ExtensionAttribute> list = generateNode.createExtensionAttributes("start",Constants.LR_REGRESSION);
                 Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
-                mapEA.put(key,list);
+                mapEA.put(node.getNodeName(),list);
                 extensionElement.setAttributes(mapEA);
                 List<ExtensionElement> listE = new ArrayList<ExtensionElement>();
                 listE.add(extensionElement);
                 Map<String,List<ExtensionElement>> mapEE = new HashMap<String, List<ExtensionElement>>();
-                mapEE.put(key,listE);
+                mapEE.put(node.getNodeName(),listE);
                 startEvent.setExtensionElements(mapEE);
-                int i = Integer.parseInt(value.getSno());
+                int i = node.getSno();
                 flowElements[i] = startEvent;
 
-            }else if(!"".equals(value.getInputNodeId())){
-                EndEvent endEvent = generateNode.createEndEvent(key,key);
+            }else if(!"".equals(node.getInputNodeId())){
+                EndEvent endEvent = generateNode.createEndEvent(node.getNodeName(),node.getNodeName());
                 ExtensionElement extensionElement= generateNode.createExtensionElement("end",Constants.LISTENER_E);
                 List<ExtensionAttribute> list = generateNode.createExtensionAttributes("end",Constants.LR_REGRESSION);
                 Map<String,List<ExtensionAttribute>> mapEA = new HashMap<String, List<ExtensionAttribute>>();
-                mapEA.put(key,list);
+                mapEA.put(node.getNodeName(),list);
                 extensionElement.setAttributes(mapEA);
                 List<ExtensionElement> listE = new ArrayList<ExtensionElement>();
                 listE.add(extensionElement);
                 Map<String,List<ExtensionElement>> mapEE = new HashMap<String, List<ExtensionElement>>();
-                mapEE.put(key,listE);
+                mapEE.put(node.getNodeName(),listE);
                 endEvent.setExtensionElements(mapEE);
-                int i = Integer.parseInt(value.getSno());
+                int i = node.getSno();
                 flowElements[i] = endEvent;
             }
-        });
+        }
 
         for(int i =0;i<flowElements.length;i++){
             if(flowElements[i]==null){

@@ -10,7 +10,8 @@ import java.io.Serializable;
  */
 @Table(name = "node")
 @Entity
-public class Node implements Serializable {
+public class Node implements Serializable,Comparable<Node> {
+
 
     //节点id，标识唯一
     @Id
@@ -19,7 +20,7 @@ public class Node implements Serializable {
     private int id;
 
     //模型id,此节点属于哪个模型
-    @Column(name = "appId",unique = true, nullable = false)
+    @Column(name = "appId", nullable = false)
     private int appId;
 
     //节点名称，可以根据名称判断出节点类型
@@ -40,7 +41,7 @@ public class Node implements Serializable {
 
     //节点顺序
     @Column(name = "sno")
-    private String sno;
+    private int sno;
 
     public int getId() {
         return id;
@@ -90,13 +91,19 @@ public class Node implements Serializable {
         this.param = param;
     }
 
-    public String getSno() {
+    public int getSno() {
         return sno;
     }
 
-    public void setSno(String sno) {
+    public void setSno(int sno) {
         this.sno = sno;
     }
 
 
+    @Override
+    public int compareTo(Node o) {
+        int i = this.sno - o.sno;
+
+        return i;
+    }
 }

@@ -12,7 +12,7 @@ from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from flask_cors import *
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True)
+#CORS(app, supports_credentials=True)
 @app.route("/health")
 def health():
     result = {'status': 'UP'}
@@ -41,6 +41,7 @@ def loadDataSet():
     datasource = json.loads(data['datasource'])
     print(datasource)
     filepath = datasource['filepath']
+    #filepath = 'hdfs://172.16.31.232:9000/data'
     print(filepath)
 
     textRDD = spark.sparkContext.textFile(filepath)
