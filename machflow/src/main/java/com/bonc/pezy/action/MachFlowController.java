@@ -48,7 +48,7 @@ public class MachFlowController {
     @ResponseBody
     public String analysisCanvas(@RequestParam("jsondata") String jsondata,
                                  @RequestParam("processId") String processId,
-                                 @RequestParam("appId") int appid,
+                                 @RequestParam("appId") long appid,
                                  @RequestParam("userId") String userid,HttpServletResponse response){
 
         serviceMap.setAppService(appService);
@@ -59,11 +59,10 @@ public class MachFlowController {
         App app = appService.findByUserAndAppId(userid,appid);
         app.setAppName(jb.get("appName").toString());
         app.setProcessId(processId);
-        appService.save(app);
         Process process = null;
         if("机器学习模型".equals(jb.get("appType").toString())){
             MLFlow mlFlow = new MLFlow();
-            process = mlFlow.generateMLBpmnModel(jb,app,nodeService);
+            process = mlFlow.generateMLBpmnModel(jb,app,appService,nodeService);
         }
         if("深度学习模型".equals(jb.get("appType").toString())){
             DeepLearnFlow deepLearnFlow = new DeepLearnFlow();

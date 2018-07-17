@@ -17,9 +17,9 @@ public interface AppService {
 
     public List<App> findByUser(String userid);
 
-    public App findByUserAndAppId(String userid,int appid);
+    public App findByUserAndAppId(String userid,long appid);
 
     public App findByProcessId(String processId);
 
-    public App findByProcessId(String processId,int appid);
+    public App findByProcessId(String processId,long appid);
 }
