@@ -5,7 +5,15 @@ import requests
 import json
 
 def testML():
-    mlpipe = {"appName": "testLD", "filePath": "hdfs://172.16.31.231:9000/data","isSplitSample":1,"trainRatio":0.6,"evaluator":"MulticlassClassificationEvaluator","originalStages": {"Tokenizer": {"inputCol": "content","outputCol": "words"},"HashingTF": {"inputCol": "words","outputCol": "features"},"LogisticRegression": {"maxIter": 10,"regParam": 0.001}}}
+    mlpipe = {
+        'isSplitSample': '{"trainRatio":0.6,"fault":1}',
+        'appName': 'TestML',
+        'datasource': '{"filepath":"hdfs://172.16.31.232:9000/data"}',
+        'HashingTF': '{"outputCol":"features","inputCol":"words"}',
+        'LogisticRegression': '{"maxIter":10,"regParam":0.001}',
+        'Tokenizer': '{"outputCol":"words","inputCol":"content"}',
+        'evaluator': 'MulticlassClassificationEvaluator'
+    }
     r = requests.post("http://localhost:3001/LRDemo", data=json.dumps(mlpipe))
     print(r.text)
 
@@ -112,4 +120,4 @@ def testDL():
     print(r.text)
 
 if __name__ == '__main__':
-    testDL()
+    testML()
