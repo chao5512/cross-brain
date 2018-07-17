@@ -140,7 +140,7 @@ def boxplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    y = data.get("y",'')
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
     if (len(x) == 1 and x[0]!=''):
@@ -178,7 +178,7 @@ def violinplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    y = data.get("y",'')
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
     if (len(x) == 1 and x[0]!=''):
@@ -217,7 +217,7 @@ def swarmplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    y = data.get("y",'')
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
     if (len(x) == 1 and x[0]!=''):
@@ -256,7 +256,7 @@ def barplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    y = data.get("y",'')
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
     if (len(x) == 1 and x[0]!=''):
@@ -353,7 +353,7 @@ def lmplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     x = data['x']
-    y = data['y']
+    y = data.get("y",'')
     x=StringTolist.toList(x)
     y=StringTolist.toList(y)
     if (len(x) == 1 and x[0]!=''):
