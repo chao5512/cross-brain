@@ -64,7 +64,6 @@
         <module>machflow</module>
         <module>appmodule</module>
         <module>dataset</module>
-        <module>component</module>
         <module>mining</module>
     </modules>
 
