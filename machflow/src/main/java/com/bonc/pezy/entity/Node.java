@@ -17,11 +17,11 @@ public class Node implements Serializable,Comparable<Node> {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id",unique = true, nullable = false)
-    private int id;
+    private long id;
 
     //模型id,此节点属于哪个模型
-    @Column(name = "appId", nullable = false)
-    private int appId;
+    @Column(name = "appId")
+    private long appId;
 
     //节点名称，可以根据名称判断出节点类型
     @Column(name = "nodeName")
@@ -43,19 +43,19 @@ public class Node implements Serializable,Comparable<Node> {
     @Column(name = "sno")
     private int sno;
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
-    public int getAppId() {
+    public long getAppId() {
         return appId;
     }
 
-    public void setAppId(int appId) {
+    public void setAppId(long appId) {
         this.appId = appId;
     }
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.entity.App;
 import com.bonc.pezy.entity.Node;
+import com.bonc.pezy.service.AppService;
 import com.bonc.pezy.service.NodeService;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
@@ -15,7 +16,7 @@ import java.util.*;
  */
 public class MLFlow {
 
-    public Process generateMLBpmnModel(JSONObject jb,App app,NodeService nodeService){
+    public Process generateMLBpmnModel(JSONObject jb, App app, AppService appService, NodeService nodeService){
 
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
@@ -29,7 +30,7 @@ public class MLFlow {
         ((Map)jb.get("node")).forEach((key,value)->{
 
             Node node = new Node();
-            node.setId(Integer.parseInt(((Map)value).get("sno").toString()));
+            /*node.setId(Integer.parseInt(((Map)value).get("sno").toString()));*/
             node.setAppId(app.getAppId());
             node.setNodeName(key.toString());
             node.setInputNodeId(((Map)value).get("InputNodeId").toString());
@@ -39,7 +40,8 @@ public class MLFlow {
             nodes.add(node);
         });
         Collections.sort(nodes);
-        nodeService.save(nodes);
+        app.setNodes(nodes);
+        appService.save(app);
         for(Node node: nodes){
             /*nodeService.save(node);*/
             if(!"".equals(node.getInputNodeId())&&!"".equals(node.getOutputNodeId())){

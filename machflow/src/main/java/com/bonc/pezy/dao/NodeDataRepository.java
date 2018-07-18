@@ -14,7 +14,8 @@ public interface NodeDataRepository extends JpaRepository<Node,String> {
 
     List<Node> save(List<Node> nodes);
 
-    List<Node> findNodesByAppId(int  appId);
+    List<Node> findNodesByAppId(long  appId);
 
+    void deleteByAppId(long  appId);
 
 }
