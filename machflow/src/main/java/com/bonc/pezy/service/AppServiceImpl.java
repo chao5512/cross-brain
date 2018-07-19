@@ -38,7 +38,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public App findByUserAndAppId(String userid, int appid) {
+    public App findByUserAndAppId(String userid, long appid) {
         return appDataRepository.findByOwnerAndAppId(Long.parseLong(userid),appid);
     }
 
@@ -48,7 +48,7 @@ public class AppServiceImpl implements AppService {
     }
 
     @Override
-    public App findByProcessId(String processId, int appid) {
+    public App findByProcessId(String processId, long appid) {
         return appDataRepository.findByprocessIdAndAppId(processId,appid);
     }
 

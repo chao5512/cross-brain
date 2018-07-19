@@ -158,8 +158,9 @@ public class DataSetController {
 
      * */
     @ResponseBody
-    @RequestMapping(value = "/update/{updateJson}",method = RequestMethod.POST)
-    public ApiResult updateDataByJson(@PathVariable("updateJson") String updateJson) throws IOException{
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    public ApiResult updateDataByJson(@RequestParam("updateJson") String updateJson) throws IOException{
+        logger.info("来自前台的json:"+updateJson);
         DataSet dataSet = JSON.parseObject(updateJson,DataSet.class);
         int id = dataSet.getId();
         logger.info("获取修改的数据集ID："+id);

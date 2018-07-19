@@ -10,14 +10,14 @@ import java.util.List;
  */
 @Service
 public interface NodeService {
-
     public Node save(Node node);
-
     public List<Node> save(List<Node> nodes);
 
 
     public Node findById(String nodeid);
 
-    public List<Node> findByAppId(int appId);
+    public List<Node> findByAppId(long appId);
+
+    public void deleteByAppId(long appId);
 
 }

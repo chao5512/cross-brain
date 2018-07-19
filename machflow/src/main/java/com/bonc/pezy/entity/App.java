@@ -2,10 +2,8 @@ package com.bonc.pezy.entity;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-
-;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by 冯刚 on 2018/7/5.
@@ -15,9 +13,9 @@ import java.util.Set;
 public class App implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "appId",unique = true, nullable = false)
-    private int appId;
+    private long appId;
 
     @Column(name = "appType",nullable = false)
     private short appType;
@@ -37,7 +35,7 @@ public class App implements Serializable {
     @Column(nullable = false,length = 14,name = "lastmodifytime")
     private String lastModifyTime;//模型最后修改时间
 
-    @OneToMany
+    /*@OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name = "appId")
     private Set<Node> nodes = new HashSet<Node>();
 
@@ -47,13 +45,25 @@ public class App implements Serializable {
 
     public void setNodes(Set<Node> nodes) {
         this.nodes = nodes;
+    }*/
+
+    @OneToMany(cascade=CascadeType.ALL)
+    @JoinColumn(name = "appId")
+    private List<Node> nodes = new ArrayList<Node>();
+
+    public  List<Node>  getNodes() {
+        return nodes;
     }
 
-    public int getAppId() {
+    public void setNodes( List<Node>  nodes) {
+        this.nodes = nodes;
+    }
+
+    public long getAppId() {
         return appId;
     }
 
-    public void setAppId(int appId) {
+    public void setAppId(long appId) {
         this.appId = appId;
     }
 

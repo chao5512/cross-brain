@@ -14,10 +14,11 @@ public interface AppDataRepository extends JpaRepository<App,String> {
 
     List<App> findByOwner(long owner);//根据用户ID查询Module
 
-    App findByOwnerAndAppId(long owner,int appid);
+    App findByOwnerAndAppId(long owner,long appid);
 
     App findByProcessId(String processId);
 
-    App findByprocessIdAndAppId(String processId,int appid);
+    App findByprocessIdAndAppId(String processId,long appid);
+
 
 }
