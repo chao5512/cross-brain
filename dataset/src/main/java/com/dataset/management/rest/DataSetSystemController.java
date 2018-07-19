@@ -57,15 +57,17 @@ public class DataSetSystemController {
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create/{dataSetName}/{userId}/{dataSetDesc}/{dataSetPower}",method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{dataSetName}/{userId}/{userName}/{dataSetDesc}/{dataSetPower}",method = RequestMethod.POST)
     public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
                                    @PathVariable(value = "dataSetDesc") String datSetDesc,
                                    @PathVariable(value = "dataSetPower") String dataSetPower,
-                                   @PathVariable(value = "userId") int userId) throws IOException{
+                                   @PathVariable(value = "userId") int userId,
+                                   @PathVariable(value = "userName") String userName) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
         dataSet.setUserId(userId);
+        dataSet.setUserName(userName);
         dataSet.setDataSetBasicDesc(datSetDesc);
         dataSet.setDataSetPower(dataSetPower);
         dataSet.setDataSetHiveTableName(null);

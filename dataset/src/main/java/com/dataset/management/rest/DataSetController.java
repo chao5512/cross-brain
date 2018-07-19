@@ -3,6 +3,7 @@ package com.dataset.management.rest;
 import com.alibaba.fastjson.JSON;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
@@ -44,6 +45,9 @@ public class DataSetController {
 
     @Autowired
     HdfsService hdfsService;
+
+    @Autowired
+    HdfsConfig hdfsConfig;
 
     //查询  Id
     @ResponseBody
@@ -172,6 +176,21 @@ public class DataSetController {
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
         dataSet.setDataSetLastUpdateTime(newTime);
+
+        String hdfsUrl = hdfsConfig.getHdfsUrl();
+        Long hdfsPort = hdfsConfig.getHdfsProt();
+        int userId = dataSet.getUserId();
+        String dataSetName =dataSet.getDataSetName();  //new
+        String newdataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+userId+"/"+dataSetName;
+        dataSet.setDataSetStoreUrl(newdataStoreUrl);
+
+        String oldDataStoreUrl = dataSet.getDataSetStoreUrl();
+        if(!hdfsService.existDir(oldDataStoreUrl,false)){
+            hdfsService.renameDir(oldDataStoreUrl,newdataStoreUrl);
+        }else {
+            return ResultUtil.error(-1,"原旧数据集文件夹不存在，请在 hdfs 中确认后重新修改");
+        }
 
         String newDesc = "update the dataset "+dataSet.getDataSetName();
         dataSet.setDataSetUpdateDesc(newDesc);
