@@ -168,7 +168,7 @@ public class DataSetFileController {
 
     //查询
     @ResponseBody
-    @RequestMapping(value = {"/listFileAll/{filesSortBy},{filesSortType},{dataSetId}"},method = RequestMethod.GET)
+    @RequestMapping(value = {"/listFileAll/{filesSortBy}/{filesSortType}/{dataSetId}"},method = RequestMethod.GET)
     public ApiResult selectAllFiles(@PathVariable(value = "filesSortBy") String sortBy,
                                     @PathVariable(value = "filesSortType") String sortType,
                                     @PathVariable(value = "dataSetId") int dataSetId){
