@@ -1,7 +1,7 @@
-package com.deepthoughtdata.controller;
+package com.bonc.pezy.action;
 
-import com.deepthoughtdata.entity.Model;
-import com.deepthoughtdata.service.ModelService;
+import com.bonc.pezy.entity.Model;
+import com.bonc.pezy.service.ModelService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -20,7 +20,7 @@ import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("model")
-@Api(value = "AI模型管理",description = "AI模型管理,模型相当于AI应用,用户在使用画板构建内容之前必须先创建模型")
+@Api(value = "AI模型管理",description = "AI模型管理API")
 public class AIModelController {
     private final Logger logger = LoggerFactory.getLogger(AIModelController.class);
 

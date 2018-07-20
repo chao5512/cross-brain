@@ -1,4 +1,4 @@
-package com.deepthoughtdata.util;
+package com.bonc.pezy.util;
 
 /**
  * Twitter_Snowflake<br>

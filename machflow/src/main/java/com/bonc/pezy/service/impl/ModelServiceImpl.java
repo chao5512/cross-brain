@@ -1,8 +1,8 @@
-package com.deepthoughtdata.service.impl;
+package com.bonc.pezy.service.impl;
 
-import com.deepthoughtdata.dao.ModelRepository;
-import com.deepthoughtdata.service.ModelService;
-import com.deepthoughtdata.entity.Model;
+import com.bonc.pezy.dao.ModelRepository;
+import com.bonc.pezy.service.ModelService;
+import com.bonc.pezy.entity.Model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

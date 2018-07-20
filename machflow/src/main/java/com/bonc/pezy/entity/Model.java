@@ -1,4 +1,4 @@
-package com.deepthoughtdata.entity;
+package com.bonc.pezy.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Entity
 public class Model implements Serializable{
     @Id
-    @GenericGenerator(name="seq_id", strategy="com.deepthoughtdata.util.ModelIdGenerator")
+    @GenericGenerator(name="seq_id", strategy="com.bonc.pezy.util.ModelIdGenerator")
     @GeneratedValue(generator="seq_id")
     @Column(name = "modelid", unique = true, nullable = false)
     private String modelId;//模型id唯一标识

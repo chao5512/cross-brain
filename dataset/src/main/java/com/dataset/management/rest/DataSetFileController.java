@@ -12,6 +12,7 @@ import com.dataset.management.service.HdfsService;
 import com.dataset.management.service.IntDataSetFileService;
 import com.dataset.management.service.IntDataSetOptService;
 import com.dataset.management.service.IntDataSetService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -34,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
+@Api(value = "数据集管理",description = "数据集管理API")
 @Controller
 @RequestMapping("datasetFile")
 public class DataSetFileController {
@@ -167,8 +169,9 @@ public class DataSetFileController {
     }
 
     //查询
+    @ApiOperation(value = "依据指定的排序方式查询当前用户下的所有数据集文件",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = {"/listFileAll/{filesSortBy},{filesSortType},{dataSetId}"},method = RequestMethod.GET)
+    @RequestMapping(value = {"/listFileAll/{filesSortBy}/{filesSortType}/{dataSetId}"},method = RequestMethod.GET)
     public ApiResult selectAllFiles(@PathVariable(value = "filesSortBy") String sortBy,
                                     @PathVariable(value = "filesSortType") String sortType,
                                     @PathVariable(value = "dataSetId") int dataSetId){
@@ -192,6 +195,12 @@ public class DataSetFileController {
         sort = basicSortBy();
         logger.info("查看数据集文件的列表：");
         List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
+        for(DataSetFile dataSetFile:fileList){
+            logger.info("更改数据库中字段排序方式");
+            dataSetFile.setFileSortBy(sortBy);
+            dataSetFile.setFileSortType(sortType);
+            dataSetFileService.save(dataSetFile);
+        }
         if(fileList.isEmpty()){
             return ResultUtil.error(-1,"没有文件");
         }
@@ -199,6 +208,7 @@ public class DataSetFileController {
     }
 
     //查询  fileName
+    @ApiOperation(value = "依据指定文件名称查询文件",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByFileName/{fileName}",method = RequestMethod.GET)
     public ApiResult selectFileByFileName(@PathVariable(value = "fileName") String fileName){
@@ -210,6 +220,7 @@ public class DataSetFileController {
     }
 
     //查询  fileId
+    @ApiOperation(value = "依据指定文件Id 查询文件",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByFileId/{fileId}",method = RequestMethod.GET)
     public ApiResult selectFileByFileId(@PathVariable(value = "fileId") int fileId){
@@ -226,9 +237,10 @@ public class DataSetFileController {
      {"id":47,"fileName":"files","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"upload  success! ",
      "onloadTimedate":"2018-06-01 13:00:14","fileSize":"ddd"}
      * */
+    @ApiOperation(value = "依据客户端指定的文件属性，修改文件",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = {"/updateFile/{dataSetFileJson}"},method = RequestMethod.POST)
-    public ApiResult updateDatasetFiles(@PathVariable(value = "dataSetFileJson") String dataSetFileJson){
+    @RequestMapping(value = {"/updateFile"},method = RequestMethod.POST)
+    public ApiResult updateDatasetFiles(@RequestParam(value = "dataSetFileJson") String dataSetFileJson){
 
         logger.info("获取数据集所选文件 ");
         DataSetFile dataSetFile = JSON.parseObject(dataSetFileJson,DataSetFile.class);
@@ -251,6 +263,7 @@ public class DataSetFileController {
 
 
     //删除
+    @ApiOperation(value = "依据指定文件Id 删除文件",httpMethod = "POST")
     @ResponseBody
     @RequestMapping(value = {"/deleteSomeFiles/{deleteFileId}"},method = RequestMethod.POST)
     public ApiResult deleteFiles(@PathVariable(value = "deleteFileId") int fileId){

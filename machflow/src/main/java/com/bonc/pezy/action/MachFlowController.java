@@ -62,7 +62,7 @@ public class MachFlowController {
         Process process = null;
         if("机器学习模型".equals(jb.get("appType").toString())){
             MLFlow mlFlow = new MLFlow();
-            process = mlFlow.generateMLBpmnModel(jb,app,appService,nodeService);
+            process = mlFlow.generateMLBpmnModel(jb,app,appService);
         }
         if("深度学习模型".equals(jb.get("appType").toString())){
             DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
