@@ -192,6 +192,12 @@ public class DataSetFileController {
         sort = basicSortBy();
         logger.info("查看数据集文件的列表：");
         List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
+        for(DataSetFile dataSetFile:fileList){
+            logger.info("更改数据库中字段排序方式");
+            dataSetFile.setFileSortBy(sortBy);
+            dataSetFile.setFileSortType(sortType);
+            dataSetFileService.save(dataSetFile);
+        }
         if(fileList.isEmpty()){
             return ResultUtil.error(-1,"没有文件");
         }
@@ -227,8 +233,8 @@ public class DataSetFileController {
      "onloadTimedate":"2018-06-01 13:00:14","fileSize":"ddd"}
      * */
     @ResponseBody
-    @RequestMapping(value = {"/updateFile/{dataSetFileJson}"},method = RequestMethod.POST)
-    public ApiResult updateDatasetFiles(@PathVariable(value = "dataSetFileJson") String dataSetFileJson){
+    @RequestMapping(value = {"/updateFile"},method = RequestMethod.POST)
+    public ApiResult updateDatasetFiles(@RequestParam(value = "dataSetFileJson") String dataSetFileJson){
 
         logger.info("获取数据集所选文件 ");
         DataSetFile dataSetFile = JSON.parseObject(dataSetFileJson,DataSetFile.class);

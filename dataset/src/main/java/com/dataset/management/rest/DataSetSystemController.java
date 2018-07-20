@@ -135,7 +135,17 @@ public class DataSetSystemController {
         }
         logger.info("开始罗列所有数据集系统表：");
         List<DataSystem> dataSystemList = dataSetOptService.findAllByUserId(userId,sort);
-        return ResultUtil.success(dataSystemList);
+        for(DataSystem dataSystem:dataSystemList){
+            dataSystem.setDataSetSortType(sortType);
+            dataSystem.setDataSetSystemSortBy(sortBy);
+            dataSetOptService.save(dataSystem);
+            DataSet dataSet = dataSetService.findById(dataSystem.getDataSetId());
+            dataSet.setDataSetSortType(sortType);
+            dataSet.setDataSetSortBY(sortBy);
+            dataSetService.save(dataSet);
+        }
+        List<DataSystem> newDataSystemList = dataSetOptService.findAllByUserId(userId,sort);
+        return ResultUtil.success(newDataSystemList);
     }
 
     //查询  datasetId
