@@ -57,15 +57,17 @@ public class DataSetSystemController {
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
-    @RequestMapping(value = "/create/{dataSetName}/{userId}/{dataSetDesc}/{dataSetPower}",method = RequestMethod.POST)
+    @RequestMapping(value = "/create/{dataSetName}/{userId}/{userName}/{dataSetDesc}/{dataSetPower}",method = RequestMethod.POST)
     public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
                                    @PathVariable(value = "dataSetDesc") String datSetDesc,
                                    @PathVariable(value = "dataSetPower") String dataSetPower,
-                                   @PathVariable(value = "userId") int userId) throws IOException{
+                                   @PathVariable(value = "userId") int userId,
+                                   @PathVariable(value = "userName") String userName) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
         dataSet.setUserId(userId);
+        dataSet.setUserName(userName);
         dataSet.setDataSetBasicDesc(datSetDesc);
         dataSet.setDataSetPower(dataSetPower);
         dataSet.setDataSetHiveTableName(null);
@@ -133,7 +135,17 @@ public class DataSetSystemController {
         }
         logger.info("开始罗列所有数据集系统表：");
         List<DataSystem> dataSystemList = dataSetOptService.findAllByUserId(userId,sort);
-        return ResultUtil.success(dataSystemList);
+        for(DataSystem dataSystem:dataSystemList){
+            dataSystem.setDataSetSortType(sortType);
+            dataSystem.setDataSetSystemSortBy(sortBy);
+            dataSetOptService.save(dataSystem);
+            DataSet dataSet = dataSetService.findById(dataSystem.getDataSetId());
+            dataSet.setDataSetSortType(sortType);
+            dataSet.setDataSetSortBY(sortBy);
+            dataSetService.save(dataSet);
+        }
+        List<DataSystem> newDataSystemList = dataSetOptService.findAllByUserId(userId,sort);
+        return ResultUtil.success(newDataSystemList);
     }
 
     //查询  datasetId

@@ -27,12 +27,13 @@ class HiveClient:
     @staticmethod
     def queryRowNumber(tablename,database="default"):
         engine = HiveClient.getEngine(database=database)
-        sql="select count(*) from  %s"%(tablename)
+        sql="select count(*) count from  %s"%(tablename)
         number=pd.read_sql(sql,engine)
         return number
 
 if __name__ == '__main__':
-    datas = HiveClient.queryByRowNums(tablename="titanic_orc",rownums=10)
+    datas = HiveClient.queryByRowNums(tablename="150_titanic",rownums=10)
+    #     print(HiveClient.queryRowNumber(tablename="150_titanic"))
     # number = HiveClient.queryRowNumber(tablename='studentno')
     # list=number.head().to_dict(orient='split')['data']
     # print(list)

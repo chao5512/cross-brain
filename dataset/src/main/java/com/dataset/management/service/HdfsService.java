@@ -73,6 +73,20 @@ public class HdfsService {
         }
     }
 
+    public void renameDir(String oldPath,String newPath){
+        try {
+            FileSystem fs = getFileSystem();
+            System.out.println("oldFilePath="+oldPath);
+            System.out.println("oldFilePath="+newPath);
+            // 创建目录
+            fs.rename(new Path(oldPath),new Path(newPath));
+            //释放资源
+            fs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public   boolean existDir(String filePath, boolean create){
         boolean flag = false;
 
