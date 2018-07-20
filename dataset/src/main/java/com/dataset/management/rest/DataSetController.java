@@ -65,17 +65,17 @@ public class DataSetController {
         return ResultUtil.success(dataSet);
     }
 
-    //查询  datasetName
-    @ResponseBody
-    @RequestMapping(value = "/selectByDataSetEnglishName/{dataSetEnglishName}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByDataSetEnglishName(@PathVariable("dataSetEnglishName") String dataSetEnglishName){
-        logger.info("开始罗列数据据基本信息");
-        DataSet dataSet = dataSetService.findByDataSetEnglishName(dataSetEnglishName);
-        if(dataSet.getId() ==0 ){
-            return ResultUtil.error(-1,"没有找到对应的数据集 Id");
-        }
-        return ResultUtil.success(dataSet);
-    }
+//    //查询  datasetName
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByDataSetEnglishName/{dataSetEnglishName}",method = RequestMethod.GET)
+//    public ApiResult listInfoDataSetByDataSetEnglishName(@PathVariable("dataSetEnglishName") String dataSetEnglishName){
+//        logger.info("开始罗列数据据基本信息");
+//        DataSet dataSet = dataSetService.findByDataSetEnglishName(dataSetEnglishName);
+//        if(dataSet.getId() ==0 ){
+//            return ResultUtil.error(-1,"没有找到对应的数据集 Id");
+//        }
+//        return ResultUtil.success(dataSet);
+//    }
     //查询  datasetName
 
     @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
@@ -84,20 +84,20 @@ public class DataSetController {
     public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
         logger.info("开始罗列数据据基本信息");
         DataSet dataSet = dataSetService.findByDataSetName(dataSetName);
-        if(dataSet.getId() ==0 ){
-            return ResultUtil.error(-1,"没有找到对应的数据集 Id");
+        if(dataSet.getDataSetName().isEmpty()){
+            return ResultUtil.error(-1,"没有找到对应的数据集");
         }
         return ResultUtil.success(dataSet);
     }
 
-    //查询  userName
-    @ResponseBody
-    @RequestMapping(value = "/selectByUserName/{UserName}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByUserName(@PathVariable("UserName") String userName){
-        logger.info("开始依据用户名【 "+userName+" 】罗列数据据基本信息");
-        List<DataSet> dataSets = dataSetService.findByUserName(userName);
-        return ResultUtil.success(dataSets);
-    }
+//    //查询  userName
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByUserName/{UserName}",method = RequestMethod.GET)
+//    public ApiResult listInfoDataSetByUserName(@PathVariable("UserName") String userName){
+//        logger.info("开始依据用户名【 "+userName+" 】罗列数据据基本信息");
+//        List<DataSet> dataSets = dataSetService.findByUserName(userName);
+//        return ResultUtil.success(dataSets);
+//    }
 
     //查询  user  Id
     @ApiOperation(value = "依据指定的用户ID，查询所有数据集",httpMethod = "GET")
@@ -169,7 +169,7 @@ public class DataSetController {
      int filesCount：              状态随动  依据数据集内文件数量变更；
 
      * */
-    @ApiOperation(value = "依据客户端数据集属性，修改数据集",httpMethod = "GET")
+    @ApiOperation(value = "依据客户端数据集属性，修改数据集",httpMethod = "POST")
     @ResponseBody
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     public ApiResult updateDataByJson(@RequestParam("updateJson") String updateJson) throws IOException{
@@ -223,7 +223,7 @@ public class DataSetController {
      * 清空
      * 删除了文件  files   更新 数据集基本表中关于文件的统计   filesCounts
      * */
-    @ApiOperation(value = "依据指定的数据集ID，清空数据集",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集ID，清空数据集",httpMethod = "POST")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/clean/{dataSetId}",method = RequestMethod.POST)
