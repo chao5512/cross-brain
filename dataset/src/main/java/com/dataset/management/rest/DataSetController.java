@@ -9,6 +9,8 @@ import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.entity.DataSystem;
 import com.dataset.management.service.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +30,7 @@ import java.util.List;
  * 操作依据： datasetId;
  *
  * */
+@Api(value = "数据集详情表",description = "数据集详情表API")
 @Controller
 @RequestMapping("dataset")
 public class DataSetController {
@@ -50,6 +53,7 @@ public class DataSetController {
     HdfsConfig hdfsConfig;
 
     //查询  Id
+    @ApiOperation(value = "依据指定的数据集ID，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
@@ -74,6 +78,7 @@ public class DataSetController {
     }
     //查询  datasetName
 
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
@@ -95,6 +100,7 @@ public class DataSetController {
     }
 
     //查询  user  Id
+    @ApiOperation(value = "依据指定的用户ID，查询所有数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
@@ -105,6 +111,7 @@ public class DataSetController {
 
 
     //查询全部
+    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectAll/{dataSetSortBy}/{dataSetSortType}",method = RequestMethod.GET)
     public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSortBy") String sortBy,
@@ -162,6 +169,7 @@ public class DataSetController {
      int filesCount：              状态随动  依据数据集内文件数量变更；
 
      * */
+    @ApiOperation(value = "依据客户端数据集属性，修改数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     public ApiResult updateDataByJson(@RequestParam("updateJson") String updateJson) throws IOException{
@@ -215,6 +223,7 @@ public class DataSetController {
      * 清空
      * 删除了文件  files   更新 数据集基本表中关于文件的统计   filesCounts
      * */
+    @ApiOperation(value = "依据指定的数据集ID，清空数据集",httpMethod = "GET")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/clean/{dataSetId}",method = RequestMethod.POST)

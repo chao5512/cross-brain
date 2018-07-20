@@ -10,6 +10,8 @@ import com.dataset.management.entity.DataSystem;
 import com.dataset.management.service.*;
 
 import com.netflix.eureka.V1AwareInstanceInfoConverter;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.mortbay.util.ajax.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.List;
 
+@Api(value = "数据集系统管理",description = "数据集系统管理API")
 @Controller
 @RequestMapping("datasetSystem")
 public class DataSetSystemController {
@@ -57,6 +60,7 @@ public class DataSetSystemController {
     private static final ExecutorService exeService = Executors.newFixedThreadPool(5);
 
     @ResponseBody
+    @ApiOperation(value = "创建数据集",httpMethod = "POST")
     @RequestMapping(value = "/create/{dataSetName}/{userId}/{userName}/{dataSetDesc}/{dataSetPower}",method = RequestMethod.POST)
     public ApiResult createDataSet(@PathVariable(value = "dataSetName") String dataSetName,
                                    @PathVariable(value = "dataSetDesc") String datSetDesc,
@@ -108,6 +112,7 @@ public class DataSetSystemController {
         return  ResultUtil.success(dataSetOptService.save(newDataSystem));
     }
     //查询
+    @ApiOperation(value = "依据指定的排序方式，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectAll/{dataSetSystemSortBy}/{dataSetSystemSortType}/{userId}",method = RequestMethod.GET)
     public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSystemSortBy") String sortBy,
@@ -149,6 +154,7 @@ public class DataSetSystemController {
     }
 
     //查询  datasetId
+    @ApiOperation(value = "依据指定的数据集Id，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByDataSetId/{dataSetId}",method = RequestMethod.GET)
     public ApiResult selectBydatasetId(@PathVariable(value = "dataSetId") int datasetId) throws IOException{
@@ -160,6 +166,7 @@ public class DataSetSystemController {
     }
 
     //查询  datasetName
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/selectByDataSetName/{userId}/{dataSetName}",method = RequestMethod.GET)
@@ -175,6 +182,7 @@ public class DataSetSystemController {
     }
 
     //模糊查询  dataSetNameLike
+    @ApiOperation(value = "依据数据集模糊名称字段，查询数据集",httpMethod = "GET")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/selectByDataSetNameLike/{userId}/{dataSetNameLike}",method = RequestMethod.GET)
@@ -193,6 +201,7 @@ public class DataSetSystemController {
 
 
     //查询  userId
+    @ApiOperation(value = "依据指定的用户ID，查询数据集",httpMethod = "GET")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
@@ -210,7 +219,7 @@ public class DataSetSystemController {
      *
      *数据集系统表删除，数据集基本表信息删除，删除数据集关于文件的信息，删除数据集hdfs 文件  删除 hive 表
      */
-
+    @ApiOperation(value = "依据指定的数据集ID，删除数据集",httpMethod = "POST")
     @ResponseBody
     @Transactional
     @RequestMapping(value = "/delete/{dataSetId}",method = RequestMethod.POST)
