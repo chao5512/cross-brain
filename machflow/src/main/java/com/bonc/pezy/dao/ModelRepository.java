@@ -1,6 +1,6 @@
-package com.deepthoughtdata.dao;
+package com.bonc.pezy.dao;
 
-import com.deepthoughtdata.entity.Model;
+import com.bonc.pezy.entity.Model;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,7 +17,7 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     @Modifying
     @Transactional
-    @Query(value="delete from Model where modelid in (:ids) and owner = :owner ") int deleteByIds(@Param("ids")List<String> ids,@Param("owner")long owner);
+    @Query(value="delete from Model where modelid in (:ids) and owner = :owner ") int deleteByIds(@Param("ids") List<String> ids, @Param("owner") long owner);
 
     Model findByModelId(String modelId);
 

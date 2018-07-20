@@ -1,4 +1,4 @@
-package com.deepthoughtdata.entity;
+package com.bonc.pezy.entity;
 
 import org.hibernate.annotations.GenericGenerator;
 

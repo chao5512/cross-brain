@@ -1,6 +1,6 @@
-package com.deepthoughtdata.service;
+package com.bonc.pezy.service;
 
-import com.deepthoughtdata.entity.Model;
+import com.bonc.pezy.entity.Model;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public interface ModelService {
 
     public List<Model> findByUser(String userid);
 
-    public long delModule(String[] id,String userid);
+    public long delModule(String[] id, String userid);
 
     public List<Model> findModels(String startData, String endData, String type, String userid);
 }

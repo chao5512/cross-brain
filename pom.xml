@@ -62,7 +62,6 @@
     <modules>
         <module>pipe</module>
         <module>machflow</module>
-        <module>appmodule</module>
         <module>dataset</module>
         <module>mining</module>
     </modules>
