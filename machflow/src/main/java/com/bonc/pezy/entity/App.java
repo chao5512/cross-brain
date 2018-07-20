@@ -35,18 +35,6 @@ public class App implements Serializable {
     @Column(nullable = false,length = 14,name = "lastmodifytime")
     private String lastModifyTime;//模型最后修改时间
 
-    /*@OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name = "appId")
-    private Set<Node> nodes = new HashSet<Node>();
-
-    public Set<Node> getNodes() {
-        return nodes;
-    }
-
-    public void setNodes(Set<Node> nodes) {
-        this.nodes = nodes;
-    }*/
-
     @OneToMany(cascade=CascadeType.ALL)
     @JoinColumn(name = "appId")
     private List<Node> nodes = new ArrayList<Node>();

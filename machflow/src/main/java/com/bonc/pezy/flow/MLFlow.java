@@ -5,7 +5,6 @@ import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.entity.App;
 import com.bonc.pezy.entity.Node;
 import com.bonc.pezy.service.AppService;
-import com.bonc.pezy.service.NodeService;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 
@@ -16,7 +15,7 @@ import java.util.*;
  */
 public class MLFlow {
 
-    public Process generateMLBpmnModel(JSONObject jb, App app, AppService appService, NodeService nodeService){
+    public Process generateMLBpmnModel(JSONObject jb, App app, AppService appService){
 
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
