@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-@Api(value = "数据集管理",description = "数据集管理API")
+@Api(value = "数据集文件管理",description = "数据集管理API")
 @Controller
 @RequestMapping("datasetFile")
 public class DataSetFileController {
