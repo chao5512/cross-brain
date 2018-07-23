@@ -53,7 +53,7 @@ public class DataSetController {
     HdfsConfig hdfsConfig;
 
     //查询  Id
-    @ApiOperation(value = "依据指定的数据集ID，查询数据集",httpMethod = "GET")
+//    @ApiOperation(value = "依据指定的数据集ID，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
@@ -78,7 +78,7 @@ public class DataSetController {
 //    }
     //查询  datasetName
 
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
+//    @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
@@ -100,7 +100,7 @@ public class DataSetController {
 //    }
 
     //查询  user  Id
-    @ApiOperation(value = "依据指定的用户ID，查询所有数据集",httpMethod = "GET")
+//    @ApiOperation(value = "依据指定的用户ID，查询所有数据集",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
@@ -111,7 +111,7 @@ public class DataSetController {
 
 
     //查询全部
-    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
+//    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectAll/{dataSetSortBy}/{dataSetSortType}",method = RequestMethod.GET)
     public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSortBy") String sortBy,

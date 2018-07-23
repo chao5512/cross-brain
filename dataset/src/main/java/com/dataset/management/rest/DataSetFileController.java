@@ -208,7 +208,7 @@ public class DataSetFileController {
     }
 
     //查询  fileName
-    @ApiOperation(value = "依据指定文件名称查询文件",httpMethod = "GET")
+//    @ApiOperation(value = "依据指定文件名称查询文件",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByFileName/{fileName}",method = RequestMethod.GET)
     public ApiResult selectFileByFileName(@PathVariable(value = "fileName") String fileName){
@@ -220,7 +220,7 @@ public class DataSetFileController {
     }
 
     //查询  fileId
-    @ApiOperation(value = "依据指定文件Id 查询文件",httpMethod = "GET")
+//    @ApiOperation(value = "依据指定文件Id 查询文件",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectByFileId/{fileId}",method = RequestMethod.GET)
     public ApiResult selectFileByFileId(@PathVariable(value = "fileId") int fileId){
@@ -237,7 +237,7 @@ public class DataSetFileController {
      {"id":47,"fileName":"files","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"upload  success! ",
      "onloadTimedate":"2018-06-01 13:00:14","fileSize":"ddd"}
      * */
-    @ApiOperation(value = "依据客户端指定的文件属性，修改文件",httpMethod = "POST")
+/*    @ApiOperation(value = "依据客户端指定的文件属性，修改文件",httpMethod = "POST")*/
     @ResponseBody
     @RequestMapping(value = {"/updateFile"},method = RequestMethod.POST)
     public ApiResult updateDatasetFiles(@RequestParam(value = "dataSetFileJson") String dataSetFileJson){
