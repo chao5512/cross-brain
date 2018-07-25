@@ -74,4 +74,19 @@ public class AIModelController {
     public long delModule( @RequestParam(name="id[]") String[] id,@RequestParam("owner") String owner,HttpServletResponse response){
         return modelService.delModule(id,owner);
     }
+
+    @ApiOperation(value = "按日期和类型查询模型",httpMethod = "POST")
+    @RequestMapping(value= "/findByTypeAndCreateTime")
+    @ResponseBody
+    public List<Model> findByTypeAndCreateTime(@RequestParam(name="startData")String startData,@RequestParam(name="endData")String endData,@RequestParam(name="modelType")short modelType){
+
+        return modelService.findByCreateTimeAndType(startData,endData,modelType);
+    }
+
+    @ApiOperation(value = "按模型名称模糊搜索模型",httpMethod = "POST")
+    @RequestMapping(value= "/findByModelNameLike")
+    @ResponseBody
+    public List<Model> findByModelNameLike(@RequestParam(name="modelName")String modelName){
+        return  modelService.findByModelNameLike(modelName);
+    }
 }
