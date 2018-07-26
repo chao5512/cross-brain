@@ -32,12 +32,12 @@ public class AIModelController {
     @ApiOperation(value = "创建模型",httpMethod = "POST")
     @RequestMapping(value= "/create",method = RequestMethod.POST)
     @ResponseBody
-    public boolean createModel(@ApiParam(name="modulename",value = "模型名称",required = true) String modulename,
-                       @ApiParam(name="moduletype",value = "模型类型编码,1-机器学习,2-深度学习",required = true) short moduletype,
-                       @ApiParam(name="owner",value = "用户ID",required = true) long owner, HttpServletResponse response){
+    public boolean createModel(@ApiParam(name="modelname",value = "模型名称",required = true) String modelName,
+                       @ApiParam(name="modeltype",value = "模型类型编码,1-机器学习,2-深度学习",required = true) Short modelType,
+                       @ApiParam(name="owner",value = "用户ID",required = true) Long owner, HttpServletResponse response){
         Model model = new Model();
-        model.setModelName(modulename);
-        model.setModelType(moduletype);
+        model.setModelName(modelName);
+        model.setModelType(modelType);
         model.setOwner(owner);
         modelService.create(model);
         return true;
