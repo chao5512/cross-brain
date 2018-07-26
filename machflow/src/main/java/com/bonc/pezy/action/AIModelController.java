@@ -64,9 +64,9 @@ public class AIModelController {
     @ApiOperation(value = "按条件查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findModels",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findModules(@ApiParam(name="startData",value = "开始日期",required = true) String startData,
-                                   @ApiParam(name="endData",value = "结束日期",required = true) String endData,
-                                   @ApiParam(name="type",value = "模型类型编码",required = true) String type,
+    public List<Model> findModules(@ApiParam(name="startData",value = "开始日期,格式yyyyMMdd",required = true) String startData,
+                                   @ApiParam(name="endData",value = "结束日期,格式yyyyMMdd",required = true) String endData,
+                                   @ApiParam(name="type",value = "模型类型编码,1-机器学习,2-深度学习",required = true) String type,
                                    @ApiParam(name="owner",value = "用户ID",required = true) String owner,
                                    HttpServletResponse response){
         return modelService.findModels(startData,endData,type,owner);
