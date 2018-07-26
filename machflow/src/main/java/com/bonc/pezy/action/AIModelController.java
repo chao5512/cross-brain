@@ -14,13 +14,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("model")
-@Api(value = "AI模型管理",description = "AI模型管理API")
+@Api(value = "AI模型管理",description = "AI模型管理API,参数modelType:1-机器学习,2-深度学习,日期格式yyyyMMdd")
 public class AIModelController {
     private final Logger logger = LoggerFactory.getLogger(AIModelController.class);
 
@@ -52,22 +54,10 @@ public class AIModelController {
     @ApiOperation(value = "按模型ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public Model findModelById(@RequestParam(name="modelid") String modelid,
+    public Model findModelById(@RequestParam(name="modelId") String modelId,
                                 HttpServletResponse response){
-        return modelService.findById(modelid);
+        return modelService.findById(modelId);
     }
-
-    //与下“/findByTypeAndCreateTime”功能相同
-//    @ApiOperation(value = "按条件查询模型",httpMethod = "POST")
-//    @RequestMapping(value= "/findModels",method = RequestMethod.POST)
-//    @ResponseBody
-//    public List<Model> findModels(@RequestParam(name="startData") String startData,
-//                                   @RequestParam(name="endData") String endData,
-//                                   @RequestParam(name="type") String type,
-//                                   @RequestParam(name="owner") String owner,
-//                                   HttpServletResponse response){
-//        return modelService.findModels(startData,endData,type,owner);
-//    }
 
     @ApiOperation(value = "删除模型",httpMethod = "POST")
     @RequestMapping(value= "/delByModelId",method = RequestMethod.POST)
@@ -81,12 +71,11 @@ public class AIModelController {
     @ApiOperation(value = "按日期和类型查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByTypeAndCreateTime",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findByTypeAndCreateTime(@RequestParam(name="startData")String startData,
-                                               @RequestParam(name="endData")String endData,
+    public List<Model> findByTypeAndCreateTime(@RequestParam(name="startData")String startDate,
+                                               @RequestParam(name="endData")String endDate,
                                                @RequestParam(name="modelType")short modelType,
                                                @RequestParam(name="owner") String owner){
-
-        return modelService.findByCreateTimeAndType(startData,endData,modelType,owner);
+        return modelService.findByCreateTimeAndType(startDate,endDate,modelType,owner);
     }
 
     @ApiOperation(value = "按模型名称模糊搜索模型",httpMethod = "POST")

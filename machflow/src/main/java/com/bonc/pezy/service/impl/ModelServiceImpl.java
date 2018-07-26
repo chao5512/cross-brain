@@ -36,7 +36,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public List<Model> findModels(String startData, String endData, String type, String userid){
         return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Short.parseShort(type),
-                Long.parseLong(userid),startData,endData);
+                Long.parseLong(userid),startData+"000000",endData+"235959");
     }
 
     @Override
@@ -52,12 +52,12 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType,String owner){
-        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(startData,endData,modelType,Long.parseLong(owner));
+        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(startData+"000000",endData+"235959",modelType,Long.valueOf(owner));
     }
 
     @Override
     public List<Model> findByModelNameLike(String modelName,String owner){
-        List<Model> list = moduleRepository.findByModelNameContainingAndOwner(modelName,Long.parseLong(owner));
+        List<Model> list = moduleRepository.findByModelNameContainingAndOwner(modelName,Long.valueOf(owner));
         return list;
     }
 }
