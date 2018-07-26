@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 
-import java.util.List;
 
 public interface ModelRepository extends JpaRepository<Model, Long> {
     Model save(Model model); //增加&修改用户
@@ -22,4 +21,9 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
     Model findByModelId(String modelId);
 
     List<Model> findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(short type, long owner, String startData, String endData);//根据用户ID查询Module
+
+    List<Model> findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelType(String startData, String endData,short modelType);
+
+    List<Model> findByModelNameContaining(String modelName);
+
 }

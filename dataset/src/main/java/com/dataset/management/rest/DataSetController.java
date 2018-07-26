@@ -52,18 +52,18 @@ public class DataSetController {
     @Autowired
     HdfsConfig hdfsConfig;
 
-    //查询  Id
-    @ApiOperation(value = "依据指定的数据集ID，查询数据集",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
-        logger.info("开始罗列数据据基本信息");
-        DataSet dataSet = dataSetService.findById(dataSetId);
-        if(dataSet.getDataSetName().isEmpty()){
-            return ResultUtil.error(-1,"没有找到对应的数据集名称");
-        }
-        return ResultUtil.success(dataSet);
-    }
+//    //查询  Id
+//    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
+//    public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
+//        logger.info("开始罗列数据据基本信息");
+//        DataSet dataSet = dataSetService.findById(dataSetId);
+//        if(dataSet.getDataSetName().isEmpty()){
+//            return ResultUtil.error(-1,"没有找到对应的数据集名称");
+//        }
+//        return ResultUtil.success(dataSet);
+//    }
 
 //    //查询  datasetName
 //    @ResponseBody
@@ -76,19 +76,19 @@ public class DataSetController {
 //        }
 //        return ResultUtil.success(dataSet);
 //    }
-    //查询  datasetName
 
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
-        logger.info("开始罗列数据据基本信息");
-        DataSet dataSet = dataSetService.findByDataSetName(dataSetName);
-        if(dataSet.getDataSetName().isEmpty()){
-            return ResultUtil.error(-1,"没有找到对应的数据集");
-        }
-        return ResultUtil.success(dataSet);
-    }
+//    //查询  datasetName
+//    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByDataSetName/{dataSetName}",method = RequestMethod.GET)
+//    public ApiResult listInfoDataSetByDataSetName(@PathVariable("dataSetName") String dataSetName){
+//        logger.info("开始罗列数据据基本信息");
+//        DataSet dataSet = dataSetService.findByDataSetName(dataSetName);
+//        if(dataSet.getDataSetName().isEmpty()){
+//            return ResultUtil.error(-1,"没有找到对应的数据集");
+//        }
+//        return ResultUtil.success(dataSet);
+//    }
 
 //    //查询  userName
 //    @ResponseBody
@@ -99,52 +99,52 @@ public class DataSetController {
 //        return ResultUtil.success(dataSets);
 //    }
 
-    //查询  user  Id
-    @ApiOperation(value = "依据指定的用户ID，查询所有数据集",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
-    public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
-        logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
-        List<DataSet> dataSets = dataSetService.findByUserId(userId);
-        return ResultUtil.success(dataSets);
-    }
-
-
-    //查询全部
-    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectAll/{dataSetSortBy}/{dataSetSortType}",method = RequestMethod.GET)
-    public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSortBy") String sortBy,
-                                      @PathVariable(value = "dataSetSortType") String sortType) throws IOException{
-        Sort sort;
-        //默认根据英文名字排序
-        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
-                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
-                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)
-                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)){
-            return ResultUtil.error(-1,"排序规则不符合规定");
-        }
-        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
-                || !sortType.equals(DataSetConsts.SORTTYPE_ASC)){
-            logger.info("数据集基本表排序方式需要变更");
-            sort = changSortBy(sortType,sortBy);
-            // list<DataSet>
-            logger.info("按照"+sortBy+" 方式排序");
-        }else {
-            sort = basicSortBy();
-            logger.info("按照默认方式排序");
-        }
-
-        List<DataSet> dataSets = dataSetService.findAll(sort);
-        logger.info("更改所有数据集排序规则：");
-        for(DataSet dataSet: dataSets){
-            dataSet.setDataSetSortType(sortType);
-            dataSet.setDataSetSortBY(sortBy);
-            dataSetService.save(dataSet);
-        }
-        logger.info("开始罗列所有数据集系统表：");
-        return ResultUtil.success(dataSets);
-    }
+//    //查询  user  Id
+//    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByUserId/{UserId}",method = RequestMethod.GET)
+//    public ApiResult listInfoDataSetByUserId(@PathVariable("UserId") int userId){
+//        logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
+//        List<DataSet> dataSets = dataSetService.findByUserId(userId);
+//        return ResultUtil.success(dataSets);
+//    }
+//
+//
+//    //查询全部
+//    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectAll/{dataSetSortBy}/{dataSetSortType}",method = RequestMethod.GET)
+//    public ApiResult selectAllDataSet(@PathVariable(value = "dataSetSortBy") String sortBy,
+//                                      @PathVariable(value = "dataSetSortType") String sortType) throws IOException{
+//        Sort sort;
+//        //默认根据英文名字排序
+//        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
+//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
+//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)
+//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)){
+//            return ResultUtil.error(-1,"排序规则不符合规定");
+//        }
+//        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
+//                || !sortType.equals(DataSetConsts.SORTTYPE_ASC)){
+//            logger.info("数据集基本表排序方式需要变更");
+//            sort = changSortBy(sortType,sortBy);
+//            // list<DataSet>
+//            logger.info("按照"+sortBy+" 方式排序");
+//        }else {
+//            sort = basicSortBy();
+//            logger.info("按照默认方式排序");
+//        }
+//
+//        List<DataSet> dataSets = dataSetService.findAll(sort);
+//        logger.info("更改所有数据集排序规则：");
+//        for(DataSet dataSet: dataSets){
+//            dataSet.setDataSetSortType(sortType);
+//            dataSet.setDataSetSortBY(sortBy);
+//            dataSetService.save(dataSet);
+//        }
+//        logger.info("开始罗列所有数据集系统表：");
+//        return ResultUtil.success(dataSets);
+//    }
 
 
     /**

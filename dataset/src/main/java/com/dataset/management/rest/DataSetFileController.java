@@ -35,7 +35,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-@Api(value = "数据集管理",description = "数据集管理API")
+@Api(value = "数据集文件管理",description = "数据集管理API")
 @Controller
 @RequestMapping("datasetFile")
 public class DataSetFileController {
@@ -207,29 +207,30 @@ public class DataSetFileController {
         return ResultUtil.success(fileList);
     }
 
-    //查询  fileName
-    @ApiOperation(value = "依据指定文件名称查询文件",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectByFileName/{fileName}",method = RequestMethod.GET)
-    public ApiResult selectFileByFileName(@PathVariable(value = "fileName") String fileName){
-        DataSetFile dataSetFile = dataSetFileService.findDataSetFileByFileName(fileName);
-        if(dataSetFile.getFileName().isEmpty()){
-            return ResultUtil.error(-1,"未找到数据集");
-        }
-        return ResultUtil.success(dataSetFile);
-    }
+//    //查询  fileName
+////    @ApiOperation(value = "依据指定文件名称查询文件",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByFileName/{fileName}",method = RequestMethod.GET)
+//    public ApiResult selectFileByFileName(@PathVariable(value = "fileName") String fileName){
+//        DataSetFile dataSetFile = dataSetFileService.findDataSetFileByFileName(fileName);
+//        if(dataSetFile.getFileName().isEmpty()){
+//            return ResultUtil.error(-1,"未找到数据集");
+//        }
+//        return ResultUtil.success(dataSetFile);
+//    }
 
-    //查询  fileId
-    @ApiOperation(value = "依据指定文件Id 查询文件",httpMethod = "GET")
-    @ResponseBody
-    @RequestMapping(value = "/selectByFileId/{fileId}",method = RequestMethod.GET)
-    public ApiResult selectFileByFileId(@PathVariable(value = "fileId") int fileId){
-        DataSetFile dataSetFile = dataSetFileService.findDataSetFileById(fileId);
-        if(dataSetFile.getFileName().isEmpty()){
-            return ResultUtil.error(-1,"未找到数据集");
-        }
-        return ResultUtil.success(dataSetFile);
-    }
+
+//    //查询  fileId
+////    @ApiOperation(value = "依据指定文件Id 查询文件",httpMethod = "GET")
+//    @ResponseBody
+//    @RequestMapping(value = "/selectByFileId/{fileId}",method = RequestMethod.GET)
+//    public ApiResult selectFileByFileId(@PathVariable(value = "fileId") int fileId){
+//        DataSetFile dataSetFile = dataSetFileService.findDataSetFileById(fileId);
+//        if(dataSetFile.getFileName().isEmpty()){
+//            return ResultUtil.error(-1,"未找到数据集");
+//        }
+//        return ResultUtil.success(dataSetFile);
+//    }
 
 
     //修改
@@ -237,29 +238,29 @@ public class DataSetFileController {
      {"id":47,"fileName":"files","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"upload  success! ",
      "onloadTimedate":"2018-06-01 13:00:14","fileSize":"ddd"}
      * */
-    @ApiOperation(value = "依据客户端指定的文件属性，修改文件",httpMethod = "POST")
-    @ResponseBody
-    @RequestMapping(value = {"/updateFile"},method = RequestMethod.POST)
-    public ApiResult updateDatasetFiles(@RequestParam(value = "dataSetFileJson") String dataSetFileJson){
-
-        logger.info("获取数据集所选文件 ");
-        DataSetFile dataSetFile = JSON.parseObject(dataSetFileJson,DataSetFile.class);
-        if(dataSetFile.getFileName().isEmpty()){
-            return ResultUtil.error(-1,"数据集中没有此文件名称");
-        }
-        logger.info("当前文件ID：名称："+dataSetFile.getId()+"  "+dataSetFile.getFileName());
-        DataSetFile newDataSetFile = dataSetFileService.save(dataSetFile);
-
-        long timetmp = System.currentTimeMillis();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
-        DataSet dataSet = dataSetService.findById(dataSetFile.getDataSetId());
-        dataSet.setDataSetLastUpdateTime(newTime);
-        dataSet.setDataSetUpdateDesc("update the file :"+dataSetFile.getFileName());
-        dataSetService.save(dataSet);
-
-        return ResultUtil.success(newDataSetFile);
-    }
+//    @ApiOperation(value = "依据客户端指定的文件属性，修改文件",httpMethod = "POST")
+//    @ResponseBody
+//    @RequestMapping(value = {"/updateFile"},method = RequestMethod.POST)
+//    public ApiResult updateDatasetFiles(@RequestParam(value = "dataSetFileJson") String dataSetFileJson){
+//
+//        logger.info("获取数据集所选文件 ");
+//        DataSetFile dataSetFile = JSON.parseObject(dataSetFileJson,DataSetFile.class);
+//        if(dataSetFile.getFileName().isEmpty()){
+//            return ResultUtil.error(-1,"数据集中没有此文件名称");
+//        }
+//        logger.info("当前文件ID：名称："+dataSetFile.getId()+"  "+dataSetFile.getFileName());
+//        DataSetFile newDataSetFile = dataSetFileService.save(dataSetFile);
+//
+//        long timetmp = System.currentTimeMillis();
+//        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//        String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+//        DataSet dataSet = dataSetService.findById(dataSetFile.getDataSetId());
+//        dataSet.setDataSetLastUpdateTime(newTime);
+//        dataSet.setDataSetUpdateDesc("update the file :"+dataSetFile.getFileName());
+//        dataSetService.save(dataSet);
+//
+//        return ResultUtil.success(newDataSetFile);
+//    }
 
 
     //删除
