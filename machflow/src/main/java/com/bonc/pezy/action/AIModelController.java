@@ -14,9 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
 import java.util.List;
-import java.util.Date;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -32,9 +30,9 @@ public class AIModelController {
     @ApiOperation(value = "创建模型",httpMethod = "POST")
     @RequestMapping(value= "/create",method = RequestMethod.POST)
     @ResponseBody
-    public boolean createModel(@ApiParam(name="modelname",value = "模型名称",required = true) String modelName,
-                       @ApiParam(name="modeltype",value = "模型类型编码,1-机器学习,2-深度学习",required = true) Short modelType,
-                       @ApiParam(name="owner",value = "用户ID",required = true) Long owner, HttpServletResponse response){
+    public boolean createModel(@RequestParam(name="modelname") String modelName,
+                       @RequestParam(name="modeltype") Short modelType,
+                       @RequestParam(name="owner") Long owner, HttpServletResponse response){
         Model model = new Model();
         model.setModelName(modelName);
         model.setModelType(modelType);
@@ -46,7 +44,7 @@ public class AIModelController {
     @ApiOperation(value = "按用户ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByUser",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findModelByUser(@ApiParam(name="owner",value = "用户ID",required = true) String owner,
+    public List<Model> findModelByUser(@RequestParam(name="owner") String owner,
                                         HttpServletResponse response){
         return modelService.findByUser(owner);
     }
@@ -54,27 +52,28 @@ public class AIModelController {
     @ApiOperation(value = "按模型ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public Model findModelById(@ApiParam(name="modelid",value = "模型ID",required = true) String modelid,
+    public Model findModelById(@RequestParam(name="modelid") String modelid,
                                 HttpServletResponse response){
         return modelService.findById(modelid);
     }
 
-    @ApiOperation(value = "按条件查询模型",httpMethod = "POST")
-    @RequestMapping(value= "/findModels",method = RequestMethod.POST)
-    @ResponseBody
-    public List<Model> findModels(@ApiParam(name="startData",value = "开始日期,格式yyyyMMdd",required = true) String startData,
-                                   @ApiParam(name="endData",value = "结束日期,格式yyyyMMdd",required = true) String endData,
-                                   @ApiParam(name="type",value = "模型类型编码,1-机器学习,2-深度学习",required = true) String type,
-                                   @ApiParam(name="owner",value = "用户ID",required = true) String owner,
-                                   HttpServletResponse response){
-        return modelService.findModels(startData,endData,type,owner);
-    }
+    //与下“/findByTypeAndCreateTime”功能相同
+//    @ApiOperation(value = "按条件查询模型",httpMethod = "POST")
+//    @RequestMapping(value= "/findModels",method = RequestMethod.POST)
+//    @ResponseBody
+//    public List<Model> findModels(@RequestParam(name="startData") String startData,
+//                                   @RequestParam(name="endData") String endData,
+//                                   @RequestParam(name="type") String type,
+//                                   @RequestParam(name="owner") String owner,
+//                                   HttpServletResponse response){
+//        return modelService.findModels(startData,endData,type,owner);
+//    }
 
     @ApiOperation(value = "删除模型",httpMethod = "POST")
     @RequestMapping(value= "/delByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public long delModel( @ApiParam(name="id[]",value = "模型ID",required = true) String[] id,
-                           @ApiParam(name="owner",value = "用户ID",required = true) String owner,
+    public long delModel( @RequestParam(name="id[]") String[] id,
+                           @RequestParam(name="owner") String owner,
                            HttpServletResponse response){
         return modelService.delModel(id,owner);
     }
@@ -82,17 +81,19 @@ public class AIModelController {
     @ApiOperation(value = "按日期和类型查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByTypeAndCreateTime",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findByTypeAndCreateTime(@ApiParam(name="startData",value = "开始日期",required = true)String startData,
-                                               @ApiParam(name="endData",value = "结束日期",required = true)String endData,
-                                               @ApiParam(name="modelType",value = "模型类型编码",required = true)short modelType){
+    public List<Model> findByTypeAndCreateTime(@RequestParam(name="startData")String startData,
+                                               @RequestParam(name="endData")String endData,
+                                               @RequestParam(name="modelType")short modelType,
+                                               @RequestParam(name="owner") String owner){
 
-        return modelService.findByCreateTimeAndType(startData,endData,modelType);
+        return modelService.findByCreateTimeAndType(startData,endData,modelType,owner);
     }
 
     @ApiOperation(value = "按模型名称模糊搜索模型",httpMethod = "POST")
     @RequestMapping(value= "/findByModelNameLike",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findByModelNameLike(@ApiParam(name="modelName",value="模糊查询关键词",required=true)String modelName){
-        return  modelService.findByModelNameLike(modelName);
+    public List<Model> findByModelNameLike(@RequestParam(name="modelName")String modelName,
+                                           @RequestParam(name="owner") String owner){
+        return  modelService.findByModelNameLike(modelName,owner);
     }
 }
