@@ -13,7 +13,7 @@ public interface ModelService {
 
     public List<Model> findByUser(String userid);
 
-    public long delModule(String[] id, String userid);
+    public long delModel(String[] id, String userid);
 
     public List<Model> findModels(String startData, String endData, String type, String userid);
 

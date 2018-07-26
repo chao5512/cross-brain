@@ -22,9 +22,10 @@ public class ModelServiceImpl implements ModelService {
     private ModelRepository moduleRepository;
 
     @Override
-    public Model create(Model module){
-        module.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        return moduleRepository.save(module);
+    public Model create(Model model){
+        model.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        model.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        return moduleRepository.save(model);
     }
 
     @Override
@@ -40,7 +41,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    public long delModule(String[] id,String userid){
+    public long delModel(String[] id,String userid){
         return moduleRepository.deleteByIds(Arrays.asList(id),Long.parseLong(userid));
     }
 

@@ -32,15 +32,13 @@ public class AIModelController {
     @ApiOperation(value = "创建模型",httpMethod = "POST")
     @RequestMapping(value= "/create",method = RequestMethod.POST)
     @ResponseBody
-    public boolean create(@ApiParam(name="modulename",value = "模型名称",required = true) String modulename,
+    public boolean createModel(@ApiParam(name="modulename",value = "模型名称",required = true) String modulename,
                        @ApiParam(name="moduletype",value = "模型类型编码,1-机器学习,2-深度学习",required = true) short moduletype,
                        @ApiParam(name="owner",value = "用户ID",required = true) long owner, HttpServletResponse response){
         Model model = new Model();
         model.setModelName(modulename);
         model.setModelType(moduletype);
         model.setOwner(owner);
-        model.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        model.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
         modelService.create(model);
         return true;
     }
@@ -48,7 +46,7 @@ public class AIModelController {
     @ApiOperation(value = "按用户ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByUser",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findModuleByUser(@ApiParam(name="owner",value = "用户ID",required = true) String owner,
+    public List<Model> findModelByUser(@ApiParam(name="owner",value = "用户ID",required = true) String owner,
                                         HttpServletResponse response){
         return modelService.findByUser(owner);
     }
@@ -56,7 +54,7 @@ public class AIModelController {
     @ApiOperation(value = "按模型ID查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public Model findModuleById(@ApiParam(name="modelid",value = "模型ID",required = true) String modelid,
+    public Model findModelById(@ApiParam(name="modelid",value = "模型ID",required = true) String modelid,
                                 HttpServletResponse response){
         return modelService.findById(modelid);
     }
@@ -64,7 +62,7 @@ public class AIModelController {
     @ApiOperation(value = "按条件查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findModels",method = RequestMethod.POST)
     @ResponseBody
-    public List<Model> findModules(@ApiParam(name="startData",value = "开始日期,格式yyyyMMdd",required = true) String startData,
+    public List<Model> findModels(@ApiParam(name="startData",value = "开始日期,格式yyyyMMdd",required = true) String startData,
                                    @ApiParam(name="endData",value = "结束日期,格式yyyyMMdd",required = true) String endData,
                                    @ApiParam(name="type",value = "模型类型编码,1-机器学习,2-深度学习",required = true) String type,
                                    @ApiParam(name="owner",value = "用户ID",required = true) String owner,
@@ -75,10 +73,10 @@ public class AIModelController {
     @ApiOperation(value = "删除模型",httpMethod = "POST")
     @RequestMapping(value= "/delByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public long delModule( @ApiParam(name="id[]",value = "模型ID",required = true) String[] id,
+    public long delModel( @ApiParam(name="id[]",value = "模型ID",required = true) String[] id,
                            @ApiParam(name="owner",value = "用户ID",required = true) String owner,
                            HttpServletResponse response){
-        return modelService.delModule(id,owner);
+        return modelService.delModel(id,owner);
     }
 
     @ApiOperation(value = "按日期和类型查询模型",httpMethod = "POST")
