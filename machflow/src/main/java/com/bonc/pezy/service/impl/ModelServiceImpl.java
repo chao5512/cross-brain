@@ -51,13 +51,13 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType){
-        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelType(startData,endData,modelType);
+    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType,String owner){
+        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(startData,endData,modelType,Long.parseLong(owner));
     }
 
     @Override
-    public List<Model> findByModelNameLike(String modelName){
-        List<Model> list = moduleRepository.findByModelNameContaining(modelName);
+    public List<Model> findByModelNameLike(String modelName,String owner){
+        List<Model> list = moduleRepository.findByModelNameContainingAndOwner(modelName,Long.parseLong(owner));
         return list;
     }
 }
