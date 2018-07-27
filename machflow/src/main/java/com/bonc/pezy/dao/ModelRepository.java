@@ -16,7 +16,7 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     @Modifying
     @Transactional
-    @Query(value="delete from Model where modelid in (:ids) and owner = :owner ") int deleteByIds(@Param("ids") List<String> ids, @Param("owner") long owner);
+    @Query(value="delete from Model where model_id in (:ids) and owner = :owner ") int deleteByIds(@Param("ids") List<String> ids, @Param("owner") long owner);
 
     Model findByModelId(String modelId);
 
