@@ -11,18 +11,18 @@ public class Model implements Serializable{
     @Id
     @GenericGenerator(name="seq_id", strategy="com.bonc.pezy.util.ModelIdGenerator")
     @GeneratedValue(generator="seq_id")
-    @Column(name = "modelid", unique = true, nullable = false)
+    @Column(name = "modelId", unique = true, nullable = false)
     private String modelId;//模型id唯一标识
 
-    @Column(nullable = false,length = 64,name = "modelname")
+    @Column(nullable = false,length = 64,name = "modelName")
     private String modelName;//模型名称
-    @Column(nullable = false,name = "modeltype")
+    @Column(nullable = false,name = "modelType")
     private short modelType;//模型类型
     @Column(nullable = false,name = "owner")
     private long owner;//模型所属用户
-    @Column(nullable = false,length = 14,name = "createtime")
+    @Column(nullable = false,length = 14,name = "createTime")
     private String createTime;//模型创建时间
-    @Column(nullable = false,length = 14,name = "lastmodifytime")
+    @Column(nullable = false,length = 14,name = "lastmodifyTime")
     private String lastModifyTime;//模型最后修改时间
 
     public String getModelId() {
@@ -72,4 +72,5 @@ public class Model implements Serializable{
     public void setLastModifyTime(String lastModifyTime) {
         this.lastModifyTime = lastModifyTime;
     }
+
 }

@@ -13,20 +13,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-public class ModelIdGenerator implements IdentifierGenerator {
-    private final Logger logger = LoggerFactory.getLogger(ModelIdGenerator.class);
+public class JobIdGenerator implements IdentifierGenerator {
+    private final Logger logger = LoggerFactory.getLogger(JobIdGenerator.class);
 
 
     public Serializable generate(SharedSessionContractImplementor session, Object object)
             throws HibernateException {
-        String prefix = "MDL";
+        String prefix = "JOBID";
         Connection connection = session.connection();
         try {
             PreparedStatement ps = connection
-                    .prepareStatement("select _nextval('userid') as nextval");
+                    .prepareStatement("select _jobnextval('modelid') as jobnextval");
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                int id = rs.getInt("nextval");
+                int id = rs.getInt("jobnextval");
                 String code = prefix + StringUtils.leftPad("" + id,5, '0');
                 //logger.debug("Generated Stock Code: " + code);
                 System.out.println(code);
