@@ -22,8 +22,8 @@ public interface ModelRepository extends JpaRepository<Model, Long> {
 
     List<Model> findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(short type, long owner, String startData, String endData);//根据用户ID查询Module
 
-    List<Model> findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelType(String startData, String endData,short modelType);
+    List<Model> findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(String startData, String endData,short modelType, long owner);
 
-    List<Model> findByModelNameContaining(String modelName);
+    List<Model> findByModelNameContainingAndOwner(String modelName,long owner);
 
 }

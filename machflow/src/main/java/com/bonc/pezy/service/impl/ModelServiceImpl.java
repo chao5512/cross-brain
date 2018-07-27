@@ -22,9 +22,10 @@ public class ModelServiceImpl implements ModelService {
     private ModelRepository moduleRepository;
 
     @Override
-    public Model create(Model module){
-        module.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        return moduleRepository.save(module);
+    public Model create(Model model){
+        model.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        model.setLastModifyTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
+        return moduleRepository.save(model);
     }
 
     @Override
@@ -35,12 +36,12 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public List<Model> findModels(String startData, String endData, String type, String userid){
         return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Short.parseShort(type),
-                Long.parseLong(userid),startData,endData);
+                Long.parseLong(userid),startData+"000000",endData+"235959");
     }
 
     @Override
     @Transactional
-    public long delModule(String[] id,String userid){
+    public long delModel(String[] id,String userid){
         return moduleRepository.deleteByIds(Arrays.asList(id),Long.parseLong(userid));
     }
 
@@ -50,13 +51,13 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType){
-        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelType(startData,endData,modelType);
+    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType,String owner){
+        return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(startData+"000000",endData+"235959",modelType,Long.valueOf(owner));
     }
 
     @Override
-    public List<Model> findByModelNameLike(String modelName){
-        List<Model> list = moduleRepository.findByModelNameContaining(modelName);
+    public List<Model> findByModelNameLike(String modelName,String owner){
+        List<Model> list = moduleRepository.findByModelNameContainingAndOwner(modelName,Long.valueOf(owner));
         return list;
     }
 }
