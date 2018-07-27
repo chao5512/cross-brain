@@ -3,11 +3,11 @@ package com.bonc.pezy.algorithmmodel.classification;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.ServiceMap;
-import com.bonc.pezy.entity.App;
-import com.bonc.pezy.entity.Node;
+import com.bonc.pezy.entity.Job;
+import com.bonc.pezy.entity.Task;
 import com.bonc.pezy.pyapi.JavaRequestPythonService;
-import com.bonc.pezy.service.AppService;
-import com.bonc.pezy.service.NodeService;
+import com.bonc.pezy.service.JobService;
+import com.bonc.pezy.service.TaskService;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.ExecutionListener;
 
@@ -27,8 +27,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
 
-    private AppService appService = serviceMap.getAppService();
-    private NodeService nodeService = serviceMap.getNodeService();
+    private JobService jobService = serviceMap.getJobService();
+    private TaskService taskService = serviceMap.getTaskService();
 
     @Override
     public void notify(DelegateExecution execution) throws Exception {
@@ -37,31 +37,29 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
         if ("start".equals(eventName)) {
             System.out.println("start=========");
             System.out.println("===xxxx===="+execution.getEventName()+"====yyyyy="+execution.getBusinessKey());
-            App app = appService.findByProcessId(p[0],Integer.parseInt(execution.getBusinessKey()));
+            Job job = jobService.findByJobId(execution.getBusinessKey());
             String url = null;
             Map<String,String> param = new HashMap<String, String>();
             String pipe = null;
-            System.out.println("===xxxx===="+app.getAppType());
+            System.out.println("===xxxx===="+job.getModelType());
+            List<Task> tasks = taskService.findByJobId(job.getJobId());
 
-            List<Node> nodes = nodeService.findByAppId(app.getAppId());
-
-            if(app.getAppType() == 1){
+            if(job.getModelType() == 1){
                 url = Constants.PY_SERVER;
+                param.put("appName",job.getJobName());
+                for(Task task:tasks){
 
-                param.put("appName",app.getAppName());
-                for(Node node:nodes){
-
-                    param.put(node.getNodeName(),node.getParam());
+                    param.put(task.getTaskName(),task.getParam());
 
                 }
 
             }
-            if(app.getAppType()==2){
+            if(job.getModelType()==2){
                 url = Constants.PY_SERVER_DEEP;
-                param.put("appName",app.getAppName());
-                for(Node node:nodes){
+                param.put("appName",job.getJobName());
+                for(Task task:tasks){
 
-                    param.put(node.getNodeName(),node.getParam());
+                    param.put(task.getTaskName(),task.getParam());
 
                 }
             }

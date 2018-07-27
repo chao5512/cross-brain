@@ -25,7 +25,6 @@ import java.util.Date;
 /**
  * Created by 冯刚 on 2018/6/14.
  */
-@CrossOrigin
 @Controller
 @RequestMapping("/machflow")
 @Api(value = "AI模型流程",description = "AI模型流程API")
@@ -56,9 +55,10 @@ public class MachFlowController {
     @ApiOperation(value = "部署模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
     @ResponseBody
-    public String analysisCanvas(@RequestParam("jsondata") String jsondata,
+    public Job analysisCanvas(@RequestParam("jsondata") String jsondata,
                                  @RequestParam("userId") String userid,
-                                 @RequestParam("modelId") String modelId, HttpServletResponse response){
+                                 @RequestParam("modelId") String modelId,
+                                 @RequestParam("jobName") String jobName,HttpServletResponse response){
 
         serviceMap.setAppService(appService);
         serviceMap.setNodeService(nodeService);
@@ -68,17 +68,16 @@ public class MachFlowController {
         MachFlow mf = new MachFlow();
         System.out.print(jsondata);
         JSONObject jb = JSON.parseObject(jsondata);
-        /*App app = appService.findByUserAndAppId(appid);*/
         Model model = modelService.findById(modelId);
         Job job = new Job();
-        job.setJobName("jobName");
+        job.setJobName(jobName);
         job.setModelId(modelId);
         job.setModelName(model.getModelName());
         job.setModelType(model.getModelType());
         job.setOwner(model.getOwner());
         job.setJobStatus("创建");
         job.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        jobService.create(job);
+        job = jobService.create(job);
 
         Process process = null;
         if(model.getModelType()==1){
@@ -89,24 +88,22 @@ public class MachFlowController {
             DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
             process = deepLearnFlow.generateDLBpmnModel(jb,job,taskService);
         }
-        filename = jb.get("processId").toString()+"."+"bpmn20.bpmn";
+        filename = modelId+"."+"bpmn20.bpmn";
         if(process != null&&(!"".equals(filename))){
             mf.generateBpmnModel(process,filename);
-            return "sucess";
-        }else{
-            return "error";
         }
+
+        return job;
 
     }
 
     @ApiOperation(value = "运行模型",httpMethod = "POST")
     @RequestMapping(value = "/run",method = RequestMethod.POST)
     @ResponseBody
-    public String run(@RequestParam("processId") String processId,
-                      @RequestParam("appId") int appid,HttpServletResponse respons){
-        String aid = String.valueOf(appid);
+    public String run(@RequestParam("modelId") String modelId,
+                      @RequestParam("jobId") String jobId, HttpServletResponse respons){
         MachFlow mf = new MachFlow();
-        mf.startActiviti(processId,aid);
+        mf.startActiviti(modelId,jobId);
         return "sucess";
     }
 

@@ -8,6 +8,7 @@ import com.bonc.pezy.service.JobService;
 import org.activiti.bpmn.model.*;
 import org.activiti.bpmn.model.Process;
 
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -20,7 +21,6 @@ public class MLFlow {
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
 
-       /* List<Node> nodes = new ArrayList<Node>();*/
         List<Task> tasks = new ArrayList<Task>();
         process.setId(job.getModelId());
         ArrayList<FlowElement> listnode = new ArrayList<FlowElement>();
@@ -29,22 +29,15 @@ public class MLFlow {
 
         ((Map)jb.get("node")).forEach((key,value)->{
             Task task = new Task();
-          /*  Node node = new Node();*/
-            /*node.setId(Integer.parseInt(((Map)value).get("sno").toString()));*/
             task.setJobId(job.getJobId());
+            task.setOwner(job.getOwner());
             task.setTaskName(key.toString());
             task.setInputNodeId(((Map)value).get("InputNodeId").toString());
             task.setOutputNodeId(((Map)value).get("outputNodeId").toString());
             task.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
             task.setParam(((Map)value).get("param").toString());
+            task.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             tasks.add(task);
-           /* node.setAppId(job.getAppId());
-            node.setNodeName(key.toString());
-            node.setInputNodeId(((Map)value).get("InputNodeId").toString());
-            node.setOutputNodeId(((Map)value).get("outputNodeId").toString());
-            node.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
-            node.setParam(((Map)value).get("param").toString());
-            nodes.add(node);*/
         });
         Collections.sort(tasks);
         job.setTasks(tasks);

@@ -26,10 +26,10 @@ public class MachFlow {
 
     }
 
-    public void startActiviti(String processId,String appid) {
+    public void startActiviti(String modelId,String jobId) {
         System.out.println("进来没有啊。。。。");
 
-        runtimeService.startProcessInstanceByKey(processId,appid);
+        runtimeService.startProcessInstanceByKey(modelId,jobId);
 
     }
 
