@@ -8,6 +8,7 @@ from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 import configparser
 
+#基于SparkML Pipeline
 class MLPipeline(Pipe):
 
     """初始化参数 appName:任务名称"""
@@ -24,8 +25,9 @@ class MLPipeline(Pipe):
             .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName)\
             .getOrCreate()
-
+        self.applicationId = self.spark.sparkContext.applicationId
         print(self.spark.version)
+        print(self.applicationId)
         return self.spark
 
     """加载数据 pyspark.sql.DataFrame"""
@@ -43,8 +45,9 @@ class MLPipeline(Pipe):
 
     def buildPipeline(self, originalStages):
         stages = self.buildStages(originalStages)
-        pipeline = Pipeline(stages=stages)
-        model = pipeline.fit(self.trainSet)
+        self.pipeline = Pipeline(stages=stages)
+        self.pipeline.write.save(self.pipePath)#保存pipeline
+        model = self.pipeline.fit(self.trainSet)
         return model
 
     def buildStages(self, originalStages):
@@ -82,14 +85,19 @@ class MLPipeline(Pipe):
             # f1=evaluator.setMetricName("f1").evaluate(predictions);
 
     """保存Model文件"""
-    def saveModel(self,model,modelPath):
-        model.save(modelPath);
+    def saveModel(self,model):
+        model.save(self.modelPath);
 
     """加载Model文件"""
-    def loadModel(self,stages,modelPath):
+    def loadModel(self,stages,modelPath,pipePath):
+        self.pipeline.read().load(pipePath)
         if isinstance(stages[len(stages)], LogisticRegressionModel):
             return LogisticRegressionModel.load(self.spark,modelPath)
 
     """关闭SparkSession"""
     def stop(self):
         self.spark.stop()
+
+    def setParams(self,pipePath,modelPath):
+        self.pipePath = pipePath
+        self.modelPath = modelPath

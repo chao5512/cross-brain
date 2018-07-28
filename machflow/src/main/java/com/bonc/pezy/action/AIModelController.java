@@ -86,8 +86,8 @@ public class AIModelController {
     @ApiOperation(value = "按日期和类型查询模型",httpMethod = "POST")
     @RequestMapping(value= "/findByTypeAndCreateTime",method = RequestMethod.POST)
     @ResponseBody
-    public Result findByTypeAndCreateTime(@RequestParam(name="startData")String startDate,
-                                               @RequestParam(name="endData")String endDate,
+    public Result findByTypeAndCreateTime(@RequestParam(name="startDate")String startDate,
+                                               @RequestParam(name="endDate")String endDate,
                                                @RequestParam(name="modelType")short modelType,
                                                @RequestParam(name="owner") String owner){
         Result result = null;
