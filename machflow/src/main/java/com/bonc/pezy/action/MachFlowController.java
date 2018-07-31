@@ -32,8 +32,6 @@ public class MachFlowController {
 
 
     private final Logger logger = LoggerFactory.getLogger(MachFlowController.class);
-    @Autowired
-    private AppService appService;
 
     @Autowired
     private NodeService nodeService;
@@ -60,7 +58,6 @@ public class MachFlowController {
                                  @RequestParam("modelId") String modelId,
                                  @RequestParam("jobName") String jobName,HttpServletResponse response){
 
-        serviceMap.setAppService(appService);
         serviceMap.setNodeService(nodeService);
         serviceMap.setModelService(modelService);
         serviceMap.setJobService(jobService);

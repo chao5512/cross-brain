@@ -59,17 +59,14 @@ def loadDataSet():
     spark = pipe.create()
     #数据元路径
     datasource = json.loads(data['datasource'])
-<<<<<<< HEAD
     print(datasource)
     #filepath = datasource['filepath']
     filepath = "hdfs://172.16.31.231:9000/data"
 
     print(filepath)
-=======
     logger.info(datasource)
     filepath = datasource['filepath']
     logger.info(filepath)
->>>>>>> 5c5b7bc6cfe422cb3b0886a060e3b5ed07f54373
 
     textRDD = spark.sparkContext.textFile(filepath)
     lastRDD = textRDD.map(lambda x: [x[0:1], x[2:]])
