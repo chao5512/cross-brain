@@ -1,7 +1,6 @@
 package com.bonc.pezy.vo;
 
 public class JobQuery {
-
     private Long owner;//所属用户id
     private Short modelType;
     private String createTimeBegin;
