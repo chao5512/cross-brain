@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -195,9 +196,7 @@ public class JobController {
     @RequestMapping(value = "/findJobs", method = RequestMethod.GET)
     @ResponseBody
     public Result findJobs(@RequestParam(value = "page", defaultValue = "0") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size,
-            @RequestParam(name = "owner") Long owner, JobQuery jobQuery) {
-        //校验参数 todo
+            @RequestParam(value = "size", defaultValue = "5") Integer size, @Validated JobQuery jobQuery) {
         Page<Job> jobs = jobService.findJobs(page, size, jobQuery);
         Result result = ResultUtil.success(jobs);
         return result;
