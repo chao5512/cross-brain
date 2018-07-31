@@ -1,23 +1,26 @@
 package com.bonc.pezy.action;
 
+import com.bonc.pezy.entity.Job;
+import com.bonc.pezy.service.JobService;
 import com.bonc.pezy.util.ResultUtil;
+import com.bonc.pezy.vo.JobQuery;
+import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.File;
-
-import com.bonc.pezy.vo.Result;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,7 +29,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Api(value = "AI任务管理",description = "任务管理")
 public class JobController {
     private final Logger logger = LoggerFactory.getLogger(JobController.class);
-
+    @Autowired
+    private JobService jobService;
     @ApiOperation(value = "下载模型文件",httpMethod = "POST")
     @RequestMapping(value = "/downModelFile", method = RequestMethod.GET)
     public Result DownModelFile(@RequestParam(name="jobid") String jobid,HttpServletResponse res) {
@@ -179,5 +183,16 @@ public class JobController {
     @ResponseBody
     public Result callModelByFile(@RequestParam("file")MultipartFile file, @RequestParam(name="jobId") String jobId){
         return ResultUtil.success();
+    }
+
+    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)",httpMethod = "get")
+    @RequestMapping(value = "/findJobs", method = RequestMethod.GET)
+    public Result findJobs(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
+            @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,JobQuery jobQuery) {
+        //校验参数 todo
+        Page<Job> jobs = jobService.findJobs(pageNumber, pageSize, jobQuery);
+        Result result  = ResultUtil.success();
+        result.setData(jobs);
+        return result;
     }
 }
