@@ -21,7 +21,6 @@ public class ServiceMap {
         return serviceMap;
     }
 
-    private AppService appService;
 
     private NodeService nodeService;
 
@@ -31,13 +30,6 @@ public class ServiceMap {
 
     private TaskService taskService;
 
-    public AppService getAppService() {
-        return appService;
-    }
-
-    public void setAppService(AppService appService) {
-        this.appService = appService;
-    }
 
     public NodeService getNodeService() {
         return nodeService;
