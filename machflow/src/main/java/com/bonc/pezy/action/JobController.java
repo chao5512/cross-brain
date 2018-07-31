@@ -32,7 +32,7 @@ public class JobController {
     @Autowired
     private JobService jobService;
     @ApiOperation(value = "下载模型文件",httpMethod = "POST")
-    @RequestMapping(value = "/downModelFile", method = RequestMethod.GET)
+    @RequestMapping(value = "/downModelFile", method = RequestMethod.POST)
     public Result DownModelFile(@RequestParam(name="jobid") String jobid,HttpServletResponse res) {
         Result result = null;
         String fileName = "1.png";
@@ -68,7 +68,7 @@ public class JobController {
     }
 
     @ApiOperation(value = "获取节点运行日志",httpMethod = "POST")
-    @RequestMapping(value = "/qryLog", method = RequestMethod.GET)
+    @RequestMapping(value = "/qryLog", method = RequestMethod.POST)
     public Result qryLog(@RequestParam(name="jobId") String jobId,@RequestParam(name="nodeId") String nodeId,
                          HttpServletResponse res) {
         Result result = null;
@@ -105,7 +105,7 @@ public class JobController {
     }
 
     @ApiOperation(value = "获取任务结果数据",httpMethod = "POST")
-    @RequestMapping(value = "/qryResultData", method = RequestMethod.GET)
+    @RequestMapping(value = "/qryResultData", method = RequestMethod.POST)
     public Result qryResultData(@RequestParam(name="jobId") String jobId,
                          HttpServletResponse res) {
         Result result = null;
@@ -142,7 +142,7 @@ public class JobController {
     }
 
     @ApiOperation(value = "调用模型(消息)",httpMethod = "POST")
-    @RequestMapping(value = "/callModelByMessage", method = RequestMethod.GET)
+    @RequestMapping(value = "/callModelByMessage", method = RequestMethod.POST)
     public Result callModelByMessage(@RequestParam(name="jobId") String jobId,@RequestParam(name="content") String content,
                                 HttpServletResponse res) {
         Result result = null;
@@ -185,8 +185,8 @@ public class JobController {
         return ResultUtil.success();
     }
 
-    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)",httpMethod = "get")
-    @RequestMapping(value = "/findJobs", method = RequestMethod.GET)
+    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)",httpMethod = "POST")
+    @RequestMapping(value = "/findJobs", method = RequestMethod.POST)
     public Result findJobs(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,JobQuery jobQuery) {
         //校验参数 todo
