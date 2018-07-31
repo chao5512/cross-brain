@@ -52,7 +52,7 @@ public class DataSetController {
     @Autowired
     HdfsConfig hdfsConfig;
 
-    //查询  Id
+    //查询  Id C
     @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
     @ResponseBody
     @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
