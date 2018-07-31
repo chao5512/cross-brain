@@ -27,11 +27,8 @@ class MLPipeline(Pipe):
             .getOrCreate()
         self.applicationId = self.spark.sparkContext.applicationId
         print(self.spark.version)
-<<<<<<< HEAD
         print(self.spark.sparkContext.applicationId)
-=======
         print(self.applicationId)
->>>>>>> 5c5b7bc6cfe422cb3b0886a060e3b5ed07f54373
         return self.spark
 
     """加载数据 pyspark.sql.DataFrame"""
