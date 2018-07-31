@@ -40,7 +40,9 @@ def loadDataSet():
     #数据元路径
     datasource = json.loads(data['datasource'])
     print(datasource)
-    filepath = datasource['filepath']
+    #filepath = datasource['filepath']
+    filepath = "hdfs://172.16.31.231:9000/data"
+
     print(filepath)
 
     textRDD = spark.sparkContext.textFile(filepath)

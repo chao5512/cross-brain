@@ -3,24 +3,25 @@ package com.bonc.pezy.entity;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.ArrayList;
-
 import java.util.List;
+
 /**
- * Created by 冯刚 on 2018/7/20.
+ * Created by 冯刚 on 2018/7/30.
  */
-@Table(name = "aijob")
+@Table(name = "aicjob")
 @Entity
-public class Job {
+public class CurrentJob implements Serializable {
 
     @Id
-    @GenericGenerator(name="job_id", strategy="com.bonc.pezy.util.JobIdGenerator")
-    @GeneratedValue(generator="job_id")
-    @Column(name = "jobId",unique = true, nullable = false)
-    private String jobId;
+    @GenericGenerator(name="cjob_id", strategy="com.bonc.pezy.util.CJobIdGenerator")
+    @GeneratedValue(generator="cjob_id")
+    @Column(name = "cjobId",unique = true, nullable = false)
+    private String cJobId;
 
-    @Column(name = "jobName", nullable = false)
-    private String jobName;
+    @Column(name = "cName", nullable = false)
+    private String cJobName;
 
     @Column(name = "modelId",nullable = false)
     private String modelId;
@@ -31,8 +32,8 @@ public class Job {
     @Column(name = "modelType",nullable = false)
     private short modelType;
 
-    @Column(name = "jobstatus",nullable = false)
-    private String jobStatus;
+    @Column(name = "cjobstatus",nullable = false)
+    private String cJobStatus;
 
     @Column(nullable = false,name = "owner")
     private long owner;//所属用户
@@ -46,24 +47,24 @@ public class Job {
     @Column(length = 100,name="applicationId")
     private String applicationId;//spark任务id
 
-    @OneToMany(cascade=CascadeType.ALL)
-    @JoinColumn(name = "jobId")
-    private List<Task> tasks = new ArrayList<Task>();
+    @OneToMany(cascade= CascadeType.ALL)
+    @JoinColumn(name = "cjobId")
+    private List<CurrentNode> currentNodes = new ArrayList<CurrentNode>();
 
-    public String getJobId() {
-        return jobId;
+    public String getcJobId() {
+        return cJobId;
     }
 
-    public void setJobId(String jobId) {
-        this.jobId = jobId;
+    public void setcJobId(String cJobId) {
+        this.cJobId = cJobId;
     }
 
-    public String getJobName() {
-        return jobName;
+    public String getcJobName() {
+        return cJobName;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
+    public void setcJobName(String cJobName) {
+        this.cJobName = cJobName;
     }
 
     public String getModelId() {
@@ -90,12 +91,12 @@ public class Job {
         this.modelType = modelType;
     }
 
-    public String getJobStatus() {
-        return jobStatus;
+    public String getcJobStatus() {
+        return cJobStatus;
     }
 
-    public void setJobStatus(String jobStatus) {
-        this.jobStatus = jobStatus;
+    public void setcJobStatus(String cJobStatus) {
+        this.cJobStatus = cJobStatus;
     }
 
     public long getOwner() {
@@ -122,12 +123,12 @@ public class Job {
         this.stopTime = stopTime;
     }
 
-    public List<Task> getTasks() {
-        return tasks;
+    public List<CurrentNode> getCurrentNodes() {
+        return currentNodes;
     }
 
-    public void setTasks(List<Task> tasks) {
-        this.tasks = tasks;
+    public void setCurrentNodes(List<CurrentNode> currentNodes) {
+        this.currentNodes = currentNodes;
     }
 
     public String getApplicationId() {

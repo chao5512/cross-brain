@@ -107,5 +107,24 @@ public class MachFlowController {
         return "sucess";
     }
 
+    @ApiOperation(value = "停止模型",httpMethod = "POST")
+    @RequestMapping(value = "/stop",method = RequestMethod.POST)
+    @ResponseBody
+    public String stop(@RequestParam("jobId") String jobId, HttpServletResponse respons){
+
+
+
+        return "success";
+    }
+
+
+
+    /*@ApiOperation(value = "spark任务Id",httpMethod = "POST")
+    @RequestMapping(value = "/sparkappid",method = RequestMethod.POST)
+    @ResponseBody
+    public Job updateapplicationId(@RequestParam() ){
+
+    }*/
+
 
 }

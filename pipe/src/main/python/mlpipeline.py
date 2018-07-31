@@ -26,6 +26,7 @@ class MLPipeline(Pipe):
             .getOrCreate()
 
         print(self.spark.version)
+        print(self.spark.sparkContext.applicationId)
         return self.spark
 
     """加载数据 pyspark.sql.DataFrame"""

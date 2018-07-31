@@ -33,7 +33,6 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
     @Override
     public void notify(DelegateExecution execution) throws Exception {
         String eventName = execution.getEventName();
-        String[] p = execution.getProcessDefinitionId().split(":");
         if ("start".equals(eventName)) {
             System.out.println("start=========");
             System.out.println("===xxxx===="+execution.getEventName()+"====yyyyy="+execution.getBusinessKey());
