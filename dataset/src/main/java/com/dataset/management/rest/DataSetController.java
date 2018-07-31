@@ -52,18 +52,18 @@ public class DataSetController {
     @Autowired
     HdfsConfig hdfsConfig;
 
-//    //查询  Id
-//    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
-//    @ResponseBody
-//    @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
-//    public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
-//        logger.info("开始罗列数据据基本信息");
-//        DataSet dataSet = dataSetService.findById(dataSetId);
-//        if(dataSet.getDataSetName().isEmpty()){
-//            return ResultUtil.error(-1,"没有找到对应的数据集名称");
-//        }
-//        return ResultUtil.success(dataSet);
-//    }
+    //查询  Id C
+    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
+    @ResponseBody
+    @RequestMapping(value = "/selectById/{dataSetId}",method = RequestMethod.GET)
+    public ApiResult listInfoDataSetByDataSetId(@PathVariable("dataSetId") int dataSetId){
+        logger.info("开始罗列数据据基本信息");
+        DataSet dataSet = dataSetService.findById(dataSetId);
+        if(dataSet.getDataSetName().isEmpty()){
+            return ResultUtil.error(-1,"没有找到对应的数据集名称");
+        }
+        return ResultUtil.success(dataSet);
+    }
 
 //    //查询  datasetName
 //    @ResponseBody

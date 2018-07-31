@@ -11,6 +11,26 @@ from pyspark.ml import Pipeline
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 from flask_cors import *
 
+import logging
+import time
+import os.path
+
+# 创建logger
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)  # Log等级总开关
+# 创建handler，用于写入日志文件
+rq = time.strftime('%Y%m%d%H%M', time.localtime(time.time()))
+log_path = os.path.dirname(os.getcwd()) + '/Logs/'
+log_name = log_path + rq + '.log'
+logfile = log_name
+fh = logging.FileHandler(logfile, mode='w')
+fh.setLevel(logging.DEBUG)  # 输出到file的log等级的开关
+# 定义handler的输出格式
+formatter = logging.Formatter("%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s")
+fh.setFormatter(formatter)
+# 将logger添加到handler里面
+logger.addHandler(fh)
+
 app = Flask(__name__)
 #CORS(app, supports_credentials=True)
 @app.route("/health")
@@ -33,17 +53,23 @@ def loadDataSet():
     # step1 create sparksession and dataframe
     print(request.get_data())
     data = json.loads(request.get_data())
-    print(data)
+    logger.info(data)
     appName = data['appName']
     pipe = MLPipeline(appName)
     spark = pipe.create()
     #数据元路径
     datasource = json.loads(data['datasource'])
+<<<<<<< HEAD
     print(datasource)
     #filepath = datasource['filepath']
     filepath = "hdfs://172.16.31.231:9000/data"
 
     print(filepath)
+=======
+    logger.info(datasource)
+    filepath = datasource['filepath']
+    logger.info(filepath)
+>>>>>>> 5c5b7bc6cfe422cb3b0886a060e3b5ed07f54373
 
     textRDD = spark.sparkContext.textFile(filepath)
     lastRDD = textRDD.map(lambda x: [x[0:1], x[2:]])
@@ -66,7 +92,7 @@ def loadDataSet():
     b['HashingTF'] = json.loads(data['HashingTF'])
     b['LogisticRegression'] = json.loads(data['LogisticRegression'])
 
-    print(b)
+    logger.info(b)
     model = pipe.buildPipeline(b)
     #model = pipe.buildPipeline(data['originalStages'])
 
@@ -77,7 +103,9 @@ def loadDataSet():
     accuracy = pipe.evaluator(data['evaluator'], prediction, "label")
 
     # step6 打印模型准确率
-    print("Test set accuracy = " + str(accuracy))
+    logger.info("Test set accuracy = " + str(accuracy))
+
+    pipe.stop()
     result = {'appName': appName, 'accuracy': accuracy}
     return Response(json.dumps(result), mimetype='application/json')
 if __name__ == '__main__':
