@@ -3,9 +3,9 @@ package com.bonc.pezy.action;
 import com.bonc.pezy.entity.Model;
 import com.bonc.pezy.service.ModelService;
 import com.bonc.pezy.util.ResultUtil;
+import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.text.SimpleDateFormat;
-import java.util.List;
-import java.util.Date;
-
 import javax.servlet.http.HttpServletResponse;
-
-import com.bonc.pezy.vo.Result;
+import java.util.List;
 
 @Controller
 @RequestMapping("model")
