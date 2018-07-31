@@ -185,8 +185,8 @@ public class JobController {
         return ResultUtil.success();
     }
 
-    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)",httpMethod = "POST")
-    @RequestMapping(value = "/findJobs", method = RequestMethod.POST)
+    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)",httpMethod = "GET")
+    @RequestMapping(value = "/findJobs", method = RequestMethod.GET)
     public Result findJobs(@RequestParam(value = "pageNumber", defaultValue = "0") Integer pageNumber,
             @RequestParam(value = "pageSize", defaultValue = "5") Integer pageSize,JobQuery jobQuery) {
         //校验参数 todo
