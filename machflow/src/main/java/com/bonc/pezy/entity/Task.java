@@ -39,6 +39,12 @@ public class Task implements Serializable,Comparable<Task>{
     @Column(name = "param")
     private String param;
 
+    @Column(name = "tasktype")
+    private short taskType;
+
+    @Column(name = "taskstatus")
+    private short taskStatus;
+
     //节点顺序
     @Column(name = "sno")
     private int sno;
@@ -101,6 +107,22 @@ public class Task implements Serializable,Comparable<Task>{
 
     public void setParam(String param) {
         this.param = param;
+    }
+
+    public short getTaskType() {
+        return taskType;
+    }
+
+    public void setTaskType(short taskType) {
+        this.taskType = taskType;
+    }
+
+    public short getTaskStatus() {
+        return taskStatus;
+    }
+
+    public void setTaskStatus(short taskStatus) {
+        this.taskStatus = taskStatus;
     }
 
     public int getSno() {

@@ -32,7 +32,7 @@ public class Job {
     private short modelType;
 
     @Column(name = "jobstatus",nullable = false)
-    private String jobStatus;
+    private int jobStatus;
 
     @Column(nullable = false,name = "owner")
     private long owner;//所属用户
@@ -90,11 +90,11 @@ public class Job {
         this.modelType = modelType;
     }
 
-    public String getJobStatus() {
+    public int getJobStatus() {
         return jobStatus;
     }
 
-    public void setJobStatus(String jobStatus) {
+    public void setJobStatus(int jobStatus) {
         this.jobStatus = jobStatus;
     }
 

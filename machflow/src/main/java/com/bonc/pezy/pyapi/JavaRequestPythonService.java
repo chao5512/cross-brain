@@ -11,7 +11,7 @@ import java.net.URL;
  */
 public class JavaRequestPythonService {
 
-    public void requestPythonService(String pipe,String urls){
+    public String requestPythonService(String pipe,String urls){
 
         URL url = null;
         HttpURLConnection conn = null;
@@ -24,6 +24,7 @@ public class JavaRequestPythonService {
             OutputStream outputStream = conn.getOutputStream();
             outputStream.write(pipe.getBytes());
             outputStream.flush();
+            System.out.println(conn.getResponseMessage());
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("HTTP GET Request Failed with Error code : "
                         + conn.getResponseCode());
@@ -36,10 +37,10 @@ public class JavaRequestPythonService {
                 System.out.println(output);
             }
             conn.disconnect();
-
+            return conn.getResponseMessage();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return e.getMessage();
         }
     }
 }
