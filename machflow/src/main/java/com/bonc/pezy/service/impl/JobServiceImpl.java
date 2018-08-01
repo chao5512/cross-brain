@@ -68,17 +68,17 @@ public class JobServiceImpl implements JobService {
                 }
                 if (StringUtils.isNotEmpty(jobQuery.getCreateTimeBegin())) {
                     predicates.add(criteriaBuilder
-                            .greaterThanOrEqualTo(root.get("createtime").as(String.class),
+                            .greaterThanOrEqualTo(root.get("createTime").as(String.class),
                                     jobQuery.getCreateTimeBegin()));
                 }
                 if (StringUtils.isNotEmpty(jobQuery.getCreateTimeEnd())) {
                     predicates.add(criteriaBuilder
-                            .lessThanOrEqualTo(root.get("createtime").as(String.class),
+                            .lessThanOrEqualTo(root.get("createTime").as(String.class),
                                     jobQuery.getCreateTimeEnd()));
                 }
                 if (StringUtils.isNotEmpty(jobQuery.getModelName())) {
                     predicates.add(criteriaBuilder
-                            .like(root.get("model_name").as(String.class),
+                            .like(root.get("modelName").as(String.class),
                                     jobQuery.getModelName()));
                 }
                 return criteriaBuilder.and(toArray(predicates, Predicate.class));

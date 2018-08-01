@@ -1,10 +1,19 @@
 package com.bonc.pezy.vo;
 
-public class JobQuery {
 
+import java.io.Serializable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import org.springframework.beans.factory.annotation.Required;
+
+public class JobQuery implements Serializable{
+
+    @NotNull(message = "用户ID不能为空")
     private Long owner;//所属用户id
     private Short modelType;
+    @Pattern(regexp = "[0-9]{4}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}", message = "起始日期格式不对，需要yyyyMMddHHmmss格式")
     private String createTimeBegin;
+    @Pattern(regexp = "[0-9]{4}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}", message = "结束日期格式不对，需要yyyyMMddHHmmss格式")
     private String createTimeEnd;
     private String modelName;
 
@@ -12,6 +21,7 @@ public class JobQuery {
         return owner;
     }
 
+    @Required
     public void setOwner(Long owner) {
         this.owner = owner;
     }
