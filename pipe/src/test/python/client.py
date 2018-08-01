@@ -6,15 +6,25 @@ import json
 
 def testML():
     mlpipe = {
-        'isSplitSample': '{"trainRatio":0.6,"fault":1}',
         'appName': 'TestML',
-        'datasource': '{"filepath":"hdfs://172.16.31.232:9000/data"}',
-        'HashingTF': '{"outputCol":"features","inputCol":"words"}',
-        'LogisticRegression': '{"maxIter":10,"regParam":0.001}',
-        'Tokenizer': '{"outputCol":"words","inputCol":"content"}',
-        'evaluator': 'MulticlassClassificationEvaluator'
+        'jobId':'job123',
+        'tasks':{"datasource":{"taskId":1,"type":0},
+                 "isSplitSample":{"taskId":2,"type":2},
+                 "TypeTransfer":{"taskId":3,"type":4},
+                "Tokenizer":{"taskId":4,"type":1},
+                "HashingTF":{"taskId":5,"type":1},
+                "LogisticRegression":{"taskId":6,"type":1},
+                "evaluator":{"taskId":7,"type":3}
+                },
+        'datasource': {"filepath":"hdfs://172.16.31.232:9000/data"},
+        'isSplitSample': {"trainRatio":0.6,"fault":1},
+        'TypeTransfer': {"outputCol":"label","inputCol":"label","inputCol":"label","castType":"Double"},
+        'HashingTF': {"outputCol":"features","inputCol":"words"},
+        'LogisticRegression': {"maxIter":10,"regParam":0.001},
+        'Tokenizer': {"outputCol":"words","inputCol":"content"},
+        'evaluator': {"evaluator":"MulticlassClassificationEvaluator"}
     }
-    r = requests.post("http://localhost:3001/LRDemo", data=json.dumps(mlpipe))
+    r = requests.post("http://localhost:3001/execute", data=json.dumps(mlpipe))
     print(r.text)
 
 def testDL():

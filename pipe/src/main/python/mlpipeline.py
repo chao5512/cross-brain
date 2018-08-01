@@ -7,6 +7,11 @@ from pyspark.sql import SparkSession,DataFrame
 from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel
 from pyspark.ml.evaluation import MulticlassClassificationEvaluator
 import configparser
+from pyspark.sql.types import *
+
+from ml.process.TypeTransfer import TypeTransfer
+
+from pyspark.sql import HiveContext
 
 #基于SparkML Pipeline
 class MLPipeline(Pipe):
@@ -14,7 +19,7 @@ class MLPipeline(Pipe):
     """初始化参数 appName:任务名称"""
     def __init__(self,appName):
         self.conf = configparser.ConfigParser()
-        self.conf.read("conf.ini")
+        self.conf.read("/Users/mengxin/pezydata/cross-brain/pipe/src/main/python/conf.ini")
         super(MLPipeline,self).__init__(appName)
 
     """返回SparkSession对象"""
@@ -24,30 +29,40 @@ class MLPipeline(Pipe):
         self.spark = SparkSession.builder \
             .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName)\
+            .enableHiveSupport()\
             .getOrCreate()
-        self.applicationId = self.spark.sparkContext.applicationId
-        print(self.spark.version)
-        print(self.spark.sparkContext.applicationId)
-        print(self.applicationId)
         return self.spark
 
     """加载数据 pyspark.sql.DataFrame"""
-    def loadDataSet(self,dataFrame):
-        if not (isinstance(dataFrame, DataFrame)):
-            raise TypeError(
-                "DataType Error!,Is not a pyspark.sql.DataFrame!")
-        self.dataFrame = dataFrame
+    def loadDataSetFromTable(self):
+        filePath = "hdfs://182.92.82.3:9000/data/data"
+        textRDD = self.spark.sparkContext.textFile(filePath)
+
+        lastRDD = textRDD.map(lambda x: [x[0:1], x[2:]])
+
+        schema = StructType([
+            StructField("label", StringType(), True),
+            StructField("content", StringType(), True)])
+
+        self.dataFrame = self.spark.createDataFrame(lastRDD, schema)
+        self.dataFrame.show()
+
+
+    def preProcess(self):
+        return
 
     """参数ratio类型为列表，两个元素构成表示train和test数据集比例权重"""
     def split(self, ratio):
-        element0 = self.dataFrame.randomSplit(ratio)
-        self.trainSet = element0[0]
-        self.testSet = element0[1]
+        print("开始split")
+        print(self.dataFrame)
+        element = self.dataFrame.randomSplit(ratio)
+        print(element)
+        self.trainSet = element[0]
+        self.testSet = element[1]
 
     def buildPipeline(self, originalStages):
         stages = self.buildStages(originalStages)
         self.pipeline = Pipeline(stages=stages)
-        self.pipeline.write.save(self.pipePath)#保存pipeline
         model = self.pipeline.fit(self.trainSet)
         return model
 
@@ -62,6 +77,20 @@ class MLPipeline(Pipe):
                     params +="," +param+"="+str(paramValue)
             stages.append(eval(className+"("+params[1:]+")"))
         return stages
+
+    def buildProcess(self, originalProcess):
+        print('originalProcess')
+        print(originalProcess)
+        for className in originalProcess:
+            params = ""
+            for (param,paramValue) in originalProcess[className].items():
+                if isinstance(paramValue, basestring):
+                    params +="," +param+"='"+paramValue+"'"
+                else:
+                    params +="," +param+"="+str(paramValue)
+            instance = eval(className+"("+params[1:]+")")
+            instance.df = self.dataFrame
+            self.dataFrame = instance.transform()
 
 
     def validator(self, model):
