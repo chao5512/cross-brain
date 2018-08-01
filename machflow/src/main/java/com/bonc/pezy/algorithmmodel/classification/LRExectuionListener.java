@@ -1,6 +1,8 @@
 package com.bonc.pezy.algorithmmodel.classification;
 
 import com.alibaba.druid.support.json.JSONUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.dataconfig.ServiceMap;
 import com.bonc.pezy.entity.Job;
@@ -68,8 +70,13 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             System.out.println(url);
             if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
-                jrps.requestPythonService(pipe,url);
-
+                String result = jrps.requestPythonService(pipe,url);
+                JSONObject resultjson = JSON.parseObject(result);
+                String applicationid = resultjson.get("applicationId").toString();
+                int status = Integer.parseInt(resultjson.get("status").toString());
+                job.setJobStatus(status);
+                job.setApplicationId(applicationid);
+                jobService.save(job);
             }
 
         }else if ("end".equals(eventName)) {
