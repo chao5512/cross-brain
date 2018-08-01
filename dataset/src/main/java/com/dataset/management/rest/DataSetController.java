@@ -23,6 +23,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -172,7 +173,7 @@ public class DataSetController {
     @ApiOperation(value = "依据客户端数据集属性，修改数据集",httpMethod = "POST")
     @ResponseBody
     @RequestMapping(value = "/update",method = RequestMethod.POST)
-    public ApiResult updateDataByJson(@RequestParam("updateJson") String updateJson) throws IOException{
+    public ApiResult updateDataByJson(@RequestParam(value = "updateJson") String updateJson) throws IOException{
         logger.info("来自前台的json:"+updateJson);
         DataSet dataSet = JSON.parseObject(updateJson,DataSet.class);
         int id = dataSet.getId();
