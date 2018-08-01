@@ -6,4 +6,4 @@ class TypeTransfer:
         self.castType = castType
 
     def transform(self):
-        self.df.withColumn(self.outputCol, self.df[self.inputCol].cast(self.castType))
+        return self.df.withColumn(self.outputCol, self.df[self.inputCol].cast(self.castType))

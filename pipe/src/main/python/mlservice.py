@@ -86,7 +86,7 @@ def submit(*args,**kwaggs):
     prediction = pipe.validator(model)
 
     #Step 6 评估模型
-    accuracy = pipe.evaluator(data['evaluator'], prediction, "label")
+    accuracy = pipe.evaluator(data['evaluator']['method'], prediction, "label")
     logger.info("Test set accuracy = " + str(accuracy))
 
     pipe.stop()

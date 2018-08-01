@@ -35,7 +35,7 @@ class MLPipeline(Pipe):
 
     """加载数据 pyspark.sql.DataFrame"""
     def loadDataSetFromTable(self):
-        filePath = "hdfs://182.92.82.3:9000/data/data"
+        filePath = "hdfs://172.16.31.232:9000/data"
         textRDD = self.spark.sparkContext.textFile(filePath)
 
         lastRDD = textRDD.map(lambda x: [x[0:1], x[2:]])
@@ -45,7 +45,6 @@ class MLPipeline(Pipe):
             StructField("content", StringType(), True)])
 
         self.dataFrame = self.spark.createDataFrame(lastRDD, schema)
-        self.dataFrame.show()
 
 
     def preProcess(self):
@@ -89,6 +88,7 @@ class MLPipeline(Pipe):
                 else:
                     params +="," +param+"="+str(paramValue)
             instance = eval(className+"("+params[1:]+")")
+            self.dataFrame.show()
             instance.df = self.dataFrame
             self.dataFrame = instance.transform()
 
