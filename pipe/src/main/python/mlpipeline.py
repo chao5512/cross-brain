@@ -1,11 +1,11 @@
 #coding=utf-8
 #!/usr/bin/python3
 from pipeline import Pipe
-from pyspark.ml import Pipeline
+from pyspark.ml import Pipeline,PipelineModel
 from pyspark.ml.feature import HashingTF, Tokenizer, basestring
 from pyspark.sql import SparkSession,DataFrame
 from pyspark.ml.classification import LogisticRegression,LogisticRegressionModel
-from pyspark.ml.evaluation import MulticlassClassificationEvaluator
+from pyspark.ml.evaluation import MulticlassClassificationEvaluator,BinaryClassificationEvaluator,RegressionEvaluator,ClusteringEvaluator
 import configparser
 from pyspark.sql.types import *
 
@@ -59,24 +59,6 @@ class MLPipeline(Pipe):
         self.trainSet = element[0]
         self.testSet = element[1]
 
-    def buildPipeline(self, originalStages):
-        stages = self.buildStages(originalStages)
-        self.pipeline = Pipeline(stages=stages)
-        model = self.pipeline.fit(self.trainSet)
-        return model
-
-    def buildStages(self, originalStages):
-        stages = []
-        for className in originalStages:
-            params = ""
-            for (param,paramValue) in originalStages[className].items():
-                if isinstance(paramValue, basestring):
-                    params +="," +param+"='"+paramValue+"'"
-                else:
-                    params +="," +param+"="+str(paramValue)
-            stages.append(eval(className+"("+params[1:]+")"))
-        return stages
-
     def buildProcess(self, originalProcess):
         print('originalProcess')
         print(originalProcess)
@@ -92,37 +74,55 @@ class MLPipeline(Pipe):
             instance.df = self.dataFrame
             self.dataFrame = instance.transform()
 
+    def buildStages(self, originalStages):
+        stages = []
+        for className in originalStages:
+            params = ""
+            for (param,paramValue) in originalStages[className].items():
+                if isinstance(paramValue, basestring):
+                    params +="," +param+"='"+paramValue+"'"
+                else:
+                    params +="," +param+"="+str(paramValue)
+            stages.append(eval(className+"("+params[1:]+")"))
+        return stages
+
+    def buildPipeline(self, originalStages):
+        stages = self.buildStages(originalStages)
+        self.pipeline = Pipeline(stages=stages)
+        model = self.pipeline.fit(self.trainSet)
+        model.save(self.modelPath) #保存模型文件
+        return model
 
     def validator(self, model):
         prediction = model.transform(self.testSet)
         return prediction
 
-    """Pipeline执行"""
-    def run(self,stages):
-        model = self.buildPipeline(stages)
-        prediction = self.validator(model)
-
     def evaluator(self, e, predictions, labelCol):
+        # accuracy =evaluator.setMetricName("accuracy").evaluate(predictions);
+        # weightedPrecision=evaluator.setMetricName("weightedPrecision").evaluate(predictions);
+        # weightedRecall=evaluator.setMetricName("weightedRecall").evaluate(predictions);
+        # f1=evaluator.setMetricName("f1").evaluate(predictions);
         if e == 'MulticlassClassificationEvaluator':
-            evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction",
-                                                          metricName="accuracy")
+            evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction")
             accuracy = evaluator.evaluate(predictions)
             return accuracy
-            # evaluator = MulticlassClassificationEvaluator()
-            # accuracy =evaluator.setMetricName("accuracy").evaluate(predictions);
-            # weightedPrecision=evaluator.setMetricName("weightedPrecision").evaluate(predictions);
-            # weightedRecall=evaluator.setMetricName("weightedRecall").evaluate(predictions);
-            # f1=evaluator.setMetricName("f1").evaluate(predictions);
-
-    """保存Model文件"""
-    def saveModel(self,model):
-        model.save(self.modelPath);
+        elif e == 'BinaryClassificationEvaluator':
+            evaluator = BinaryClassificationEvaluator(rawPredictionCol='rawPrediction', labelCol='label')
+            accuracy = evaluator.evaluate(predictions)
+            return accuracy
+        elif e == 'RegressionEvaluator':
+            evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='label')
+            accuracy = evaluator.evaluate(predictions)
+            return accuracy
+        elif e == 'ClusteringEvaluator':
+            evaluator = ClusteringEvaluator(predictionCol='prediction', featuresCol='features')
+            accuracy = evaluator.evaluate(predictions)
+            return accuracy
 
     """加载Model文件"""
-    def loadModel(self,stages,modelPath,pipePath):
-        self.pipeline.read().load(pipePath)
-        if isinstance(stages[len(stages)], LogisticRegressionModel):
-            return LogisticRegressionModel.load(self.spark,modelPath)
+    def loadModel(self,test):
+        model = PipelineModel.load(self.modelPath)
+        model.transform(test).select("probability", "prediction")
 
     """关闭SparkSession"""
     def stop(self):
