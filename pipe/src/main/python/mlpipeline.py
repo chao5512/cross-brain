@@ -70,7 +70,6 @@ class MLPipeline(Pipe):
                 else:
                     params +="," +param+"="+str(paramValue)
             instance = eval(className+"("+params[1:]+")")
-            self.dataFrame.show()
             instance.df = self.dataFrame
             self.dataFrame = instance.transform()
 

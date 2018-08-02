@@ -45,7 +45,7 @@ def execute():
     return Response(json.dumps(result), mimetype='application/json')
 
 def submit(*args,**kwaggs):
-    client = Client("https://127.0.0.1:50070")
+    client = Client("http://172.16.31.232:50070")
     logger.info('start threading')
     spark = args[0]
     pipe = args[1]
@@ -61,13 +61,17 @@ def submit(*args,**kwaggs):
 
     #Step 2 加载数据
     try:
-        client.write("/process.log",data="开始加载数据!",append=True)
+        with client.write("/datasource.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("开始加载数据!\n")
+        with client.write("/datasource.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("数据加载成功!\n")
         pipe.loadDataSetFromTable()
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/process.log",data="数据加载失败!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
-
+        client.write("/datasource.log",data="数据加载失败!",append=True,encoding='utf-8')
+        #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     #Step 3 数据预处理
     try:
         client.write("/process.log",data="开始预处理数据!",append=True)
