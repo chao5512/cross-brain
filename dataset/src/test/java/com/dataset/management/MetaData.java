@@ -9,6 +9,8 @@ import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.HiveTableService;
 import com.dataset.management.service.IntDataSetOptService;
+import com.dataset.management.util.JedisUtils;
+import org.hibernate.annotations.Target;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,33 +39,49 @@ public class MetaData {
 
     @Autowired
     IntDataSetOptService dataSetOptService;
+
+    @Autowired
+    private JedisUtils jedisUtils;
     @Test
     public void test(){
-        try {
-            DataSystem byDataSetId = dataSetOptService.findByDataSetId(33);
+        HiveTableMeta hiveTableMeta = repository.getHiveTableMeta("193_stuno");
+        System.out.println(hiveTableMeta);
+        System.out.println(hiveTableMeta.getTableName());
+        List<FieldMeta> fields = hiveTableMeta.getFields();
+        for (FieldMeta field:fields) {
+            System.out.println(field.getFieldName());
+        }
+        /*try {
+            DataSystem byDataSetId = dataSetOptService.findByDataSetId(502);
             System.out.println(byDataSetId.getDatasetStoreurl());
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
         /*boolean existLineDelim = repository.isExistLineDelim("203_titanic_orc");
         System.out.println(existLineDelim);*/
     }
 
-   /* @Test
+    @Test
+    public void test04(){
+        boolean b = jedisUtils.tryGetDistributedLock("aaa", "bbb", 60000);
+        System.out.println(b);
+    }
+
+    @Test
     public void test03(){
-        *//*DataSet dataSet = new DataSet();
+        /*DataSet dataSet = new DataSet();
         dataSet.setId(203);
         String tableNameByDataSet = hiveRepository.getTableNameByDataSet(dataSet);
-        System.out.println(tableNameByDataSet);*//*
+        System.out.println(tableNameByDataSet);*/
         DataSet dataSet = new DataSet();
-        dataSet.setId(203);
+        dataSet.setId(93);
         HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
         System.out.println(hiveTableMeta.getTableName());
         List<FieldMeta> fields = hiveTableMeta.getFields();
         for (FieldMeta field:fields) {
             System.out.println(field.getFieldComment());
         }
-    }*/
+    }
 
 
     @Test
