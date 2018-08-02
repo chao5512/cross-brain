@@ -5,5 +5,4 @@ from mlpipeline import MLPipeline
 
 pipe = MLPipeline('test')
 pipe.create()
-pipe.spark.sql("use default").show()
 pipe.spark.sql("show tables").show()
