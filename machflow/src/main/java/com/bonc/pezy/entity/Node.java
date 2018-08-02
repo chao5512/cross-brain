@@ -1,13 +1,8 @@
 package com.bonc.pezy.entity;
 
 
+import javax.persistence.*;
 import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * Created by 冯刚 on 2018/7/5.
@@ -26,7 +21,7 @@ public class Node implements Serializable {
     @Column(name = "nodeName",nullable = false)
     private String nodeName;//前台展示名字
 
-    @Column(name = "param",nullable = false)
+    @Column(name = "isComponet",nullable = false)
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
 
     @Column(name = "className",nullable = false)

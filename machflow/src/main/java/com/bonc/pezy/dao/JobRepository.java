@@ -24,8 +24,8 @@ public interface JobRepository extends JpaRepository<Job, String>, JpaSpecificat
 
     @Transactional
     @Modifying
-    @Query("update job as j set j.status = ?1 where j.jobid=?2")
-    int updateStatusByJobId(short status, String jobid);
+    @Query("update Job as j set j.jobStatus=?1 where j.jobId=?2")
+    Job updateByJobId(int jobStatus, String jobId);
 
 
 

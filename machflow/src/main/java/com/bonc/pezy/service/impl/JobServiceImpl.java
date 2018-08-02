@@ -90,7 +90,7 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    public void updateStatusByJobId(short status, String jobId) {
-        jobRepository.updateStatusByJobId(status,jobId);
+    public void updateByJobId(int status, String jobId) {
+        jobRepository.updateByJobId(status,jobId);
     }
 }

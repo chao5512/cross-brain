@@ -21,5 +21,5 @@ public interface JobService {
 
     Page<Job> findJobs(Integer pageNumber,Integer pageSize,JobQuery jobQuery);
 
-    void updateStatusByJobId(short status,String jobId);
+    void updateByJobId(int status,String jobId);
 }

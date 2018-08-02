@@ -41,29 +41,25 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             Job job = jobService.findByJobId(execution.getBusinessKey());
             String url = null;
             Map<String,String> param = new HashMap<String, String>();
+            Map<String,String> map = new HashMap<String, String>();
             String pipe = null;
             System.out.println("===xxxx===="+job.getModelType());
             List<Task> tasks = taskService.findByJobId(job.getJobId());
-
+            param.put("appName",job.getJobName());
+            param.put("jobId",job.getJobId());
             if(job.getModelType() == 1){
                 url = Constants.PY_SERVER;
-                param.put("appName",job.getJobName());
-                for(Task task:tasks){
-
-                    param.put(task.getTaskName(),task.getParam());
-
-                }
 
             }
             if(job.getModelType()==2){
                 url = Constants.PY_SERVER_DEEP;
-                param.put("appName",job.getJobName());
-                for(Task task:tasks){
-
-                    param.put(task.getTaskName(),task.getParam());
-
-                }
             }
+            for(Task task:tasks){
+
+                param.put(task.getTaskName(),task.getParam());
+                map.put(task.getTaskName(),"{taskId:"+task.getTaskId()+"type:"+task.getTaskType()+"}");
+            }
+            param.put("tasks",map.toString());
 
             pipe = JSONUtils.toJSONString(param);
             System.out.println(pipe);
