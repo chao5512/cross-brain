@@ -57,9 +57,9 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             for(Task task:tasks){
 
                 param.put(task.getTaskName(),task.getParam());
-                map.put(task.getTaskName(),"{taskId:"+task.getTaskId()+"type:"+task.getTaskType()+"}");
+                map.put(task.getTaskName(),"{'taskId':'"+task.getTaskId()+"','type':'"+task.getTaskType()+"'}");
             }
-            param.put("tasks",map.toString());
+            param.put("tasks",JSONUtils.toJSONString(map));
 
             pipe = JSONUtils.toJSONString(param);
             System.out.println(pipe);
@@ -67,7 +67,9 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
                 String result = jrps.requestPythonService(pipe,url);
+                System.out.println(result+"=======1======");
                 JSONObject resultjson = JSON.parseObject(result);
+                System.out.println(resultjson+"======2=======");
                 String applicationid = resultjson.get("applicationId").toString();
                 int status = Integer.parseInt(resultjson.get("status").toString());
                 job.setJobStatus(status);
