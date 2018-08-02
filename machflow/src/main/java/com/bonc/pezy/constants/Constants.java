@@ -11,7 +11,7 @@ public class Constants {
     public static final String LISTENER_U = "activiti:taskListener";
 
     //python微服务url 机器学习
-    public static final String PY_SERVER = "http://localhost:3001/LRDemo";
+    public static final String PY_SERVER = "http://localhost:3001/execute";
 
     public static final String PY_SERVER_DEEP = "http://localhost:3002/deeplearning/execute";
 

@@ -118,7 +118,8 @@ public class MachFlowController {
         Model model = modelService.findById(modelId);
 
         List<Job> list = jobService.findByModelId(modelId);
-        if(list.get(0).getJobStatus()!=1){
+        System.out.println(list);
+        if(list.isEmpty() || list.get(0).getJobStatus()!=0){
             Job job = new Job();
             job.setJobName(jobName);
             job.setModelId(modelId);

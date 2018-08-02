@@ -204,6 +204,6 @@ public class JobController {
     @ResponseBody
     public void scanJob(@RequestParam("jobId") String jobId,
                         @RequestParam("status") short status,HttpServletResponse respons){
-        jobService.updateStatusByJobId(status,jobId);
+        jobService.updateByJobId(status,jobId);
     }
 }
