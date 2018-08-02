@@ -45,7 +45,7 @@ def execute():
     return Response(json.dumps(result), mimetype='application/json')
 
 def submit(*args,**kwaggs):
-    client = Client("http://172.16.31.232:50070")
+    client = Client("http://172.16.81.22:50070")
     logger.info('start threading')
     spark = args[0]
     pipe = args[1]
@@ -70,56 +70,81 @@ def submit(*args,**kwaggs):
         pipe.loadDataSetFromTable()
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/datasource.log",data="数据加载失败!",append=True,encoding='utf-8')
+        with client.write("/datasource.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("数据加载失败!\n")
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     #Step 3 数据预处理
     try:
-        client.write("/process.log",data="开始预处理数据!",append=True)
+        with client.write("/process.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("开始预处理数据!\n")
         pipe.buildProcess(originalPreProcess)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/process.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("数据预处理成功!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/process.log",data="数据预处理失败!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/process.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("数据预处理失败!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 4 切分数据
     try:
         isSplitSample = data['isSplitSample']
         if  isSplitSample['fault']:
-            client.write("/splitdata.log",data="开始切分数据!",append=True)
+            with client.write("/splitdata.log",
+                              overwrite=False,append=True,encoding='utf-8') as writer:
+                writer.write("开始切分数据!\n")
             trainRatio = isSplitSample['trainRatio']
             pipe.split([trainRatio, 1-trainRatio])
-            res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+            # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/pipeline.log",data="数据切分失败!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/splitdata.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("数据切分失败!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 5 构造模型,测试集训练模型,验证集验证模型
     try:
-        client.write("/pipeline.log",data="开始创建机器学习流程!",append=True)
-        client.write("/pipeline.log",data="开始训练数据!",append=True)
+        with client.write("/pipeline.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("开始创建机器学习流程!\n")
+            writer.write("开始训练数据!\n")
         model = pipe.buildPipeline(originalStages)
-        client.write("/pipeline.log",data="开始验证数据!",append=True)
+        with client.write("/pipeline.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("开始验证数据!\n")
         prediction = pipe.validator(model)
-        client.write("/pipeline.log",data="任务运行成功!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/pipeline.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("任务运行成功!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/pipeline.log",data="机器学习流程运行失败!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/pipeline.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("pipeline运行失败!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 6 评估模型
     try:
-        client.write("/evaluator.log",data="开始运行评估器!",append=True)
+        with client.write("/evaluator.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("开始运行评估器!\n")
         accuracy = pipe.evaluator(data['evaluator']['method'], prediction, "label")
         logger.info("Test set accuracy = " + str(accuracy))
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        client.write("/evaluator.log",data="评估器运行失败!",append=True)
-        res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        with client.write("/evaluator.log",
+                          overwrite=False,append=True,encoding='utf-8') as writer:
+            writer.write("评估器运行失败!\n")
+        # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     pipe.stop()
 
     #任务运行成功,更新任务信息
-    res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+    # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
 if __name__ == '__main__':
     app.run(port=3001, host='0.0.0.0',debug=True)
