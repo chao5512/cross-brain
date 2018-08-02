@@ -24,20 +24,20 @@ public class JavaRequestPythonService {
             OutputStream outputStream = conn.getOutputStream();
             outputStream.write(pipe.getBytes());
             outputStream.flush();
-            System.out.println(conn.getResponseMessage());
             if (conn.getResponseCode() != 200) {
                 throw new RuntimeException("HTTP GET Request Failed with Error code : "
                         + conn.getResponseCode());
             }
             BufferedReader responseBuffer = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
-            String output;
+            String output = responseBuffer.readLine();
             System.out.println("Output from Server:  \n");
-            while ((output = responseBuffer.readLine()) != null) {
+
+            if(output != null) {
                 System.out.println(output);
             }
             conn.disconnect();
-            return conn.getResponseMessage();
+            return output;
 
         } catch (Exception e) {
             return e.getMessage();

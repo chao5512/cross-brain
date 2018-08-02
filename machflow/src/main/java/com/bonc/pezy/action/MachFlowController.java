@@ -172,12 +172,4 @@ public class MachFlowController {
 
 
 
-    /*@ApiOperation(value = "spark任务Id",httpMethod = "POST")
-    @RequestMapping(value = "/sparkappid",method = RequestMethod.POST)
-    @ResponseBody
-    public Job updateapplicationId(@RequestParam() ){
-
-    }*/
-
-
 }
