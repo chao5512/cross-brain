@@ -31,4 +31,9 @@ public class TaskServiceImpl implements TaskService {
     public List<Task> findByJobId(String jobId) {
         return taskRepository.findTasksByJobId(jobId);
     }
+
+    @Override
+    public Task updateByJobIdAndTaskId(int taskStatus, String jobId, String taskId) {
+        return taskRepository.updateByJobIdAndTaskId(taskStatus,jobId,taskId);
+    }
 }

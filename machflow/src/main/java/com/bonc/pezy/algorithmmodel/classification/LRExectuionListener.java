@@ -36,14 +36,11 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
     public void notify(DelegateExecution execution) throws Exception {
         String eventName = execution.getEventName();
         if ("start".equals(eventName)) {
-            System.out.println("start=========");
-            System.out.println("===xxxx===="+execution.getEventName()+"====yyyyy="+execution.getBusinessKey());
             Job job = jobService.findByJobId(execution.getBusinessKey());
             String url = null;
             Map<String,String> param = new HashMap<String, String>();
             Map<String,String> map = new HashMap<String, String>();
             String pipe = null;
-            System.out.println("===xxxx===="+job.getModelType());
             List<Task> tasks = taskService.findByJobId(job.getJobId());
             param.put("appName",job.getJobName());
             param.put("jobId",job.getJobId());
@@ -67,15 +64,16 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
                 String result = jrps.requestPythonService(pipe,url);
-                System.out.println(result+"=======1======");
                 JSONObject resultjson = JSON.parseObject(result);
-                System.out.println(resultjson+"======2=======");
                 String applicationid = resultjson.get("applicationId").toString();
                 int status = Integer.parseInt(resultjson.get("status").toString());
+                String message = resultjson.get("msg").toString();
+                execution.setVariable("msg",message);
                 job.setJobStatus(status);
                 job.setApplicationId(applicationid);
                 jobService.save(job);
             }
+
 
         }else if ("end".equals(eventName)) {
             System.out.println("end=========");

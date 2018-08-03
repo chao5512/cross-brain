@@ -99,7 +99,7 @@ public class MachFlowController {
 
 
 
-    @ApiOperation(value = "部署模型",httpMethod = "POST")
+    @ApiOperation(value = "保存模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
     @ResponseBody
     public Job analysisCanvas(@RequestParam("jsondata") String jsondata,
@@ -163,8 +163,8 @@ public class MachFlowController {
     @ApiOperation(value = "停止模型",httpMethod = "POST")
     @RequestMapping(value = "/stop",method = RequestMethod.POST)
     @ResponseBody
-    public String stop(@RequestParam("jobId") String jobId, HttpServletResponse respons){
-
+    public String stop(@RequestParam("jobId") String jobId,
+                       @RequestParam("applicationId") String applicationId, HttpServletResponse respons){
 
 
         return "success";

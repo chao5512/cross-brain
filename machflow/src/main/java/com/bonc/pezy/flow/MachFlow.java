@@ -6,6 +6,7 @@ import org.activiti.engine.ProcessEngine;
 import org.activiti.engine.ProcessEngines;
 import org.activiti.engine.RepositoryService;
 import org.activiti.engine.RuntimeService;
+import org.activiti.engine.runtime.ProcessInstance;
 
 /**
  * Created by 冯刚 on 2018/5/31.
@@ -15,6 +16,7 @@ public class MachFlow {
     private ProcessEngine processEngine = ProcessEngines.getDefaultProcessEngine();
     private RuntimeService runtimeService = processEngine.getRuntimeService();
     private RepositoryService repositoryService = processEngine.getRepositoryService();
+    private ProcessInstance processInstance;
 
     public void generateBpmnModel(Process process,String filename){
 
@@ -27,9 +29,8 @@ public class MachFlow {
     }
 
     public void startActiviti(String modelId,String jobId) {
-        System.out.println("进来没有啊。。。。");
 
-        runtimeService.startProcessInstanceByKey(modelId,jobId);
+        processInstance = runtimeService.startProcessInstanceByKey(modelId,jobId);
 
     }
 
