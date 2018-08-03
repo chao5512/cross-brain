@@ -18,8 +18,8 @@ public class Node implements Serializable {
     @Column(name = "id",unique = true, nullable = false)
     private long id;
 
-    @Column(name = "nodeName",nullable = false)
-    private String nodeName;//前台展示名字
+    @Column(name = "name",nullable = false)
+    private String name;//前台展示名字
 
     @Column(name = "isComponet",nullable = false)
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
@@ -44,14 +44,6 @@ public class Node implements Serializable {
         this.id = id;
     }
 
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
-    }
-
     public String getClassName() {
         return className;
     }
@@ -74,6 +66,14 @@ public class Node implements Serializable {
 
     public void setType(Short type) {
         this.type = type;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getParam() {

@@ -11,8 +11,8 @@ import javax.validation.constraints.NotNull;
 
 public class NodeVo implements Serializable {
 
-    @NotNull(message = "nodeName不能为空")
-    private String nodeName;//前台展示名字
+    @NotNull(message = "name不能为空")
+    private String name;//前台展示名字
     @NotNull(message = "isComponet不能为null")
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
     private String className;//对应的全路径类名
@@ -22,12 +22,12 @@ public class NodeVo implements Serializable {
     private Short type;//0:datasource  1:预处理  2:split 3:组件  4:校验
     private String param;
 
-    public String getNodeName() {
-        return nodeName;
+    public String getName() {
+        return name;
     }
 
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getClassName() {
