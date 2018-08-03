@@ -84,11 +84,11 @@ public class Node implements Serializable {
         this.param = param;
     }
 
-    public Boolean getComponet() {
+    public Boolean getIsComponet() {
         return isComponet;
     }
 
-    public void setComponet(Boolean componet) {
+    public void setIsComponet(Boolean componet) {
         isComponet = componet;
     }
 }
