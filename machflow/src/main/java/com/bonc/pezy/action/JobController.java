@@ -1,12 +1,21 @@
 package com.bonc.pezy.action;
 
+import com.bonc.pezy.config.HdfsConfig;
 import com.bonc.pezy.entity.Job;
+import com.bonc.pezy.service.HdfsModel;
 import com.bonc.pezy.service.JobService;
 import com.bonc.pezy.util.ResultUtil;
 import com.bonc.pezy.vo.JobQuery;
 import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+
+import java.io.*;
+import java.net.URLEncoder;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,46 +28,61 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-
 @Controller
 @RequestMapping("Job")
 @Api(value = "AI任务管理", description = "任务管理")
-public class JobController {
+
+public class JobController extends HttpServlet{
 
     private final Logger logger = LoggerFactory.getLogger(JobController.class);
     @Autowired
     private JobService jobService;
 
+    @Autowired
+    HdfsConfig hdfsConfig;
+
+    @Autowired
+    HdfsModel hdfsModel;
+
     @ApiOperation(value = "下载模型文件", httpMethod = "POST")
     @RequestMapping(value = "/downModelFile", method = RequestMethod.POST)
     public Result DownModelFile(@RequestParam(name = "jobid") String jobid,
-            HttpServletResponse res) {
+            HttpServletResponse res) throws IOException {
         Result result = null;
-        String fileName = "1.png";
+        String fileName = "马晨.png";  //模型文件
+        Job thisjob= jobService.findByJobId(jobid);
+        String modelId = thisjob.getModelId();
+        Long userId = thisjob.getOwner();
+
+        //获取模型地址  暂时默认  http://182.92.82.3:8020/DATASYSTEM/1234/Models/MDL88888/马晨.txt
+        String hdfsUrl = hdfsConfig.getHdfsUrl();
+        Long hdfsPort = hdfsConfig.getHdfsProt();
+//        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"DATASYSTEM/"+userId+"/"+"Models/"+modelId+"/"+fileName;
+        //TEST
+        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"machen/mmm/aa.txt";
+        logger.info(fileNamePath);
+
         res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
-        res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-        byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
+        res.setHeader("Content-Disposition", "attachment;filename="
+                + URLEncoder.encode(fileName, "UTF-8"));
+        byte[] buff = new byte[4096];
+        InputStream inputStream = hdfsModel.downLoadFile(fileNamePath);
         OutputStream os = null;
         try {
             os = res.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(new File("d://"
-                    + fileName)));
-            int i = bis.read(buff);
+            int i = inputStream.read(buff);
             while (i != -1) {
                 os.write(buff, 0, buff.length);
                 os.flush();
-                i = bis.read(buff);
+                i = inputStream.read(buff);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (bis != null) {
+            if (inputStream != null) {
                 try {
-                    bis.close();
+                    inputStream.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -197,13 +221,5 @@ public class JobController {
         Page<Job> jobs = jobService.findJobs(page, size, jobQuery);
         Result result = ResultUtil.success(jobs);
         return result;
-    }
-
-    @ApiOperation(value = "更新任务状态", httpMethod = "GET")
-    @RequestMapping(value = "/scanjob", method = RequestMethod.GET)
-    @ResponseBody
-    public void scanJob(@RequestParam("jobId") String jobId,
-                        @RequestParam("status") short status,HttpServletResponse respons){
-        jobService.updateByJobId(status,jobId);
     }
 }
