@@ -110,9 +110,10 @@ def testDL():
     }
     '''
     dlpipe = {
-        "run_id": "testDL",
+        "appName": "testDL",
+        "jobId":"dl123",
         "networktype":"vgg16",
-        "n_epoch":"1",
+        "n_epoch":"10",
         "batch_size":"1",
         "num_class":"2",
         "optimizer":"adam",
@@ -130,4 +131,4 @@ def testDL():
     print(r.text)
 
 if __name__ == '__main__':
-    testML()
+    testDL()

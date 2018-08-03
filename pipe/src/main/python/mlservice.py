@@ -26,7 +26,7 @@ def health():
     return Response(json.dumps(result), mimetype='application/json')
 
 # the pipeline of Spark
-@app.route("/execute",methods=['POST'])
+@app.route("/machinelearning/execute",methods=['POST'])
 def execute():
     data = json.loads(request.get_data())
     # step 1 create sparksession and dataframe

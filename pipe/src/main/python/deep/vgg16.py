@@ -138,5 +138,5 @@ class Vgg16(NeuralNetwork):
         self.train(model,X,Y)
         self.save(model)
 
-        self.predict(softmax)
+        #self.predict(softmax)
 
