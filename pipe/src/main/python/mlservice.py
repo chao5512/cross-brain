@@ -4,13 +4,17 @@ from flask import Flask, Response,jsonify, request, abort
 import json
 from mlpipeline import MLPipeline
 from pyspark.sql.types import *
-
+import os
 import logging
 from logging.config import fileConfig
-
 import threading
-
 import requests
+import configparser
+conf = configparser.ConfigParser()
+conf.read("conf.ini")
+os.environ["PYSPARK_PYTHON"]=conf.get('config','python_home')
+os.environ['SPARK_CONF_DIR'] = os.getcwd()+'../resources'
+os.environ['HADOOP_CONF_DIR'] = os.getcwd()+'../resources'
 
 from hdfs.client import Client
 

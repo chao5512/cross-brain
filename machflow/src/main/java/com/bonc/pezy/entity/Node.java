@@ -18,13 +18,13 @@ public class Node implements Serializable {
     @Column(name = "id",unique = true, nullable = false)
     private long id;
 
-    @Column(name = "nodeName",nullable = false)
-    private String nodeName;//前台展示名字
+    @Column(name = "name",nullable = false)
+    private String name;//前台展示名字
 
     @Column(name = "isComponet",nullable = false)
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
 
-    @Column(name = "className",nullable = false)
+    @Column(name = "className")
     private String className;//对应的全路径类名
 
     @Column(name = "parentId",nullable = false)
@@ -33,7 +33,7 @@ public class Node implements Serializable {
     @Column(name = "type",nullable = false)
     private Short type;//0:datasource  1:预处理  2:split 3:组件  4:校验
 
-    @Column(name = "param",nullable = false)
+    @Column(name = "param")
     private String param;
 
     public long getId() {
@@ -42,14 +42,6 @@ public class Node implements Serializable {
 
     public void setId(long id) {
         this.id = id;
-    }
-
-    public String getNodeName() {
-        return nodeName;
-    }
-
-    public void setNodeName(String nodeName) {
-        this.nodeName = nodeName;
     }
 
     public String getClassName() {
@@ -76,6 +68,14 @@ public class Node implements Serializable {
         this.type = type;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getParam() {
         return param;
     }
@@ -84,11 +84,11 @@ public class Node implements Serializable {
         this.param = param;
     }
 
-    public Boolean getComponet() {
+    public Boolean getIsComponet() {
         return isComponet;
     }
 
-    public void setComponet(Boolean componet) {
+    public void setIsComponet(Boolean componet) {
         isComponet = componet;
     }
 }
