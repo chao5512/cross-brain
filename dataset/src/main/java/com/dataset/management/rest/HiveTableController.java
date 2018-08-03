@@ -1,10 +1,12 @@
 package com.dataset.management.rest;
 
+import com.dataset.management.aop.annotation.PreventRepetitionAnnotation;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
+import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
@@ -13,7 +15,11 @@ import com.dataset.management.service.HiveTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.Path;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName HiveTableController
@@ -36,6 +42,12 @@ public class HiveTableController {
     @Autowired
     private HdfsConfig hdfsConfig;
 
+    @RequestMapping(value = "uuid",method = RequestMethod.GET)
+    @PreventRepetitionAnnotation
+    public ApiResult toUuid(HttpServletRequest request){
+        return ResultUtil.success();
+    }
+
     /**
      * 功能描述:创建或修改表
      * @param tableMeta
@@ -45,8 +57,12 @@ public class HiveTableController {
      * @auther: 王培文
      * @date: 2018/6/5 16:04
      */
-    @RequestMapping(value = "save/{userId}/{dataSetId}",method = RequestMethod.POST)
-    public ApiResult createOrUpdateTable(HiveTableMeta tableMeta, @PathVariable("userId") String userId, @PathVariable("dataSetId") String dataSetId){
+    @PreventRepetitionAnnotation
+    @RequestMapping(value = "{userId}/{dataSetId}/{token}",method = RequestMethod.POST)
+    public ApiResult createOrUpdateTable(HiveTableMeta tableMeta,
+                                         @PathVariable("userId") String userId,
+                                         @PathVariable("dataSetId") String dataSetId,
+                                         @PathVariable("token") String token){
         User user = new User();
         long id = Long.parseLong(userId);
         user.setId(id);
@@ -55,12 +71,16 @@ public class HiveTableController {
         System.out.println(dataSet.getId());
         boolean exist = hiveTableService.isExist(dataSet);
         if(exist){
-            boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
-
-            if(result){
-                return ResultUtil.success();
+            try {
+                boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
+                if(result){
+                    return ResultUtil.success();
+                }
+                return ResultUtil.error(-1,"更新失败");
+            }catch (Exception e){
+                e.printStackTrace();
+                return ResultUtil.error(-1,"更新失败");
             }
-            return ResultUtil.error(-1,"更新失败");
         }else{
             boolean table = false;
             try {
@@ -89,7 +109,6 @@ public class HiveTableController {
                 e.printStackTrace();
                 return ResultUtil.error(-1,"更新失败");
             }
-
         }
     }
 

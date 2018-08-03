@@ -11,7 +11,7 @@ import java.net.URL;
  */
 public class JavaRequestPythonService {
 
-    public void requestPythonService(String pipe,String urls){
+    public String requestPythonService(String pipe,String urls){
 
         URL url = null;
         HttpURLConnection conn = null;
@@ -30,16 +30,17 @@ public class JavaRequestPythonService {
             }
             BufferedReader responseBuffer = new BufferedReader(new InputStreamReader(
                     (conn.getInputStream())));
-            String output;
+            String output = responseBuffer.readLine();
             System.out.println("Output from Server:  \n");
-            while ((output = responseBuffer.readLine()) != null) {
+
+            if(output != null) {
                 System.out.println(output);
             }
             conn.disconnect();
-
+            return output;
 
         } catch (Exception e) {
-            e.printStackTrace();
+            return e.getMessage();
         }
     }
 }

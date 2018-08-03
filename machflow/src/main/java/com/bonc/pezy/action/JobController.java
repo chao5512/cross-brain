@@ -7,12 +7,6 @@ import com.bonc.pezy.vo.JobQuery;
 import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import javax.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
 
 @Controller
 @RequestMapping("Job")
@@ -200,5 +197,13 @@ public class JobController {
         Page<Job> jobs = jobService.findJobs(page, size, jobQuery);
         Result result = ResultUtil.success(jobs);
         return result;
+    }
+
+    @ApiOperation(value = "更新任务状态", httpMethod = "GET")
+    @RequestMapping(value = "/scanjob", method = RequestMethod.GET)
+    @ResponseBody
+    public void scanJob(@RequestParam("jobId") String jobId,
+                        @RequestParam("status") short status,HttpServletResponse respons){
+        jobService.updateByJobId(status,jobId);
     }
 }

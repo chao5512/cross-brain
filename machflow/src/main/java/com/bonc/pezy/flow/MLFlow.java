@@ -36,6 +36,8 @@ public class MLFlow {
             task.setOutputNodeId(((Map)value).get("outputNodeId").toString());
             task.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
             task.setParam(((Map)value).get("param").toString());
+            task.setTaskType(Integer.parseInt(((Map)value).get("type").toString()));
+            task.setTaskStatus(0);
             task.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             tasks.add(task);
         });

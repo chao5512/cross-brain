@@ -1,11 +1,12 @@
 package com.bonc.pezy.vo;
 
 
+import java.io.Serializable;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Required;
 
-public class JobQuery {
+public class JobQuery implements Serializable{
 
     @NotNull(message = "用户ID不能为空")
     private Long owner;//所属用户id
