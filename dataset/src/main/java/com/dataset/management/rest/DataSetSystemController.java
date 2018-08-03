@@ -83,7 +83,10 @@ public class DataSetSystemController {
         Long hdfsPort = hdfsConfig.getHdfsProt();
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
                 +"/"+userId+"/"+dataSetName;
+        String modelUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                +"/"+userId+"/"+"Models";
         dataSet.setDataSetStoreUrl(dataStoreUrl);
+        dataSet.setModelsUrl(modelUrl);
 
         Sort sort = basicSortBy();
         List<DataSet> dataSets = dataSetService.findAll(sort);
@@ -91,9 +94,10 @@ public class DataSetSystemController {
         if(cnDatasetNames.contains(dataSet.getDataSetName())){
             return ResultUtil.error(-1,"数据集名称已经存在,请重新命名。。。");
         }
-        logger.info("检测远程hdfs 相关目录");
+        logger.info("检测远程hdfs 相关目录(数据集和模型)");
         if(!hdfsService.existDir(dataStoreUrl,false)){
             hdfsService.mkdirHdfsDir(dataStoreUrl);
+            hdfsService.mkdirHdfsDir(modelUrl);
         }else {
             return ResultUtil.error(-1,"数据集文件夹已经存在，请在 hdfs 中删除后重新创建");
         }
@@ -309,6 +313,7 @@ public class DataSetSystemController {
         dataSet.setDataSetCreateTime(sd);
         dataSet.setDataSetLastUpdateTime(sd);
         dataSet.setDataSetStoreUrl(null);
+        dataSet.setModelsUrl(null);
         dataSet.setDataSetHiveTableName(DataSetConsts.DATASET_ENGLISH_NAME);
         String hivetableid = DataSetConsts.DATASET_ENGLISH_NAME+"_"+time;
         dataSet.setDataSetHiveTableId(hivetableid);

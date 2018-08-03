@@ -68,6 +68,10 @@ public class DataSet implements Serializable{
     @Column(name = "dataset_data_type")
     private String datatype;
 
+    //模型路径
+    @Column(name ="models_url")
+    private String modelsUrl;
+
     //自动创建的ID
     public int getId() {
         return id;
@@ -211,6 +215,13 @@ public class DataSet implements Serializable{
     }
     public void setUserId(int userId) {
         this.userId = userId;
+    }
+
+    public String getModelsUrl() {
+        return modelsUrl;
+    }
+    public void setModelsUrl(String modelsUrl) {
+        this.modelsUrl = modelsUrl;
     }
 
 }
