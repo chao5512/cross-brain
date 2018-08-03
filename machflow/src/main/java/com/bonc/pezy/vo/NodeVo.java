@@ -15,13 +15,11 @@ public class NodeVo implements Serializable {
     private String nodeName;//前台展示名字
     @NotNull(message = "isComponet不能为null")
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
-    @NotNull(message = "className不能为null")
     private String className;//对应的全路径类名
     @NotNull(message = "parentId不能为null")
     private String parentId;//用于树状展示
     @NotNull(message = "type不能为null")
     private Short type;//0:datasource  1:预处理  2:split 3:组件  4:校验
-    @NotNull(message = "param不能为null")
     private String param;
 
     public String getNodeName() {

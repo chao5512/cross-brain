@@ -24,7 +24,7 @@ public class Node implements Serializable {
     @Column(name = "isComponet",nullable = false)
     private Boolean isComponet;//是否是组件，有子节点的node不是组件
 
-    @Column(name = "className",nullable = false)
+    @Column(name = "className")
     private String className;//对应的全路径类名
 
     @Column(name = "parentId",nullable = false)
@@ -33,7 +33,7 @@ public class Node implements Serializable {
     @Column(name = "type",nullable = false)
     private Short type;//0:datasource  1:预处理  2:split 3:组件  4:校验
 
-    @Column(name = "param",nullable = false)
+    @Column(name = "param")
     private String param;
 
     public long getId() {
