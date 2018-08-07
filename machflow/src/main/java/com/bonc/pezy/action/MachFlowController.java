@@ -3,9 +3,7 @@ package com.bonc.pezy.action;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.dataconfig.ServiceMap;
-import com.bonc.pezy.entity.CurrentJob;
-import com.bonc.pezy.entity.Job;
-import com.bonc.pezy.entity.Model;
+import com.bonc.pezy.entity.*;
 import com.bonc.pezy.flow.DeepLearnFlow;
 import com.bonc.pezy.flow.MLFlow;
 import com.bonc.pezy.flow.MachFlow;
@@ -187,6 +185,21 @@ public class MachFlowController {
         HttpAPI httpAPI = new HttpAPI();
         String msg = httpAPI.getHttpResult(map,url);
         return msg;
+    }
+
+    @ApiOperation(value = "加载模型",httpMethod = "POST")
+    @RequestMapping(value = "/loadmodel",method = RequestMethod.POST)
+    @ResponseBody
+    public List<Task> loadmodel(@RequestParam("modelId") String modelId, HttpServletResponse respons){
+
+        List<Job> joblist = jobService.findByModelId(modelId);
+        Job job = joblist.get(0);
+        List<Task> taskList = job.getTasks();
+        for (Task task:taskList) {
+            Node node = nodeService.findByClassName(task.getTaskName());
+            task.setParam(node.getParam());
+        }
+        return taskList;
     }
 
 
