@@ -11,12 +11,12 @@ def testML():
         'userId':'123',
         'modelId':'123',
         'tasks':{"datasource":{"taskId":1,"type":0},
-                 "isSplitSample":{"taskId":2,"type":2},
-                 "TypeTransfer":{"taskId":3,"type":4},
-                 "Tokenizer":{"taskId":4,"type":1},
-                 "HashingTF":{"taskId":5,"type":1},
-                 "LogisticRegression":{"taskId":6,"type":1},
-                 "evaluator":{"taskId":7,"type":3}
+                 "isSplitSample":{"taskId":2,"type":1},
+                 "TypeTransfer":{"taskId":3,"type":2},
+                 "Tokenizer":{"taskId":4,"type":3},
+                 "HashingTF":{"taskId":5,"type":3},
+                 "LogisticRegression":{"taskId":6,"type":3},
+                 "evaluator":{"taskId":7,"type":4}
                 },
         'datasource': {"filepath":"hdfs://172.16.31.232:9000/data"},
         'isSplitSample': {"trainRatio":0.6,"fault":1},
