@@ -60,9 +60,9 @@ public class MachFlowController {
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
 
-    private MachFlowController(){
+    /*private MachFlowController(){
 
-    }
+    }*/
 
     @ApiOperation(value = "保存模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
