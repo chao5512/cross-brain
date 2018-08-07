@@ -4,6 +4,8 @@ import com.bonc.pezy.config.HdfsConfig;
 import com.bonc.pezy.service.HdfsModel;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,16 @@ public class HdfsModelImpl implements HdfsModel {
         FileSystem fileSystem = getFileSystem();
         InputStream inputStream = fileSystem.open(new Path(hdfsPath));
         return inputStream;
+    }
+
+    @Override
+    public FSDataInputStream readHdfsFiles(String hdfsUrl)throws IOException{
+        FileSystem fileSystem = getFileSystem();
+        Path hdfsPath = new Path(hdfsUrl);
+        FileStatus fileStatuses = fileSystem.getFileStatus(hdfsPath);
+        System.out.println("处理当前文件："+fileStatuses.getPath().getName());
+        FSDataInputStream fsDataInputStream = fileSystem.open(fileStatuses.getPath());
+        return fsDataInputStream;
     }
 
     private FileSystem getFileSystem() {
