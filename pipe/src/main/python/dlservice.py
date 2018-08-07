@@ -70,21 +70,23 @@ def kill():
 # 任务执行
 def submit(**kwaggs):
     # 任务日志位置
-    job_path = "/imgProcess/job.log"
     data = kwaggs
     pipe = DLPipeline(data)
+    rootPath = conf.get("Job","jobHdfsPath")
+    job_path = rootPath+"/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
+    HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
-        HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n")
+        HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
         pipe.run()
-        HDFSUtil.append(job_path,"任务执行成功!\n")
-        HDFSUtil.append(job_path,"更新任务状态!\n")
+        HDFSUtil.append(job_path,"任务执行成功!\n",True)
+        HDFSUtil.append(job_path,"更新任务状态!\n",True)
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
-        HDFSUtil.append(job_path,"完成任务状态更新!\n")
+        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
     except:
-        HDFSUtil.append(job_path,"任务执行失败!\n")
-        HDFSUtil.append(job_path,"更新任务状态!\n")
+        HDFSUtil.append(job_path,"任务执行失败!\n",True)
+        HDFSUtil.append(job_path,"更新任务状态!\n",True)
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
-        HDFSUtil.append(job_path,"完成任务状态更新!\n")
+        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
 
 def _async_raise(tid, exctype):
     """raises the exception, performs cleanup if needed"""
