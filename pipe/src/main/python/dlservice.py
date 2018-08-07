@@ -15,6 +15,7 @@ import configparser
 
 import ctypes
 import inspect
+import os
 
 from util.HDFSUtil import HDFSUtil
 
@@ -22,7 +23,7 @@ fileConfig('logging.conf')
 logger=logging.getLogger('pipline')
 
 conf = configparser.ConfigParser()
-conf.read("conf.ini")
+conf.read(os.getcwd()+"/conf.ini")
 
 dlthreads = {}
 
