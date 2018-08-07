@@ -30,7 +30,7 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfoBuilder().title("模型管理接口")
+        return new ApiInfoBuilder().title("工作流管理接口")
                 .version("v1.0")
                 .build();
     }
