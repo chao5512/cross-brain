@@ -11,8 +11,9 @@ from logging.config import fileConfig
 import threading
 import requests
 import configparser
+import os
 conf = configparser.ConfigParser()
-conf.read("conf.ini")
+conf.read(os.getcwd()+"conf.ini")
 os.environ["PYSPARK_PYTHON"]=conf.get('config','python_home')
 os.environ['SPARK_CONF_DIR'] = os.getcwd()+'../resources'
 os.environ['HADOOP_CONF_DIR'] = os.getcwd()+'../resources'
