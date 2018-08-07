@@ -3,6 +3,7 @@ import json
 from flask import Flask, Response,jsonify, request, abort
 import json
 from mlpipeline import MLPipeline
+from util.HDFSUtil import HDFSUtil
 from pyspark.sql.types import *
 import os
 import logging
@@ -56,7 +57,7 @@ def submit(*args,**kwaggs):
     data = kwaggs
     originalPreProcess = {}
     originalStages = {}
-
+    rootPath = conf.get("Job","jobHdfsPath")+"/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]
     for task in data['tasks']:
         if data['tasks'][task]['type'] == 1:
             originalStages[task]= data[task]
@@ -65,84 +66,65 @@ def submit(*args,**kwaggs):
 
     #Step 2 加载数据
     try:
-        with client.write("/datasource.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("开始加载数据!\n")
-        with client.write("/datasource.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("数据加载成功!\n")
-        pipe.loadDataSetFromTable()
+        file = rootPath+"/logs/datasource.log"
+        HDFSUtil.append(file,"",False) #创建日志文件
+        HDFSUtil.append(file,"开始加载数据!\n",True)
+        pipe.loadDataSetFromTable(data['datasource']['tablename'])
+        HDFSUtil.append(file,"数据加载成功!\n",True)
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        with client.write("/datasource.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("数据加载失败!\n")
+        HDFSUtil.append(file,"数据加载失败!\n",True)
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     #Step 3 数据预处理
     try:
-        with client.write("/process.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("开始预处理数据!\n")
+        file = rootPath+"/logs/process.log"
+        HDFSUtil.append(file,"",False) #创建日志文件
+        HDFSUtil.append(file,"开始预处理数据!\n",True)
         pipe.buildProcess(originalPreProcess)
-        with client.write("/process.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("数据预处理成功!\n")
+        HDFSUtil.append(file,"数据预处理成功!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        with client.write("/process.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("数据预处理失败!\n")
+        HDFSUtil.append(file,"数据预处理失败!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 4 切分数据
     try:
+        file = rootPath+"/logs/splitdata.log"
+        HDFSUtil.append(file,"",False) #创建日志文件
         isSplitSample = data['isSplitSample']
         if  isSplitSample['fault']:
-            with client.write("/splitdata.log",
-                              overwrite=False,append=True,encoding='utf-8') as writer:
-                writer.write("开始切分数据!\n")
+            HDFSUtil.append(file,"开始切分数据!\n",True)
             trainRatio = isSplitSample['trainRatio']
             pipe.split([trainRatio, 1-trainRatio])
             # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        with client.write("/splitdata.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("数据切分失败!\n")
+        HDFSUtil.append(file,"数据切分失败!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 5 构造模型,测试集训练模型,验证集验证模型
     try:
-        with client.write("/pipeline.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("开始创建机器学习流程!\n")
-            writer.write("开始训练数据!\n")
+        file = rootPath+"/logs/pipeline.log"
+        HDFSUtil.append(file,"",False) #创建日志文件
+        HDFSUtil.append(file,"开始创建机器学习流程!\n开始训练数据!\n",True)
         model = pipe.buildPipeline(originalStages)
-        with client.write("/pipeline.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("开始验证数据!\n")
+        HDFSUtil.append(file,"开始验证数据!\n",True)
         prediction = pipe.validator(model)
-        with client.write("/pipeline.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("任务运行成功!\n")
+        HDFSUtil.append(file,"任务运行成功!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        with client.write("/pipeline.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("pipeline运行失败!\n")
+        HDFSUtil.append(file,"pipeline运行失败!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     #Step 6 评估模型
     try:
-        with client.write("/evaluator.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("开始运行评估器!\n")
+        file = rootPath+"/logs/evaluator.log"
+        HDFSUtil.append(file,"",False) #创建日志文件
+        HDFSUtil.append(file,"开始运行评估器!\n",True)
         accuracy = pipe.evaluator(data['evaluator']['method'], prediction, "label")
         logger.info("Test set accuracy = " + str(accuracy))
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
     except:
-        with client.write("/evaluator.log",
-                          overwrite=False,append=True,encoding='utf-8') as writer:
-            writer.write("评估器运行失败!\n")
+        HDFSUtil.append(file,"评估器运行失败!\n",True)
         # res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
 
     pipe.stop()
