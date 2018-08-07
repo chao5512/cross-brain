@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from hdfs.client import Client
-from config import Config
+from util.config import Config
 
 class HDFSUtil():
     @staticmethod
