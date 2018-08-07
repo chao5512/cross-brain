@@ -21,7 +21,7 @@ class MLPipeline(Pipe):
     """初始化参数 appName:任务名称"""
     def __init__(self,appName):
         self.conf = configparser.ConfigParser()
-        self.conf.read(os.getcwd()+"conf.ini")
+        self.conf.read(os.getcwd()+"/conf.ini")
         super(MLPipeline,self).__init__(appName)
 
     """返回SparkSession对象"""
