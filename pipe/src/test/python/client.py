@@ -8,6 +8,8 @@ def testML():
     mlpipe = {
         'appName': 'TestML',
         'jobId':'job123',
+        'userId':'123',
+        'modelId':'123',
         'tasks':{"datasource":{"taskId":1,"type":0},
                  "isSplitSample":{"taskId":2,"type":2},
                  "TypeTransfer":{"taskId":3,"type":4},

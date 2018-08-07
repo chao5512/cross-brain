@@ -4,4 +4,5 @@ class Config():
     @staticmethod
     def loadConfig():
         conf = configparser.ConfigParser()
-        conf.read("conf.ini")
+        conf.read("../conf.ini")
+        return conf
