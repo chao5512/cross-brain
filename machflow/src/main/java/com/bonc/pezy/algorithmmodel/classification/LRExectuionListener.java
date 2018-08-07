@@ -44,6 +44,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             List<Task> tasks = taskService.findByJobId(job.getJobId());
             param.put("appName",job.getJobName());
             param.put("jobId",job.getJobId());
+            param.put("modelId",job.getModelId());
+            param.put("userId", String.valueOf(job.getOwner()));
             if(job.getModelType() == 1){
                 url = Constants.PY_SERVER;
 

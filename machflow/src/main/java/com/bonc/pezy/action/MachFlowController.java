@@ -92,7 +92,11 @@ public class MachFlowController {
             jobcom = jobService.create(job);
             FindFile findFile = new FindFile();
             try {
-                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId());
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/logs");
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/data");
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/model");
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/result");
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/evaluator");
             } catch (IOException e) {
                 e.printStackTrace();
             }
