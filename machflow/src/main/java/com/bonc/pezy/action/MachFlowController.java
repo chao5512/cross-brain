@@ -9,7 +9,9 @@ import com.bonc.pezy.entity.Model;
 import com.bonc.pezy.flow.DeepLearnFlow;
 import com.bonc.pezy.flow.MLFlow;
 import com.bonc.pezy.flow.MachFlow;
+import com.bonc.pezy.pyapi.HttpAPI;
 import com.bonc.pezy.service.*;
+import com.bonc.pezy.util.FindFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.activiti.bpmn.model.Process;
@@ -23,9 +25,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by 冯刚 on 2018/6/14.
@@ -63,7 +68,7 @@ public class MachFlowController {
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
 
-    @ApiOperation(value = "保存模型",httpMethod = "POST")
+    @ApiOperation(value = "保存1模型",httpMethod = "POST")
     @RequestMapping(value = "/saveModel",method = RequestMethod.POST)
     @ResponseBody
     public CurrentJob saveModel(@RequestParam("jsondata") String jsondata,
@@ -94,7 +99,6 @@ public class MachFlowController {
         currentJob = currentJobService.save(currentJob);
         return currentJob;
 
-
     }
 
 
@@ -103,7 +107,7 @@ public class MachFlowController {
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
     @ResponseBody
     public Job analysisCanvas(@RequestParam("jsondata") String jsondata,
-                                 @RequestParam("userId") String userid,
+                                 @RequestParam("userId") String userId,
                                  @RequestParam("modelId") String modelId,
                                  @RequestParam("jobName") String jobName,HttpServletResponse response){
 
@@ -129,6 +133,13 @@ public class MachFlowController {
             job.setJobStatus(0);
             job.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             jobcom = jobService.create(job);
+            FindFile findFile = new FindFile();
+            try {
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }else {
             jobcom = list.get(0);
             jobcom.setJobName(jobName);
@@ -166,9 +177,19 @@ public class MachFlowController {
     public String stop(@RequestParam("jobId") String jobId,
                        @RequestParam("applicationId") String applicationId, HttpServletResponse respons){
 
-
-        return "success";
+        FindFile findFile = new FindFile();
+        /*String path = findFile.readFile("/Users/fenggang/job/AI/AIStidio/cross-brain/machflow/src/main/resources/conf");*/
+        String path = findFile.readFile("conf.properties","path");
+        String url = path+"app/kill/";
+        Map<String,Object> map = new HashMap<String,Object>();
+        map.put("id",applicationId);
+        map.put("terminate",true);
+        HttpAPI httpAPI = new HttpAPI();
+        String msg = httpAPI.getHttpResult(map,url);
+        return msg;
     }
+
+
 
 
 

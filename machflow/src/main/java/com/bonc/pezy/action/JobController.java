@@ -261,4 +261,12 @@ public class JobController extends HttpServlet{
         Result result = ResultUtil.success(jobs);
         return result;
     }
+
+    @ApiOperation(value = "更新任务状态", httpMethod = "GET")
+    @RequestMapping(value = "/updatejob", method = RequestMethod.GET)
+    @ResponseBody
+    public void scanJob(@RequestParam("jobId") String jobId,
+                        @RequestParam("status") short status,HttpServletResponse respons){
+        jobService.updateByJobId(status,jobId);
+    }
 }
