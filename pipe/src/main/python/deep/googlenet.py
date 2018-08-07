@@ -11,6 +11,8 @@ from tflearn.data_utils import image_preloader
 
 from deep.neuralnetwork import NeuralNetwork
 
+from PIL import Image
+
 class GoogleNet(NeuralNetwork):
 
     train_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
@@ -179,6 +181,14 @@ class GoogleNet(NeuralNetwork):
 
     def save(self,model):
         model.save(self.model_path)
+
+    def predict(self,network):
+        print("prediction")
+        img = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
+        model = self.createModel(network)
+        model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
+        prediction = model.predict(img)
+        print(prediction)
 
     def run(self):
         self.printParams()

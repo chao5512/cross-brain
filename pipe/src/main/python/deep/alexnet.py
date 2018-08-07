@@ -9,6 +9,12 @@ from tflearn.data_utils import image_preloader
 
 from deep.neuralnetwork import NeuralNetwork
 
+from hdfs.client import Client
+
+import configparser
+
+from PIL import Image
+
 class Alexnet(NeuralNetwork):
     train_set = "/Users/mengxin/Desktop/vgg/data/list.txt"
 
@@ -97,13 +103,40 @@ class Alexnet(NeuralNetwork):
     def save(self,model):
         model.save(self.model_path)
 
-    def run(self):
-        print('alexnet')
-        self.printParams()
-        X,Y = self.loadImage()
-        network = self.buildNetwork()
-        model = self.createmodel(network)
-        self.train(model,X,Y)
-        self.save(model)
+    def predict(self,network):
+        print("prediction")
+        img = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
+        model = self.createModel(network)
+        model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
+        prediction = model.predict(img)
+        print(prediction)
 
+    def run(self):
+        conf = configparser.ConfigParser()
+        conf.read("conf.ini")
+        client = Client(conf.get('cluster','hadoopMaster'))
+        imgProcessPath = "/imgProcess/task.log"
+        trainPath = "/train/task.log"
+        try:
+            with client.write(imgProcessPath,
+                              overwrite=False,append=True,encoding='utf-8') as writer:
+                writer.write("开始预处理数据!\n")
+            self.printParams()
+            X,Y = self.loadImage()
+        except:
+            with client.write(imgProcessPath,
+                              overwrite=False,append=True,encoding='utf-8') as writer:
+                writer.write("数据处理失败!\n")
+        try:
+            with client.write(trainPath,
+                              overwrite=False,append=True,encoding='utf-8') as writer:
+                writer.write("开始训练模型!\n")
+            network = self.buildNetwork()
+            model = self.createmodel(network)
+            self.train(model,X,Y)
+            self.save(model)
+        except:
+            with client.write(trainPath,
+                              overwrite=False,append=True,encoding='utf-8') as writer:
+                writer.write("模型训练失败!\n")
         self.predict(network)

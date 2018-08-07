@@ -22,6 +22,10 @@ class DLPipeline():
     def __init__(self,jsonData):
         self.jsonData = jsonData
 
+    def predict(self):
+        network = Factory.network(str(self.jsonData['networktype']))
+        network.predict()
+
     def run(self):
         network = Factory.network(str(self.jsonData['networktype']))
 

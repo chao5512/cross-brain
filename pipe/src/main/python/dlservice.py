@@ -7,49 +7,102 @@ from hdfs.client import Client
 import logging
 from logging.config import fileConfig
 
-fileConfig('logging.conf')
-logger=logging.getLogger('pipline')
 
 import threading
 import requests
 
+import configparser
+
+import ctypes
+import inspect
+
+from util.HDFSUtil import HDFSUtil
+
+fileConfig('logging.conf')
+logger=logging.getLogger('pipline')
+
+conf = configparser.ConfigParser()
+conf.read("conf.ini")
+
+dlthreads = {}
+
 app = Flask(__name__)
-@app.route("/health")
+
+# 服务健康状况检查
+@app.route("/deeplearning/health")
 def health():
     result = {'status': 'UP'}
     return Response(json.dumps(result), mimetype='application/json')
 
-@app.route("/deeplearning/execute",methods=['POST'])
+# 深度学习任务执行服务
+@app.route("/deeplearning/job/execute",methods=['POST'])
 def execute():
     data = json.loads(request.get_data())
-    # step 1 create run tflearn
-    jobId = data['jobId']
+    # step 1 create job thread
+    job_id = data['jobId']
     try:
+        # 创建深度学习任务线程
         t =threading.Thread(target=submit,kwargs=(data))
+        # 启动
         t.start()
+        # 实例变量保存线程信息
+        dlthreads[job_id] = t
     except:
-        result = {'status': 2,'msg':'任务提交失败!','jobId':jobId,'applicationId':""}
+        result = {'status': 2,'msg':'任务提交失败!','jobId':job_id,'applicationId':""}
     else:
-        result = {'status': 1,'msg':'任务提交成功!','jobId':jobId,'applicationId':""}
-    print(result)
+        result = {'status': 1,'msg':'任务提交成功!','jobId':job_id,'applicationId':""}
     return Response(json.dumps(result), mimetype='application/json')
 
+# 深度学习模型调用服务
+@app.route("/deeplearning/model/predict",methods=['POST'])
+def predict():
+    data = json.loads(request.get_data())
+    pipe = DLPipeline(data)
+    pipe.predict()
+
+# 终止正在执行的深度学习任务
+@app.route("/deeplearning/job/kill",methods=['POST'])
+def kill():
+    data = json.loads(request.get_data())
+    job_id = data['jobId']
+    _stop_thread(dlthreads[job_id])#根据jobid停止执行中线程
+
+# 任务执行
 def submit(**kwaggs):
-    # = Client("http://172.16.81.22:50070")
+    # 任务日志位置
+    job_path = "/imgProcess/job.log"
     data = kwaggs
     pipe = DLPipeline(data)
-    #try:
-        #with client.write("/datasource.log",
-        #              overwrite=False,append=True,encoding='utf-8') as writer:
-            #writer.write("开始加载数据!\n")
-    pipe.run()
+    try:
+        HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n")
+        pipe.run()
+        HDFSUtil.append(job_path,"任务执行成功!\n")
+        HDFSUtil.append(job_path,"更新任务状态!\n")
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
-    #except:
-        #print('fail')
-        # with client.write("/datasource.log",
-        #                  overwrite=False,append=True,encoding='utf-8') as writer:
-            # writer.write("数据加载失败!\n")
+        HDFSUtil.append(job_path,"完成任务状态更新!\n")
+    except:
+        HDFSUtil.append(job_path,"任务执行失败!\n")
+        HDFSUtil.append(job_path,"更新任务状态!\n")
         #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        HDFSUtil.append(job_path,"完成任务状态更新!\n")
+
+def _async_raise(tid, exctype):
+    """raises the exception, performs cleanup if needed"""
+    tid = ctypes.c_long(tid)
+    if not inspect.isclass(exctype):
+        exctype = type(exctype)
+    res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
+    if res == 0:
+        raise ValueError("invalid thread id")
+    elif res != 1:
+        # """if it returns a number greater than one, you're in trouble,
+        # and you should call it again with exc=NULL to revert the effect"""
+        ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, None)
+        raise SystemError("PyThreadState_SetAsyncExc failed")
+
+def _stop_thread(thread):
+    _async_raise(thread.ident, SystemExit)
+
 
 if __name__ == '__main__':
     app.run(port=3002, host='0.0.0.0',debug=True)
