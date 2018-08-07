@@ -53,53 +53,12 @@ public class MachFlowController {
     @Autowired
     private ModelService modelService;
 
-    @Autowired
-    private CurrentJobService currentJobService;
-
-    @Autowired
-    private CurrentNodeService currentNodeService;
-
 
     private static String filename = "";
 
     private Job jobcom;
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
-
-    @ApiOperation(value = "保存1模型",httpMethod = "POST")
-    @RequestMapping(value = "/saveModel",method = RequestMethod.POST)
-    @ResponseBody
-    public CurrentJob saveModel(@RequestParam("jsondata") String jsondata,
-                            @RequestParam("userId") String userid,
-                            @RequestParam("modelId") String modelId,
-                            @RequestParam("jobName") String jobName,HttpServletResponse response){
-
-        Model model = modelService.findById(modelId);
-        JSONObject jb = JSON.parseObject(jsondata);
-        CurrentJob cjob = currentJobService.findByModelId(modelId);
-        if(cjob!=null){
-
-            cjob.setcJobName(jobName);
-            cjob.setModelName(model.getModelName());
-            cjob.setModelType(model.getModelType());
-            cjob.setOwner(model.getOwner());
-
-        }
-        CurrentJob currentJob = new CurrentJob();
-
-        currentJob.setcJobName(jobName);
-        currentJob.setModelId(modelId);
-        currentJob.setModelName(model.getModelName());
-        currentJob.setModelType(model.getModelType());
-        currentJob.setOwner(model.getOwner());
-        currentJob.setcJobStatus("创建");
-        currentJob.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
-        currentJob = currentJobService.save(currentJob);
-        return currentJob;
-
-    }
-
-
 
     @ApiOperation(value = "保存模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
