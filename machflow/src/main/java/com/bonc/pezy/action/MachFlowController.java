@@ -144,7 +144,6 @@ public class MachFlowController {
                        @RequestParam("applicationId") String applicationId, HttpServletResponse respons){
 
         FindFile findFile = new FindFile();
-        /*String path = findFile.readFile("/Users/fenggang/job/AI/AIStidio/cross-brain/machflow/src/main/resources/conf");*/
         String path = findFile.readFile("/conf.properties","path");
         String url = path+"app/kill/";
         Map<String,Object> map = new HashMap<String,Object>();
@@ -169,9 +168,5 @@ public class MachFlowController {
         }
         return taskList;
     }
-
-
-
-
 
 }
