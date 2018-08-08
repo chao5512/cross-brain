@@ -15,6 +15,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,6 @@ import java.util.Map;
  * Created by 冯刚 on 2018/6/13.
  */
 public class LRExectuionListener implements Serializable, ExecutionListener{
-
-
 
     private static final long serialVersionUID = 8513750196548027535L;
 
@@ -38,8 +37,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
         if ("start".equals(eventName)) {
             Job job = jobService.findByJobId(execution.getBusinessKey());
             String url = null;
-            Map<String,String> param = new HashMap<String, String>();
-            Map<String,String> map = new HashMap<String, String>();
+            Map<String,Object> param = new LinkedHashMap();
+            Map<String,Object> map = new LinkedHashMap<>();
             String pipe = null;
             List<Task> tasks = taskService.findByJobId(job.getJobId());
             param.put("appName",job.getJobName());
@@ -54,15 +53,16 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
                 url = Constants.PY_SERVER_DEEP;
             }
             for(Task task:tasks){
-
-                param.put(task.getTaskName(),task.getParam());
-                map.put(task.getTaskName(),"{\"taskId\":\""+task.getTaskId()+"\",\"type\":"+task.getTaskType()+"}");
+                Map<String,Object> tmp = new HashMap();
+                tmp.put("taskId",task.getTaskId());
+                tmp.put("type",task.getTaskType());
+                System.out.println(JSON.parse(task.getParam()));
+                param.put(task.getTaskName(),JSON.parse(task.getParam()));
+                map.put(task.getTaskName(),tmp);
             }
-            param.put("tasks",JSONUtils.toJSONString(map));
-
+            param.put("tasks",map);
             pipe = JSONUtils.toJSONString(param);
             System.out.println(pipe);
-            System.out.println(url);
             if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
                 String result = jrps.requestPythonService(pipe,url);
@@ -75,8 +75,6 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
                 job.setApplicationId(applicationid);
                 jobService.save(job);
             }
-
-
         }else if ("end".equals(eventName)) {
             System.out.println("end=========");
             System.out.println("===xxxx===="+execution.getEventName());

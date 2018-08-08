@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by 冯刚 on 2018/8/3.
@@ -27,8 +28,10 @@ public class TaskController {
     @RequestMapping(value = "/updateTask", method = RequestMethod.GET)
     @ResponseBody
     public void updateTask(@RequestParam("jobId") String jobId,
-                           @RequestParam("taskId") String taskId,
-                           @RequestParam("status") short status,HttpServletResponse respons){
-        taskService.updateByJobIdAndTaskId(status,jobId,taskId);
+                           @RequestParam("taskId") List<String> taskIds,
+                           @RequestParam("status") int status,HttpServletResponse respons){
+        for(int i=0; i<taskIds.size()-1;i++){
+            taskService.updateByJobIdAndTaskId(status,jobId,taskIds.get(i));
+        }
     }
 }

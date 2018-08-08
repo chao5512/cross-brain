@@ -269,10 +269,14 @@ public class JobController extends HttpServlet{
     @ResponseBody
     public void scanJob(@RequestParam("jobId") String jobId,
                         @RequestParam("taskId") List<String> taskIds,
-                        @RequestParam("status") int status,HttpServletResponse respons){
-        jobService.updateByJobId(status,jobId);
-        for(int i=0; i<taskIds.size()-1;i++){
-            taskService.updateByJobIdAndTaskId(status,jobId,taskIds.get(i));
+                        @RequestParam("status") int status, HttpServletResponse respons){
+        if(taskIds.size()==0){
+            jobService.updateByJobId(status,jobId);
+        }else {
+            for (int i = 0; i < taskIds.size() - 1; i++) {
+                taskService.updateByJobIdAndTaskId(status, jobId, taskIds.get(i));
+            }
+            jobService.updateByJobId(status,jobId);
         }
 
     }
