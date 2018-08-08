@@ -10,15 +10,14 @@ def testML():
         'jobId':'job123',
         'userId':'123',
         'modelId':'123',
-        'tasks':{"datasource":{"taskId":1,"type":0},
-                 "isSplitSample":{"taskId":2,"type":1},
-                 "TypeTransfer":{"taskId":3,"type":2},
-                 "Tokenizer":{"taskId":4,"type":3},
-                 "HashingTF":{"taskId":5,"type":3},
-                 "LogisticRegression":{"taskId":6,"type":3},
-                 "evaluator":{"taskId":7,"type":4}
-                },
-        'datasource': {"filepath":"hdfs://172.16.31.232:9000/data"},
+        'tasks':{"isSplitSample":"{'taskId':'TASKID00358','type':1}",
+                 "datasource":"{'taskId':'TASKID00357','type':0}",
+                 "HashingTF":"{'taskId':'TASKID00360','type':3}",
+                 "LogisticRegression":"{'taskId':'TASKID00361','type':3}",
+                 "Tokenizer":"{'taskId':'TASKID00359','type':3}",
+                 "evaluator":"{'taskId':'TASKID00362','type':4}"
+                 },
+        'datasource': {"filepath":"hdfs://182.92.82.3:9000/data"},
         'isSplitSample': {"trainRatio":0.6,"fault":1},
         'TypeTransfer': {"outputCol":"label","inputCol":"label","inputCol":"label","castType":"Double"},
         'HashingTF': {"outputCol":"features","inputCol":"words"},
@@ -26,7 +25,7 @@ def testML():
         'Tokenizer': {"outputCol":"words","inputCol":"content"},
         'evaluator': {"method":"MulticlassClassificationEvaluator"}
     }
-    r = requests.post("http://localhost:3001/execute", data=json.dumps(mlpipe))
+    r = requests.post("http://localhost:3001/machinelearning/execute", data=json.dumps(mlpipe))
     print(r.text)
 
 def testDL():
@@ -133,4 +132,4 @@ def testDL():
     print(r.text)
 
 if __name__ == '__main__':
-    testDL()
+    testML()

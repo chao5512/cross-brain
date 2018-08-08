@@ -12,11 +12,12 @@ import threading
 import requests
 import configparser
 import os
+print(sys.path[0])
 conf = configparser.ConfigParser()
 conf.read(sys.path[0]+"/conf/conf.ini")
 os.environ["PYSPARK_PYTHON"]=conf.get('config','python_home')
-os.environ['SPARK_CONF_DIR'] = os.getcwd()+'../resources'
-os.environ['HADOOP_CONF_DIR'] = os.getcwd()+'../resources'
+os.environ['SPARK_CONF_DIR'] = sys.path[0]+'../resources'
+os.environ['HADOOP_CONF_DIR'] = sys.path[0]+'../resources'
 
 app = Flask(__name__)
 
@@ -64,20 +65,25 @@ def submit(*args,**kwaggs):
     originalStages = {}
     originalTask = []
     rootPath = conf.get("Job","jobHdfsPath")+"/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]
-    for task in data['tasks']:
-        if data['tasks'][task]['type'] == 3:
-            originalStages[task]= data[task]
-            originalTask.append(data['tasks'][task]['taskId'])
-        elif data['tasks'][task]['type'] == 2:
-            originalPreProcess[task]= data[task]
-            originalPreTask.append(data['tasks'][task]['taskId'])
-        elif data['tasks'][task]['type'] == 4:
-            originalEvaluator.append(data['tasks'][task]['taskId'])
-        elif data['tasks'][task]['type'] == 1:# 数据切割
-            originalSplitData.append(data['tasks'][task]['taskId'])
-        elif data['tasks'][task]['type'] == 0:# 数据源
-            originalDatasource.append(data['tasks'][task]['taskId'])
-
+    try:
+        for task in data['tasks']:
+            print(data['tasks'][task])
+            t = json.load(data['tasks'][task])
+            if t['type'] == 3:
+                originalStages[task]= data[task]
+                originalTask.append(t['taskId'])
+            elif t['type'] == 2:
+                originalPreProcess[task]= data[task]
+                originalPreTask.append(t['taskId'])
+            elif t['type'] == 4:
+                originalEvaluator.append(t['taskId'])
+            elif t['type'] == 1:# 数据切割
+                originalSplitData.append(t['taskId'])
+            elif t['type'] == 0:# 数据源
+                originalDatasource.append(t['taskId'])
+    except BaseException as e:
+        logging.exception(e)
+    logger.info('load data')
     #Step 2 加载数据
     try:
         file = rootPath+"/logs/datasource.log"
@@ -86,9 +92,12 @@ def submit(*args,**kwaggs):
         pipe.loadDataSetFromTable(data['datasource']['tablename'])
         HDFSUtil.append(file,"数据加载成功!\n",True)
         res = requests.post(conf.get("Job","jobService")+"Job/updatejob",params={'jobId':data['JobId'],'taskId':originalDatasource,'status':1})
-    except:
+    except BaseException as e:
+        logger.info(e.args)
         HDFSUtil.append(file,"数据加载失败!\n",True)
         res = requests.post(conf.get("Job","jobService")+"Job/updatejob",params={'jobId':data['JobId'],'taskId':originalDatasource,'status':-1})
+
+    logger.info('process')
     #Step 3 数据预处理
     try:
         file = rootPath+"/logs/process.log"
