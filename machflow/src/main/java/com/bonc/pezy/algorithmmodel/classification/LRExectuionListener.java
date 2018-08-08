@@ -15,6 +15,7 @@ import org.activiti.engine.delegate.ExecutionListener;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -36,8 +37,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
         if ("start".equals(eventName)) {
             Job job = jobService.findByJobId(execution.getBusinessKey());
             String url = null;
-            Map<String,Object> param = new HashMap<String, Object>();
-            Map<String,Object> map = new HashMap<String, Object>();
+            Map<String,Object> param = new LinkedHashMap();
+            Map<String,Object> map = new LinkedHashMap<>();
             String pipe = null;
             List<Task> tasks = taskService.findByJobId(job.getJobId());
             param.put("appName",job.getJobName());
@@ -55,7 +56,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
                 Map<String,Object> tmp = new HashMap();
                 tmp.put("taskId",task.getTaskId());
                 tmp.put("type",task.getTaskType());
-                param.put(task.getTaskName(),task.getParam());
+                System.out.println(JSON.parse(task.getParam()));
+                param.put(task.getTaskName(),JSON.parse(task.getParam()));
                 map.put(task.getTaskName(),tmp);
             }
             param.put("tasks",map);
