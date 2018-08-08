@@ -33,7 +33,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public Task updateByJobIdAndTaskId(int taskStatus, String jobId, String taskId) {
-        return taskRepository.updateByJobIdAndTaskId(taskStatus,jobId,taskId);
+    public void updateByJobIdAndTaskId(int taskStatus, String jobId, String taskId) {
+         taskRepository.updateByJobIdAndTaskId(taskStatus,jobId,taskId);
     }
 }

@@ -14,6 +14,6 @@ public interface TaskService {
 
     public List<Task> findByJobId(String jobId);
 
-    Task updateByJobIdAndTaskId(int taskStatus, String jobId,String taskId);
+    public void updateByJobIdAndTaskId(int taskStatus, String jobId,String taskId);
 
 }
