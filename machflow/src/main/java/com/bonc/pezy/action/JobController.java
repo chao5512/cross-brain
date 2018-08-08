@@ -270,13 +270,19 @@ public class JobController extends HttpServlet{
     public void scanJob(@RequestParam("jobId") String jobId,
                         @RequestParam("taskId") List<String> taskIds,
                         @RequestParam("status") int status, HttpServletResponse respons){
+
+        logger.info("jobid:"+jobId+"=====taskId:"+taskIds+"======status"+status);
         if(taskIds.size()==0){
             jobService.updateByJobId(status,jobId);
+            logger.info("成功状态--更新任务状态成功！！！");
+
         }else {
             for (int i = 0; i < taskIds.size() - 1; i++) {
                 taskService.updateByJobIdAndTaskId(status, jobId, taskIds.get(i));
+                logger.info("失败状态--更新任务状态成功！！！");
             }
             jobService.updateByJobId(status,jobId);
+            logger.info("失败状态--更新任务状态成功！！！");
         }
 
     }
