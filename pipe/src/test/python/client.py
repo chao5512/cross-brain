@@ -28,6 +28,8 @@ def testML():
     r = requests.post("http://localhost:3001/machinelearning/execute", data=json.dumps(mlpipe))
     print(r.text)
 
+
+
 def testDL():
     '''
     dlpipe = {

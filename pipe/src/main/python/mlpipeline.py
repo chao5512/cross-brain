@@ -14,7 +14,9 @@ from ml.process.TypeTransfer import TypeTransfer
 from pyspark.sql import HiveContext
 
 import sys
-
+import os
+os.environ['SPARK_CONF_DIR'] = '/opt/beh/core/spark/conf'
+os.environ['SPARK_HOME'] = '/opt/beh/core/spark'
 #基于SparkML Pipeline
 class MLPipeline(Pipe):
 
@@ -30,7 +32,8 @@ class MLPipeline(Pipe):
         print(self.conf.get('config','sparkMaster'))
         self.spark = SparkSession.builder \
             .master(self.conf.get('config','sparkMaster')) \
-            .appName(self.appName)\
+            .appName(self.appName) \
+            .config("spark.executor.memory", "1g").config("spark.driver.memory", "1g")\
             .enableHiveSupport()\
             .getOrCreate()
         return self.spark
