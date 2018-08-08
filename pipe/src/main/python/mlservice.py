@@ -122,6 +122,7 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"数据预处理失败!\n",True)
         res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalPreTask,'status':-1})
 
+    logger.info('split data')
     #Step 4 切分数据
     try:
         file = rootPath+"/logs/splitdata.log"
@@ -136,6 +137,7 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"数据切分失败!\n",True)
         res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalSplitData,'status':-1})
 
+    logger.info('train model')
     #Step 5 构造模型,测试集训练模型,验证集验证模型
     try:
         file = rootPath+"/logs/pipeline.log"
@@ -150,6 +152,7 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"pipeline运行失败!\n",True)
         res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalTask,'status':-1})
 
+    logger.info('evaluator')
     #Step 6 评估模型
     try:
         file = rootPath+"/logs/evaluator.log"
