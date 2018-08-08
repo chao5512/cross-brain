@@ -41,11 +41,13 @@ def execute():
         spark = pipe.create()
         t =threading.Thread(target=submit,args=(spark,pipe),kwargs=(data))
         t.start()
-    except:
+    except BaseException as e:
+        logger.error("任务出错!")
+        logger.error(e.args)
         result = {'status': 2,'msg':'任务提交失败!','jobId':jobId,'applicationId':""}
     else:
         result = {'status': 1,'msg':'任务提交成功!','jobId':jobId,'applicationId':spark.sparkContext.applicationId}
-    print(result)
+    logger.info(result)
     return Response(json.dumps(result), mimetype='application/json')
 
 def submit(*args,**kwaggs):
