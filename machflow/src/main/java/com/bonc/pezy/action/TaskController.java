@@ -27,8 +27,8 @@ public class TaskController {
     @Autowired
     private TaskService taskService;
 
-    @ApiOperation(value = "更新任务节点状态", httpMethod = "GET")
-    @RequestMapping(value = "/updateTask", method = RequestMethod.GET)
+    @ApiOperation(value = "更新任务节点状态", httpMethod = "POST")
+    @RequestMapping(value = "/updateTask", method = RequestMethod.POST)
     @ResponseBody
     public void updateTask(@RequestParam("jobId") String jobId,
                            @RequestParam("taskId") List<String> taskIds,
