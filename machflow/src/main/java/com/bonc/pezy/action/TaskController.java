@@ -3,6 +3,8 @@ package com.bonc.pezy.action;
 import com.bonc.pezy.service.TaskService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +22,7 @@ import java.util.List;
 @RequestMapping("task")
 @Api(value = "任务节点信息", description = "任务节点的管理")
 public class TaskController {
+    private final Logger logger = LoggerFactory.getLogger(TaskController.class);
 
     @Autowired
     private TaskService taskService;
@@ -30,6 +33,8 @@ public class TaskController {
     public void updateTask(@RequestParam("jobId") String jobId,
                            @RequestParam("taskId") List<String> taskIds,
                            @RequestParam("status") int status,HttpServletResponse respons){
+
+        logger.info("jobid:"+jobId+"=====taskId:"+taskIds+"======status"+status);
         for(int i=0; i<taskIds.size()-1;i++){
             taskService.updateByJobIdAndTaskId(status,jobId,taskIds.get(i));
         }
