@@ -59,7 +59,7 @@ class MLPipeline(Pipe):
 
     """参数ratio类型为列表，两个元素构成表示train和test数据集比例权重"""
     def split(self, ratio):
-        print("开始split")
+        print("start split")
         print(self.dataFrame)
         element = self.dataFrame.randomSplit(ratio)
         print(element)
