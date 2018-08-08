@@ -60,6 +60,10 @@ public class MachFlowController {
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
 
+    /*private MachFlowController(){
+
+    }*/
+
     @ApiOperation(value = "保存模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
     @ResponseBody
@@ -67,7 +71,6 @@ public class MachFlowController {
                                  @RequestParam("userId") String userId,
                                  @RequestParam("modelId") String modelId,
                                  @RequestParam("jobName") String jobName,HttpServletResponse response){
-
         serviceMap.setNodeService(nodeService);
         serviceMap.setModelService(modelService);
         serviceMap.setJobService(jobService);

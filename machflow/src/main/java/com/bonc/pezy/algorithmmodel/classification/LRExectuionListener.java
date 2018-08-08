@@ -56,7 +56,7 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             for(Task task:tasks){
 
                 param.put(task.getTaskName(),task.getParam());
-                map.put(task.getTaskName(),"{'taskId':'"+task.getTaskId()+"','type':'"+task.getTaskType()+"'}");
+                map.put(task.getTaskName(),"{'taskId':'"+task.getTaskId()+"','type':"+task.getTaskType()+"}");
             }
             param.put("tasks",JSONUtils.toJSONString(map));
 
