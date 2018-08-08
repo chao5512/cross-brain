@@ -15,15 +15,15 @@ import configparser
 
 import ctypes
 import inspect
-import os
+import sys
 
 from util.HDFSUtil import HDFSUtil
 
-fileConfig('logging.conf')
+fileConfig(sys.path[0]+'/conf/logging.conf')
 logger=logging.getLogger('pipline')
 
 conf = configparser.ConfigParser()
-conf.read(os.getcwd()+"/conf.ini")
+conf.read(sys.path[0]+"/conf.ini")
 
 dlthreads = {}
 

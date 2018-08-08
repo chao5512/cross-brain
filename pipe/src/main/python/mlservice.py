@@ -5,7 +5,7 @@ import json
 from mlpipeline import MLPipeline
 from util.HDFSUtil import HDFSUtil
 from pyspark.sql.types import *
-import os
+import sys
 import logging
 from logging.config import fileConfig
 import threading
@@ -13,16 +13,14 @@ import requests
 import configparser
 import os
 conf = configparser.ConfigParser()
-conf.read(os.getcwd()+"/conf.ini")
+conf.read(sys.path[0]+"/conf/conf.ini")
 os.environ["PYSPARK_PYTHON"]=conf.get('config','python_home')
 os.environ['SPARK_CONF_DIR'] = os.getcwd()+'../resources'
 os.environ['HADOOP_CONF_DIR'] = os.getcwd()+'../resources'
 
-from hdfs.client import Client
-
 app = Flask(__name__)
 
-fileConfig('logging.conf')
+fileConfig(sys.path[0]+'/conf/logging.conf')
 logger=logging.getLogger('pipline')
 
 #CORS(app, supports_credentials=True)

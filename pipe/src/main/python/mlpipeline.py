@@ -13,7 +13,7 @@ from ml.process.TypeTransfer import TypeTransfer
 
 from pyspark.sql import HiveContext
 
-import os
+import sys
 
 #基于SparkML Pipeline
 class MLPipeline(Pipe):
@@ -21,7 +21,7 @@ class MLPipeline(Pipe):
     """初始化参数 appName:任务名称"""
     def __init__(self,appName):
         self.conf = configparser.ConfigParser()
-        self.conf.read(os.getcwd()+"/conf.ini")
+        self.conf.read(sys.path[0]+"/conf/conf.ini")
         super(MLPipeline,self).__init__(appName)
 
     """返回SparkSession对象"""
