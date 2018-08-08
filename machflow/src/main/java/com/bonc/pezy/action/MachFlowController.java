@@ -3,12 +3,18 @@ package com.bonc.pezy.action;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.dataconfig.ServiceMap;
-import com.bonc.pezy.entity.*;
+import com.bonc.pezy.entity.Job;
+import com.bonc.pezy.entity.Model;
+import com.bonc.pezy.entity.Node;
+import com.bonc.pezy.entity.Task;
 import com.bonc.pezy.flow.DeepLearnFlow;
 import com.bonc.pezy.flow.MLFlow;
 import com.bonc.pezy.flow.MachFlow;
 import com.bonc.pezy.pyapi.HttpAPI;
-import com.bonc.pezy.service.*;
+import com.bonc.pezy.service.JobService;
+import com.bonc.pezy.service.ModelService;
+import com.bonc.pezy.service.NodeService;
+import com.bonc.pezy.service.TaskService;
 import com.bonc.pezy.util.FindFile;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -23,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,9 +65,6 @@ public class MachFlowController {
 
     private ServiceMap serviceMap = ServiceMap.getServiceMap();
 
-    /*private MachFlowController(){
-
-    }*/
 
     @ApiOperation(value = "保存模型",httpMethod = "POST")
     @RequestMapping(value = "/analysisCanvas",method = RequestMethod.POST)
@@ -71,10 +73,6 @@ public class MachFlowController {
                                  @RequestParam("userId") String userId,
                                  @RequestParam("modelId") String modelId,
                                  @RequestParam("jobName") String jobName,HttpServletResponse response){
-        serviceMap.setNodeService(nodeService);
-        serviceMap.setModelService(modelService);
-        serviceMap.setJobService(jobService);
-        serviceMap.setTaskService(taskService);
 
         MachFlow mf = new MachFlow();
         System.out.print(jsondata);
@@ -100,7 +98,7 @@ public class MachFlowController {
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/model");
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/result");
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/evaluator");
-            } catch (IOException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -130,6 +128,10 @@ public class MachFlowController {
     @ResponseBody
     public String run(@RequestParam("modelId") String modelId,
                       @RequestParam("jobId") String jobId, HttpServletResponse respons){
+        serviceMap.setNodeService(nodeService);
+        serviceMap.setModelService(modelService);
+        serviceMap.setJobService(jobService);
+        serviceMap.setTaskService(taskService);
         MachFlow mf = new MachFlow();
         mf.startActiviti(modelId,jobId);
         return "sucess";
@@ -143,7 +145,7 @@ public class MachFlowController {
 
         FindFile findFile = new FindFile();
         /*String path = findFile.readFile("/Users/fenggang/job/AI/AIStidio/cross-brain/machflow/src/main/resources/conf");*/
-        String path = findFile.readFile("conf.properties","path");
+        String path = findFile.readFile("/conf.properties","path");
         String url = path+"app/kill/";
         Map<String,Object> map = new HashMap<String,Object>();
         map.put("id",applicationId);

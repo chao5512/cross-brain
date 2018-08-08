@@ -9,9 +9,8 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.Properties;
 
@@ -21,10 +20,11 @@ public class FindFile {
     public String readFile(String filename,String pathname){
 
         Properties properties = new Properties();
-        BufferedReader bufferedReader = null;
+
         try {
-            bufferedReader = new BufferedReader(new FileReader(filename));
-            properties.load(bufferedReader);
+            InputStream in = this.getClass().getResourceAsStream(filename);
+            InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
+            properties.load(inputStreamReader);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -44,19 +44,33 @@ public class FindFile {
     }
 
     //创建文件目录
-    public static boolean mkdir(String dir) throws IOException {
+    public boolean mkdir(String dir) {
         if (StringUtils.isBlank(dir)) {
             return false;
         }
         Properties properties = new Properties();
+
+        try {
+            InputStream in = this.getClass().getResourceAsStream("/conf.properties");
+            InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
+            properties.load(inputStreamReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         String hdfspath = properties.getProperty("hdfspath");
         dir = hdfspath + dir;
         Configuration conf = new Configuration();
-        FileSystem fs = FileSystem.get(URI.create(dir), conf);
-        if (!fs.exists(new Path(dir))) {
-            fs.mkdirs(new Path(dir));
+        FileSystem fs = null;
+        try {
+            fs = FileSystem.get(URI.create(dir), conf);
+            if (!fs.exists(new Path(dir))) {
+                fs.mkdirs(new Path(dir));
+            }
+            fs.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        fs.close();
+
         return true;
     }
 }
