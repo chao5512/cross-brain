@@ -264,8 +264,8 @@ public class JobController extends HttpServlet{
         return result;
     }
 
-    @ApiOperation(value = "更新任务状态", httpMethod = "GET")
-    @RequestMapping(value = "/updatejob", method = RequestMethod.GET)
+    @ApiOperation(value = "更新任务状态", httpMethod = "POST")
+    @RequestMapping(value = "/updatejob", method = RequestMethod.POST)
     @ResponseBody
     public void scanJob(@RequestParam("jobId") String jobId,
                         @RequestParam("taskId") List<String> taskIds,
