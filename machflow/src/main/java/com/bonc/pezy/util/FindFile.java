@@ -30,15 +30,6 @@ public class FindFile {
         }
 
         String myString = properties.getProperty(pathname);
-        /*File file = new File(filename);
-        BufferedReader reader = null;*/
-       /* try {
-            reader = new BufferedReader(new FileReader(file));
-            myString = reader.readLine().toString().trim();
-            reader.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }*/
 
         return myString;
     }
