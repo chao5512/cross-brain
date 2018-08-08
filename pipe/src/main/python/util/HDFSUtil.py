@@ -8,6 +8,7 @@ class HDFSUtil():
     def append(job_path,content,append):
         conf = Config.loadConfig()
         # 连接HDFS集群
+        print(job_path)
         client = Client(conf.get('cluster','hadoopMaster'))
         with client.write(job_path,
                           overwrite=False,append=append,encoding='utf-8') as writer:

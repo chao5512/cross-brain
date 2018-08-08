@@ -8,8 +8,8 @@ def testML():
     mlpipe = {
         'appName': 'TestML',
         'jobId':'job123',
-        'userId':'123',
-        'modelId':'123',
+        'userId':'2288',
+        'modelId':'MDL00061',
         'tasks':{"isSplitSample":"{'taskId':'TASKID00358','type':1}",
                  "datasource":"{'taskId':'TASKID00357','type':0}",
                  "HashingTF":"{'taskId':'TASKID00360','type':3}",

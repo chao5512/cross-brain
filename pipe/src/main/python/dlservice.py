@@ -74,7 +74,7 @@ def submit(**kwaggs):
     data = kwaggs
     pipe = DLPipeline(data)
     rootPath = conf.get("Job","jobHdfsPath")
-    job_path = rootPath+"/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
+    job_path = "/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
     HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
         HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)

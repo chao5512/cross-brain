@@ -64,7 +64,7 @@ def submit(*args,**kwaggs):
     originalPreTask = []
     originalStages = {}
     originalTask = []
-    rootPath = conf.get("Job","jobHdfsPath")+"/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]
+    rootPath = "/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]
     try:
         for task in data['tasks']:
             print(data['tasks'][task])
