@@ -53,6 +53,7 @@ def submit(*args,**kwaggs):
     spark = args[0]
     pipe = args[1]
     data = kwaggs
+    # 保存数据变量
     originalDatasource = []
     originalSplitData = []
     originalEvaluator = []
