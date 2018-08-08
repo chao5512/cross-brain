@@ -32,11 +32,14 @@ public class TaskController {
     @ResponseBody
     public void updateTask(@RequestParam("jobId") String jobId,
                            @RequestParam("taskId") List<String> taskIds,
+                           /*@RequestParam("taskId") String taskIds,*/
                            @RequestParam("status") int status,HttpServletResponse respons){
         logger.info("jobid:"+jobId+"=====taskId:"+taskIds+"======status:"+status);
 
-        for(int i=0; i<taskIds.size()-1;i++){
-            taskService.updateByJobIdAndTaskId(status,jobId,taskIds.get(i));
+        /*taskService.updateByJobIdAndTaskId(status,jobId,taskIds);*/
+        for (String str:taskIds) {
+            logger.info("taskId:"+str);
+            taskService.updateByJobIdAndTaskId(status,jobId,str);
         }
     }
 }
