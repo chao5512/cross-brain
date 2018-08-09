@@ -3,6 +3,7 @@ import json
 from flask import Flask, Response,jsonify, request, abort
 import json
 from mlpipeline import MLPipeline
+from pyspark.ml import PipelineModel
 from util.HDFSUtil import HDFSUtil
 from pyspark.sql.types import *
 import sys
@@ -178,6 +179,75 @@ def submit(*args,**kwaggs):
 
     #任务运行成功,更新JOB信息
     #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+# the pipeline of Spark
+@app.route("/machinelearning/predict",methods=['POST'])
+def predict():
+    logger.info("reqdata")
+    logger.info(request.get_data())
+    data = json.loads(request.get_data())
+    # step 1 create sparksession and dataframe
+    appName = data['appName']
+    jobId = data['jobId']
+    pipe = MLPipeline(appName)
+    try:
+        spark = pipe.create()
+        t =threading.Thread(target=predict_submit,args=(spark,pipe),kwargs=(data))
+        t.start()
+    except BaseException as e:
+        logger.error("job error!")
+        logger.error(e.args)
+        result = {'status': 2,'msg':'调用模型任务提交失败!','jobId':jobId,'applicationId':""}
+    else:
+        result = {'status': 1,'msg':'调用模型任务提交成功!','jobId':jobId,'applicationId':spark.sparkContext.applicationId}
+    logger.info(result)
+    return Response(json.dumps(result), mimetype='application/json')
+
+
+def predict_submit(*args, **kwaggs):
+    logger.info('start predict threading')
+    spark = args[0]
+    pipe = args[1]
+    data = kwaggs
+    # 保存数据变量
+    originalPreProcess = {}
+
+    try:
+        for task in data['tasks']:
+            t = data['tasks'][task]
+            if t['type'] == 2:
+                originalPreProcess[task]= data[task]
+    except BaseException as e:
+        logging.exception(e)
+    logger.info(originalPreProcess)
+
+    #Step 2 加载原始表信息 构建同样表结构
+    try:
+        train_table_name = data['datasource']['tablename']
+        predict_table_name = train_table_name + data["jobId"] + "_predict"
+        predict_data_path = conf.get("Job", "jobHdfsPath") + data["userId"] + \
+                            "/" + data["modelId"] + "/" + data["jobId"] + "/data"
+        spark.sql("create table %s like  %s LOCATION '%s'" % (
+            predict_table_name, train_table_name, predict_data_path))
+        pipe.loadDataSetFromTable(predict_table_name)
+    except BaseException as e:
+        logger.exception(e)
+    logger.info('predict process')
+    # Step 3 数据预处理
+    try:
+        pipe.buildProcess(originalPreProcess)
+    except BaseException as e:
+        logger.exception(e)
+
+    # Step 4 预测
+    root_path = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                 data["userId"] + "/" + data["modelId"] + "/" + data["jobId"]
+    model_path = root_path + "/model"
+    model = PipelineModel.load(model_path)
+
+    prediction = model.transform(pipe.dataFrame)
+    #Step 5 保存结果 todo 保存数据为parquet 而且保存的目录不能已存在
+    prediction.write.save(root_path+"/result")
+    pipe.stop()
 
 if __name__ == '__main__':
     app.run(port=3001, host='0.0.0.0',debug=True)
