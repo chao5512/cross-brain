@@ -63,11 +63,13 @@ def submit(*args,**kwaggs):
     # 保存数据变量
     originalDatasource = []
     originalSplitData = []
-    originalEvaluator = []
-    originalPreProcess = {}
-    originalPreTask = []
-    originalStages = {}
+    originalEvaluatorTask = []
     originalTask = []
+    originalPreTask = []
+    originalPreProcess = {}
+    originalStages = {}
+    originalEvaluator = {}
+
     rootPath = conf.get("Job","jobHdfsPath")+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]
     try:
         for task in data['tasks']:
@@ -81,7 +83,8 @@ def submit(*args,**kwaggs):
                 originalPreProcess[task]= data[task]
                 originalPreTask.append(t['taskId'])
             elif t['type'] == 4:
-                originalEvaluator.append(t['taskId'])
+                originalEvaluator[task] = data[task]
+                originalEvaluatorTask.append(t['taskId'])
             elif t['type'] == 1:# 数据切割
                 originalSplitData.append(t['taskId'])
             elif t['type'] == 0:# 数据源
@@ -163,7 +166,7 @@ def submit(*args,**kwaggs):
         file = rootPath+"/logs/evaluator.log"
         HDFSUtil.append(file,"",False) #创建日志文件
         HDFSUtil.append(file,"开始运行评估器!\n",True)
-        accuracy = pipe.evaluator(data['evaluator']['method'], prediction, "label")
+        accuracy = pipe.evaluator(originalEvaluator[task], prediction, "label")
         logger.info("Test set accuracy = " + str(accuracy))
         #res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:

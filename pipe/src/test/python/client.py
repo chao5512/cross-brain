@@ -23,7 +23,7 @@ def testML():
         'HashingTF': {"outputCol":"features","inputCol":"words"},
         'LogisticRegression': {"maxIter":10,"regParam":0.001},
         'Tokenizer': {"outputCol":"words","inputCol":"content"},
-        'evaluator': {"method":"MulticlassClassificationEvaluator"}
+        'MulticlassClassificationEvaluator': {"method":"MulticlassClassificationEvaluator"}
     }
     r = requests.post("http://localhost:3001/machinelearning/execute", data=json.dumps(mlpipe))
     print(r.text)

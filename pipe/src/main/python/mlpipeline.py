@@ -108,22 +108,23 @@ class MLPipeline(Pipe):
         # weightedPrecision=evaluator.setMetricName("weightedPrecision").evaluate(predictions);
         # weightedRecall=evaluator.setMetricName("weightedRecall").evaluate(predictions);
         # f1=evaluator.setMetricName("f1").evaluate(predictions);
-        if e == 'MulticlassClassificationEvaluator':
-            evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction")
-            accuracy = evaluator.evaluate(predictions)
-            return accuracy
-        elif e == 'BinaryClassificationEvaluator':
-            evaluator = BinaryClassificationEvaluator(rawPredictionCol='rawPrediction', labelCol='label')
-            accuracy = evaluator.evaluate(predictions)
-            return accuracy
-        elif e == 'RegressionEvaluator':
-            evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='label')
-            accuracy = evaluator.evaluate(predictions)
-            return accuracy
-        elif e == 'ClusteringEvaluator':
-            evaluator = ClusteringEvaluator(predictionCol='prediction', featuresCol='features')
-            accuracy = evaluator.evaluate(predictions)
-            return accuracy
+        for e1 in e:
+            if e1 == 'MulticlassClassificationEvaluator':
+                evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction")
+                accuracy = evaluator.evaluate(predictions)
+                return accuracy
+            elif e1 == 'BinaryClassificationEvaluator':
+                evaluator = BinaryClassificationEvaluator(rawPredictionCol='rawPrediction', labelCol='label')
+                accuracy = evaluator.evaluate(predictions)
+                return accuracy
+            elif e1 == 'RegressionEvaluator':
+                evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='label')
+                accuracy = evaluator.evaluate(predictions)
+                return accuracy
+            elif e1 == 'ClusteringEvaluator':
+                evaluator = ClusteringEvaluator(predictionCol='prediction', featuresCol='features')
+                accuracy = evaluator.evaluate(predictions)
+                return accuracy
 
     """加载Model文件"""
     def loadModel(self,test):

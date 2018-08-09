@@ -29,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 @RequestMapping("Job")
@@ -104,23 +105,48 @@ public class JobController extends HttpServlet{
         return result;
     }
 
-    @ApiOperation(value = "获取节点运行日志", httpMethod = "GET")
-    @RequestMapping(value = "/qryLog", method = RequestMethod.GET)
+    @ApiOperation(value = "获取节点运行日志", httpMethod = "POST")
+    @RequestMapping(value = "/qryTaskLog", method = RequestMethod.POST)
     public Result qryLog(@RequestParam(name = "jobId") String jobId,
-            @RequestParam(name = "nodeId") String nodeId,
+            @RequestParam(name = "taskId") String taskId, @RequestParam(name = "type") int type,
             HttpServletResponse res) throws IOException{
         Result result = null;
-        String fileName = "aa.txt";  //模型文件
+        String fileName = "";  //模型文件
+        switch(type){
+            case 0:
+                fileName = "datasource.log";
+                break;
+            case 1:
+                fileName = "splitdata.log";
+                break;
+            case 2:
+                fileName = "process.log";
+                break;
+            case 3:
+                fileName = "pipeline.log";
+                break;
+            case 4:
+                fileName = "evaluator.log";
+                break;
+
+        }
         Job thisjob= jobService.findByJobId(jobId);
         String modelId = thisjob.getModelId();
         Long userId = thisjob.getOwner();
+        Properties properties = new Properties();
+        try {
+            InputStream in = this.getClass().getResourceAsStream("/conf.properties");
+            InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
+            properties.load(inputStreamReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        //获取模型地址  暂时默认  http://182.92.82.3:8020/DATASYSTEM/1234/Models/MDL88888/马晨.txt
-        String hdfsUrl = hdfsConfig.getHdfsUrl();
-        Long hdfsPort = hdfsConfig.getHdfsProt();
-        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"DATASYSTEM/"+userId+"/"+"Models/"+modelId+"/"+fileName;
-        //TEST  测试专用
-//        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"machen/mmm/aa.txt";
+        String hdfsPath = properties.getProperty("hdfspath");
+
+        //获取模型地址  暂时默认
+        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/logs/"+fileName;
+        System.out.println(fileNamePath);
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
