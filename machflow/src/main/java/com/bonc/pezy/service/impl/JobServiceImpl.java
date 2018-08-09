@@ -1,9 +1,17 @@
 package com.bonc.pezy.service.impl;
 
+import static com.google.common.collect.Iterables.toArray;
+
 import com.bonc.pezy.dao.JobRepository;
 import com.bonc.pezy.entity.Job;
 import com.bonc.pezy.service.JobService;
 import com.bonc.pezy.vo.JobQuery;
+import java.util.ArrayList;
+import java.util.List;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,15 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.List;
-
-import static com.google.common.collect.Iterables.toArray;
 
 /**
  * Created by 冯刚 on 2018/7/23.
@@ -81,7 +80,7 @@ public class JobServiceImpl implements JobService {
                 if (StringUtils.isNotEmpty(jobQuery.getModelName())) {
                     predicates.add(criteriaBuilder
                             .like(root.get("modelName").as(String.class),
-                                    jobQuery.getModelName()));
+                                    "%"+jobQuery.getModelName()+"%"));
                 }
                 return criteriaBuilder.and(toArray(predicates, Predicate.class));
             }

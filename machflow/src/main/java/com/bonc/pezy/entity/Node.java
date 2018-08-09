@@ -31,7 +31,7 @@ public class Node implements Serializable {
     private String parentId;//用于树状展示
 
     @Column(name = "type",nullable = false)
-    private Short type;//0:datasource  1:预处理  2:split 3:组件  4:校验
+    private Short type;//0:datasource  2:预处理  1:split 3:组件  4:校验
 
     @Column(name = "param")
     private String param;
