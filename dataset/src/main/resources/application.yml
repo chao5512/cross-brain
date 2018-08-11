@@ -64,7 +64,7 @@ hive:
 ##hive表在hadoop中路径配置##
 hadoop:
   url: hdfs://182.92.82.3
-  port: 8020
+  port: 9000
 
 
 
