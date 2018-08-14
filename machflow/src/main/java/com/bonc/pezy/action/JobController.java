@@ -52,56 +52,60 @@ public class JobController extends HttpServlet{
 
     @ApiOperation(value = "下载模型文件", httpMethod = "POST")
     @RequestMapping(value = "/downModelFile", method = RequestMethod.POST)
-    public Result DownModelFile(@RequestParam(name = "jobid") String jobid,
+    public Result DownModelFile(@RequestParam(name = "jobId") String jobId,
             HttpServletResponse res) throws IOException {
         Result result = null;
-        String fileName = "aa.txt";  //模型文件
-        Job thisjob= jobService.findByJobId(jobid);
+        String fileName = "evaluator.txt";  //模型文件
+        Job thisjob= jobService.findByJobId(jobId);
         String modelId = thisjob.getModelId();
         Long userId = thisjob.getOwner();
 
-        //获取模型地址  暂时默认  http://182.92.82.3:8020/DATASYSTEM/1234/Models/MDL88888/马晨.txt
+        //获取模型地址  暂时默认
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
-        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"DATASYSTEM/"+userId+"/"+"Models/"+modelId+"/"+fileName;
-        //TEST
-//        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"machen/mmm/aa.txt";
+        Properties properties = new Properties();
+        try {
+            InputStream in = this.getClass().getResourceAsStream("/conf.properties");
+            InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
+            properties.load(inputStreamReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String hdfsPath = properties.getProperty("hdfspath");
+        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/model/"+fileName;
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
         res.setHeader("Content-Disposition", "attachment;filename="
                 + URLEncoder.encode(fileName, "UTF-8"));
+        FSDataInputStream fsdis = hdfsModel.readHdfsFiles(fileNamePath);
+        OutputStream out = null;
+        int line;
         byte[] buff = new byte[1024];
-        InputStream inputStream = hdfsModel.downLoadFile(fileNamePath);
-        OutputStream out = new FileOutputStream("D:\\machen\\aa.txt");
-        IOUtils.copyBytes(inputStream,out,1024);
-        out.close();
-        OutputStream os = null;
         try {
-            os = res.getOutputStream();
-            //数据读取的操作
-            int i = inputStream.read(buff);
-            while (i != -1) {
-                os.write(buff, 0, buff.length);
-                os.flush();
-                i = inputStream.read(buff);
+            out = res.getOutputStream();
+            line = fsdis.read(buff);
+            while (line != -1) {
+                out.write(buff, 0, buff.length);
+                out.flush();
+                line = fsdis.read(buff);
             }
-            inputStream.close();
-            os.close();
-
+            fsdis.close();
+            out.close();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            if (inputStream != null) {
+            if (fsdis != null) {
                 try {
-                    inputStream.close();
+                    fsdis.close();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
-        result = ResultUtil.success();
+        result =ResultUtil.success();
         return result;
     }
 
@@ -183,22 +187,30 @@ public class JobController extends HttpServlet{
         return result;
     }
 
-    @ApiOperation(value = "获取任务结果数据", httpMethod = "GET")
-    @RequestMapping(value = "/qryResultData", method = RequestMethod.GET)
+    @ApiOperation(value = "获取任务结果数据", httpMethod = "POST")
+    @RequestMapping(value = "/qryResultData", method = RequestMethod.POST)
     public Result qryResultData(@RequestParam(name = "jobId") String jobId,
             HttpServletResponse res) throws IOException{
         Result result = null;
-        String fileName = "aa.txt";  //模型文件
+        String fileName = "evaluator.txt";  //模型文件
         Job thisjob= jobService.findByJobId(jobId);
         String modelId = thisjob.getModelId();
         Long userId = thisjob.getOwner();
 
-        //获取模型地址  暂时默认  http://182.92.82.3:8020/DATASYSTEM/1234/Models/MDL88888/马晨.txt
+        //获取模型地址  暂时默认
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
-        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"DATASYSTEM/"+userId+"/"+"Models/"+modelId+"/"+fileName;
-        //TEST
-//        String fileNamePath =hdfsUrl+":"+hdfsPort+ "/"+"machen/mmm/aa.txt";
+        Properties properties = new Properties();
+        try {
+            InputStream in = this.getClass().getResourceAsStream("/conf.properties");
+            InputStreamReader inputStreamReader = new InputStreamReader(in, "UTF-8");
+            properties.load(inputStreamReader);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        String hdfsPath = properties.getProperty("hdfspath");
+        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/evaluator/"+fileName;
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
