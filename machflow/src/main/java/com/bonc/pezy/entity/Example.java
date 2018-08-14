@@ -14,6 +14,8 @@ public class Example implements Serializable{
     private String exampleName;//案例名称
     @Column(nullable = false,name = "example_type")
     private short exampleType;//案例类型
+    @Column(nullable = false,name = "model_type")
+    private short modelType;//案例所属模型类型
     @Column(nullable = false,name = "description")
     private String description;//模型所属用户
     @Column(nullable = false,name = "doc_name")
@@ -45,6 +47,14 @@ public class Example implements Serializable{
 
     public void setExampleType(short exampleType) {
         this.exampleType = exampleType;
+    }
+
+    public short getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(short modelType) {
+        this.modelType = modelType;
     }
 
     public String getDescription() {

@@ -96,7 +96,7 @@ class MLPipeline(Pipe):
         stages = self.buildStages(originalStages)
         self.pipeline = Pipeline(stages=stages)
         model = self.pipeline.fit(self.trainSet)
-        model.save(self.modelPath) #保存模型文件
+        model.write().overwrite().save(self.modelPath) #保存模型文件
         return model
 
     def validator(self, model):
