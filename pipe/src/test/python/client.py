@@ -115,6 +115,8 @@ def testDL():
     dlpipe = {
         "appName": "testDL",
         "jobId":"dl123",
+        "userId":2288,
+        "modelId":"MDL00061",
         "networktype":"vgg16",
         "n_epoch":"10",
         "batch_size":"1",
@@ -130,8 +132,8 @@ def testDL():
         "snapshot_step":"200",
         "validation_set":0.1
     }
-    r = requests.post("http://localhost:3002/deeplearning/execute", data=json.dumps(dlpipe))
+    r = requests.post("http://localhost:3002/deeplearning/job/execute", data=json.dumps(dlpipe))
     print(r.text)
 
 if __name__ == '__main__':
-    testML()
+    testDL()

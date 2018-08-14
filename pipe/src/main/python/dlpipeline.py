@@ -13,8 +13,16 @@ from deep.dnn import Dnn
 from deep.googlenet import GoogleNet
 from deep.residual_network import Residual_Network
 from deep.vgg16 import Vgg16
+from deep.lstm import LSTM
 
 from factory import Factory
+
+import sys
+import logging
+from logging.config import fileConfig
+
+fileConfig(sys.path[0]+'/conf/logging.conf')
+logger=logging.getLogger('pipline')
 
 class DLPipeline():
     jsonData = '{}'
@@ -27,8 +35,9 @@ class DLPipeline():
         network.predict()
 
     def run(self):
+        logger.info("running")
         network = Factory.network(str(self.jsonData['networktype']))
-
+        logger.info(self.jsonData['networktype'])
         spape = self.jsonData['shape'].split(',')
         s = []
         for i in spape:
@@ -38,7 +47,7 @@ class DLPipeline():
             s.append(int(i))
 
         if(isinstance(network,Alexnet)):
-            print('execute alexnet!')
+            logger.info('execute alexnet!')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -47,7 +56,7 @@ class DLPipeline():
                               float(self.jsonData['learning_rate']),float(self.jsonData['validation_set']),
                               int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Convnet)):
-            print('execute convnet')
+            logger.info('execute convnet')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -55,7 +64,7 @@ class DLPipeline():
                               str(self.jsonData['test_set']),list(s),
                               float(self.jsonData['learning_rate']),int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Dnn)):
-            print('execute dnn')
+            logger.info('execute dnn')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -64,7 +73,7 @@ class DLPipeline():
                               float(self.jsonData['learning_rate']),float(self.jsonData['lr_decay']),
                               float(self.jsonData['decay_step']))
         elif(isinstance(network,GoogleNet)):
-            print('execute GoogleNet')
+            logger.info('execute GoogleNet')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -73,7 +82,7 @@ class DLPipeline():
                               float(self.jsonData['learning_rate']),float(self.jsonData['validation_set']),
                               int(self.jsonData['snapshot_step']))
         elif(isinstance(network,Residual_Network)):
-            print('execute residual')
+            logger.info('execute residual')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -81,7 +90,7 @@ class DLPipeline():
                               str(self.jsonData['test_set']),list(s),
                               float(self.jsonData['learning_rate']),str(self.jsonData['checkpoint_path']))
         elif(isinstance(network,Vgg16)):
-            print('execute vgg16')
+            logger.info('execute vgg16')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),
@@ -90,4 +99,8 @@ class DLPipeline():
                               str(self.jsonData['train_set']),list(s),
                               float(self.jsonData['learning_rate']),
                               int(self.jsonData['snapshot_step']),float(self.jsonData['validation_set']))
+        elif(isinstance(network,LSTM)):
+            logger.info('execute lstm')
+            network.setParams()
+
         network.run()

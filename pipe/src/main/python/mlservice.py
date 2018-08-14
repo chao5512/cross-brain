@@ -122,11 +122,11 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"开始预处理数据!\n",True)
         pipe.buildProcess(originalPreProcess)
         HDFSUtil.append(file,"数据预处理成功!\n",True)
-        #res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalPreTask,'status':1})
+        res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalPreTask,'status':1})
     except BaseException as e:
         logger.exception(e)
         HDFSUtil.append(file,"数据预处理失败!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalPreTask,'status':-1})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalPreTask,'status':-1})
 
     logger.info('split data')
     #Step 4 切分数据
@@ -138,11 +138,11 @@ def submit(*args,**kwaggs):
             HDFSUtil.append(file,"开始切分数据!\n",True)
             trainRatio = isSplitSample['trainRatio']
             pipe.split([trainRatio, 1-trainRatio])
-            #res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalSplitData,'status':1})
+            res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalSplitData,'status':1})
     except BaseException as e:
         logger.exception(e)
         HDFSUtil.append(file,"数据切分失败!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalSplitData,'status':-1})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalSplitData,'status':-1})
 
     logger.info('train model')
     #Step 5 构造模型,测试集训练模型,验证集验证模型
@@ -154,11 +154,11 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"开始验证数据!\n",True)
         prediction = pipe.validator(model)
         HDFSUtil.append(file,"任务运行成功!\n",True)
-        #res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalTask,'status':1})
+        res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalTask,'status':1})
     except BaseException as e:
         logger.exception(e)
         HDFSUtil.append(file,"pipeline运行失败!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalTask,'status':-1})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalTask,'status':-1})
 
     logger.info('evaluator')
     #Step 6 评估模型
@@ -168,16 +168,16 @@ def submit(*args,**kwaggs):
         HDFSUtil.append(file,"开始运行评估器!\n",True)
         accuracy = pipe.evaluator(originalEvaluator[task], prediction, "label")
         logger.info("Test set accuracy = " + str(accuracy))
-        #res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
+        res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:
         logger.exception(e)
         HDFSUtil.append(file,"评估器运行失败!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':-1})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':-1})
 
     pipe.stop()
 
     #任务运行成功,更新JOB信息
-    #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+    res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
 
 if __name__ == '__main__':
     app.run(port=3001, host='0.0.0.0',debug=True)

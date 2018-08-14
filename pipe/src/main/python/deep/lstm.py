@@ -32,6 +32,12 @@ import configparser
 from hdfs.client import Client
 
 class LSTM(NeuralNetwork):
+    def setParams(self):
+        print()
+
+    def printParams(self):
+        print()
+
     def loadImage(self):
         # IMDB Dataset loading: 数据下载/加载
         #train, test, _ = imdb.load_data(path='imdb.pkl', n_words=10000,

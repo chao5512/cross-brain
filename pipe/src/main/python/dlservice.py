@@ -3,7 +3,6 @@ import json
 from flask import Flask, Response,jsonify, request, abort
 from dlpipeline import DLPipeline
 
-from hdfs.client import Client
 import logging
 from logging.config import fileConfig
 
@@ -23,14 +22,14 @@ fileConfig(sys.path[0]+'/conf/logging.conf')
 logger=logging.getLogger('pipline')
 
 conf = configparser.ConfigParser()
-conf.read(sys.path[0]+"/conf.ini")
+conf.read(sys.path[0]+"/conf/conf.ini")
 
 dlthreads = {}
 
 app = Flask(__name__)
 
 # 服务健康状况检查
-@app.route("/deeplearning/health")
+@app.route("/health")
 def health():
     result = {'status': 'UP'}
     return Response(json.dumps(result), mimetype='application/json')
@@ -41,6 +40,7 @@ def execute():
     data = json.loads(request.get_data())
     # step 1 create job thread
     job_id = data['jobId']
+    logger.info("job_id:"+job_id)
     try:
         # 创建深度学习任务线程
         t =threading.Thread(target=submit,kwargs=(data))
@@ -70,23 +70,26 @@ def kill():
 
 # 任务执行
 def submit(**kwaggs):
+    logger.info("thread execute!")
+    req_job_address = conf.get("Job","jobService")+"Job/updatejob"
     # 任务日志位置
     data = kwaggs
     pipe = DLPipeline(data)
     rootPath = conf.get("Job","jobHdfsPath")
-    job_path = "/"+data["userId"]+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
+    job_path = rootPath+str(data["userId"])+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
+    logger.info("logfile location:"+job_path)
     HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
         HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
         pipe.run()
         HDFSUtil.append(job_path,"任务执行成功!\n",True)
         HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
         HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
     except:
         HDFSUtil.append(job_path,"任务执行失败!\n",True)
         HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        #res = requests.post("http://httpbin.org/get",params={'a':'v1','b':'v2'})
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
         HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
 
 def _async_raise(tid, exctype):

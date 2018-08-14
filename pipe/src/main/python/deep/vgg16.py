@@ -8,16 +8,23 @@ from PIL import Image
 
 from deep.neuralnetwork import NeuralNetwork
 
-class Vgg16(NeuralNetwork):
-    train_set = "/Users/fenggang/Desktop/deep/vgg/list.txt"
+import sys
+import logging
+from logging.config import fileConfig
 
-    model_path = "/Users/fenggang/Desktop/deep/data"
+fileConfig(sys.path[0]+'/conf/logging.conf')
+logger=logging.getLogger('pipline')
+
+class Vgg16(NeuralNetwork):
+    train_set = ""
+
+    model_path = ""
 
     shape = [None, 224, 224, 3]
 
-    checkpoint_path = 'vgg-finetuning'
+    checkpoint_path = ''
 
-    tensorboard_dir = './logs'
+    tensorboard_dir = ''
 
     snapshot_step = 200
 
@@ -37,26 +44,25 @@ class Vgg16(NeuralNetwork):
         self.validation_set = validation_set
 
     def printParams(self):
-        print('run_id:',self.run_id)
-        print('n_epoch:',self.n_epoch)
-        print('batch_size:',self.batch_size)
-        print('num_class:',self.num_class)
-        print('optimizer:',self.optimizer)
-        print('loss:',self.loss)
-        print('checkpoint_path:',self.checkpoint_path)
-        print('tensorboard_dir:',self.tensorboard_dir)
-        print('model_path:',self.model_path)
-        print('train_set:',self.train_set)
-        print('shape:',self.shape)
-        print('shape1:',self.shape[1])
-        print('shape2:',self.shape[2])
-        print('learning_rate:',self.learning_rate)
-        print('snapshot_step:',self.snapshot_step)
-        print('validation_set:',self.validation_set)
+        logger.info('run_id:',self.run_id)
+        logger.info('n_epoch:',self.n_epoch)
+        logger.info('batch_size:',self.batch_size)
+        logger.info('num_class:',self.num_class)
+        logger.info('optimizer:',self.optimizer)
+        logger.info('loss:',self.loss)
+        logger.info('checkpoint_path:',self.checkpoint_path)
+        logger.info('tensorboard_dir:',self.tensorboard_dir)
+        logger.info('model_path:',self.model_path)
+        logger.info('train_set:',self.train_set)
+        logger.info('shape:',self.shape)
+        logger.info('shape1:',self.shape[1])
+        logger.info('shape2:',self.shape[2])
+        logger.info('learning_rate:',self.learning_rate)
+        logger.info('snapshot_step:',self.snapshot_step)
+        logger.info('validation_set:',self.validation_set)
 
     def loadImage(self):
-
-        print(self.model_path)
+        logger.info(self.model_path)
         X, Y = image_preloader(self.train_set, image_shape=(self.shape[1], self.shape[2]), mode='file',
                                categorical_labels=True, normalize=False,
                                files_extension=['.jpg', '.png'], filter_channel=True)
@@ -123,7 +129,7 @@ class Vgg16(NeuralNetwork):
         model.save(self.model_path)
 
     def predict(self,network):
-        print("prediction")
+        logger.info("prediction")
         img = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
         model = self.createModel(network)
         model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
