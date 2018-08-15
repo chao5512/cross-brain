@@ -111,20 +111,40 @@ class MLPipeline(Pipe):
         for e1 in e:
             if e1 == 'MulticlassClassificationEvaluator':
                 evaluator = MulticlassClassificationEvaluator(labelCol=labelCol, predictionCol="prediction")
-                accuracy = evaluator.evaluate(predictions)
-                return accuracy
+                f1 = evaluator.evaluate(predictions)
+                evaluator.setMetricName("weightedPrecision")
+                weightedPrecision  = evaluator.evaluate(predictions)
+                evaluator.setMetricName("weightedRecall")
+                weightedRecall  = evaluator.evaluate(predictions)
+                evaluator.setMetricName("accuracy")
+                accuracy  = evaluator.evaluate(predictions)
+                result = {'f1': f1, 'weightedPrecision': weightedPrecision,
+                          'weightedRecall': weightedRecall,
+                          'accuracy': accuracy}
+                return result
             elif e1 == 'BinaryClassificationEvaluator':
-                evaluator = BinaryClassificationEvaluator(rawPredictionCol='rawPrediction', labelCol='label')
-                accuracy = evaluator.evaluate(predictions)
-                return accuracy
+                evaluator = BinaryClassificationEvaluator(rawPredictionCol='prediction', labelCol=labelCol)
+                areaUnderROC = evaluator.evaluate(predictions)
+                areaUnderPR = evaluator.setMetricName("areaUnderPR")
+                result = {'areaUnderROC': areaUnderROC,
+                          'areaUnderPR': areaUnderPR}
+                return result
             elif e1 == 'RegressionEvaluator':
-                evaluator = RegressionEvaluator(predictionCol='prediction', labelCol='label')
-                accuracy = evaluator.evaluate(predictions)
-                return accuracy
+                evaluator = RegressionEvaluator(predictionCol='prediction', labelCol=labelCol)
+                rmse = evaluator.evaluate(predictions)
+                evaluator.setMetricName("mse")
+                mse = evaluator.evaluate(predictions)
+                evaluator.setMetricName("r2")
+                r2 = evaluator.evaluate(predictions)
+                evaluator.setMetricName("mae")
+                mae = evaluator.evaluate(predictions)
+                result = {'mse': mse, 'rmse': rmse, 'r2': r2, 'mae': mae}
+                return result
             elif e1 == 'ClusteringEvaluator':
                 evaluator = ClusteringEvaluator(predictionCol='prediction', featuresCol='features')
-                accuracy = evaluator.evaluate(predictions)
-                return accuracy
+                silhouette = evaluator.evaluate(predictions)
+                result = {'silhouette': silhouette}
+                return result
 
     """加载Model文件"""
     def loadModel(self,test):
