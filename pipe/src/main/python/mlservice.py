@@ -152,7 +152,9 @@ def submit(*args,**kwaggs):
         file = rootPath+"/logs/pipeline.log"
         HDFSUtil.append(file,"",False) #创建日志文件
         HDFSUtil.append(file,"开始创建机器学习流程!\n开始训练数据!\n",True)
-        pipe.modelPath = rootPath + "/model"
+        modelPath = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                    data["userId"] + "/" + data["modelId"] + "/" + data["jobId"] + "/model"
+        pipe.modelPath = modelPath
         model = pipe.buildPipeline(originalStages)
         HDFSUtil.append(file,"开始验证数据!\n",True)
         prediction = pipe.validator(model)
