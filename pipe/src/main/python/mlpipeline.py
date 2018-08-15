@@ -33,7 +33,7 @@ class MLPipeline(Pipe):
         self.spark = SparkSession.builder \
             .master(self.conf.get('config','sparkMaster')) \
             .appName(self.appName) \
-            .config("spark.executor.memory", "1g").config("spark.driver.memory", "1g")\
+            .config("spark.executor.memory", "2g").config("spark.driver.memory", "2g")\
             .enableHiveSupport()\
             .getOrCreate()
         return self.spark
