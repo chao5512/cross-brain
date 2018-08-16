@@ -152,7 +152,9 @@ def submit(*args,**kwaggs):
         file = rootPath+"/logs/pipeline.log"
         HDFSUtil.append(file,"",False) #创建日志文件
         HDFSUtil.append(file,"开始创建机器学习流程!\n开始训练数据!\n",True)
-        pipe.modelPath = rootPath + "/model"
+        modelPath = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                    data["userId"] + "/" + data["modelId"] + "/" + data["jobId"] + "/model"
+        pipe.modelPath = modelPath
         model = pipe.buildPipeline(originalStages)
         HDFSUtil.append(file,"开始验证数据!\n",True)
         prediction = pipe.validator(model)
@@ -168,10 +170,13 @@ def submit(*args,**kwaggs):
     try:
         file = rootPath+"/logs/evaluator.log"
         HDFSUtil.append(file,"",False) #创建日志文件
+        evaluatorResult = rootPath+"/evaluator/evaluator.json"
+        HDFSUtil.append(evaluatorResult,"",False) #创建日志文件
         HDFSUtil.append(file,"开始运行评估器!\n",True)
         # lable
-        accuracy = pipe.evaluator(originalEvaluator[task], prediction, "label")
-        logger.info("Test set accuracy = " + str(accuracy))
+        accuracy = pipe.evaluator(originalEvaluator, prediction, "label")
+        logger.info("Test evaluatorResult = " + str(accuracy))
+        HDFSUtil.append(evaluatorResult,accuracy,True)
         res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:
         logger.exception(e)
@@ -181,7 +186,11 @@ def submit(*args,**kwaggs):
     pipe.stop()
 
 
-# the pipeline of Spark
+'''
+url：http://47.105.127.125:3001/machinelearning/predict
+请求方式：post
+请求参数示例：{"appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
+'''
 @app.route("/machinelearning/predict",methods=['POST'])
 def predict():
     logger.info("reqdata")
@@ -225,10 +234,10 @@ def predict_submit(*args, **kwaggs):
     #Step 2 加载原始表信息 构建同样表结构
     try:
         train_table_name = data['datasource']['tablename']
-        predict_table_name = train_table_name + data["jobId"] + "_predict"
+        predict_table_name = train_table_name + "_" + data["jobId"] + "_predict"
         predict_data_path = conf.get("Job", "jobHdfsPath") + data["userId"] + \
                             "/" + data["modelId"] + "/" + data["jobId"] + "/data"
-        spark.sql("create table %s like  %s LOCATION '%s'" % (
+        spark.sql("create table if not exists %s like  %s LOCATION '%s'" % (
             predict_table_name, train_table_name, predict_data_path))
         pipe.loadDataSetFromTable(predict_table_name)
     except BaseException as e:
@@ -241,14 +250,22 @@ def predict_submit(*args, **kwaggs):
         logger.exception(e)
 
     # Step 4 预测
-    root_path = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
-                 data["userId"] + "/" + data["modelId"] + "/" + data["jobId"]
-    model_path = root_path + "/model"
-    model = PipelineModel.load(model_path)
+    logger.info('load  model')
+    try:
+        root_path = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                     data["userId"] + "/" + data["modelId"] + "/" + data["jobId"]
+        model_path = root_path + "/model"
+        model = PipelineModel.load(model_path)
+        prediction = model.transform(pipe.dataFrame)
+    except BaseException as e:
+        logger.exception(e)
 
-    prediction = model.transform(pipe.dataFrame)
-    #Step 5 保存结果 todo 保存数据为parquet 而且保存的目录不能已存在
-    prediction.write.save(root_path + "/result" + int(time.time()))
+    logger.info('save  result')
+    try:
+        #Step 5 保存结果 todo 保存数据为parquet
+        prediction.write.save(root_path + "/result/" + str(time.time()))
+    except BaseException as e:
+        logger.exception(e)
     pipe.stop()
 
 if __name__ == '__main__':

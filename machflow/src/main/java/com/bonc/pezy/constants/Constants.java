@@ -11,11 +11,11 @@ public class Constants {
     public static final String LISTENER_U = "activiti:taskListener";
 
     //python微服务url 机器学习
-    public static final String PY_SERVER = "http://182.92.82.3:3001/machinelearning/execute";
+    public static final String PY_SERVER = "http://47.105.127.125:3001/machinelearning/execute";
     //python predict端口地址
     public static final String PY_SERVER_PREDICT = "http://47.105.127.125:3001/machinelearning/predict";
 
-    public static final String PY_SERVER_DEEP = "http://182.92.82.3:3002/deeplearning/execute";
+    public static final String PY_SERVER_DEEP = "http://47.105.127.125:3002/deeplearning/execute";
 
     //监听类
     public static final String LR_LISTENER_U = "com.bonc.pezy.algorithmmodel.classification.LRUserTask";
