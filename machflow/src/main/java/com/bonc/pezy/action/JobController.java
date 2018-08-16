@@ -11,6 +11,9 @@ import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileStatus;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +33,8 @@ import java.io.*;
 import java.net.URLEncoder;
 import java.util.List;
 import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Controller
 @RequestMapping("Job")
@@ -73,39 +78,50 @@ public class JobController extends HttpServlet{
         }
 
         String hdfsPath = properties.getProperty("hdfspath");
-        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/model/"+fileName;
+//        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/model/"+fileName;
+        //测试专用
+        String fileNamePath ="hdfs://172.16.11.221:9000/machen/mmm/";
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
         res.setHeader("Content-Disposition", "attachment;filename="
                 + URLEncoder.encode(fileName, "UTF-8"));
-        FSDataInputStream fsdis = hdfsModel.readHdfsFiles(fileNamePath);
-        OutputStream out = null;
-        int line;
-        byte[] buff = new byte[1024];
+        res.setHeader("Content-Type", "application/zip");
+
+        //测试专用
+        OutputStream out = new FileOutputStream("D:\\machen\\a.zip");
+        //还是说不需要指定 目录
+//        OutputStream out_02 = res.getOutputStream();
+        BufferedOutputStream dest = new BufferedOutputStream(out);
+        ZipOutputStream outZip = new ZipOutputStream(new BufferedOutputStream(dest));
+        FileStatus[] fileStatuses = hdfsModel.allFiles(fileNamePath);
+        FileSystem newfs =hdfsModel.fs(fileNamePath);
+        //此处的 fileNamePath  最后的字符一定是  “ / ”
+        int bytesRead;
+        Path sourceFilePath;
+        byte[] buffer = new byte[1024];
         try {
-            out = res.getOutputStream();
-            line = fsdis.read(buff);
-            while (line != -1) {
-                out.write(buff, 0, buff.length);
-                out.flush();
-                line = fsdis.read(buff);
-            }
-            fsdis.close();
-            out.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (fsdis != null) {
-                try {
-                    fsdis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            for (int i = 0; i < fileStatuses.length; i++) {
+                sourceFilePath = new Path(fileNamePath + fileStatuses[i].getPath().getName());
+                FSDataInputStream in = newfs.open(sourceFilePath);
+
+                //建立檔案的 entry
+                ZipEntry entry = new ZipEntry(fileStatuses[i].getPath().toString());
+                outZip.putNextEntry(entry);
+
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    outZip.write(buffer, 0, bytesRead);
                 }
+                in.close();
             }
+            outZip.flush();
+            outZip.close();
+            result =ResultUtil.success();
+        } catch(Exception e) {
+            outZip.close();
+            e.printStackTrace();
         }
-        result =ResultUtil.success();
         return result;
     }
 

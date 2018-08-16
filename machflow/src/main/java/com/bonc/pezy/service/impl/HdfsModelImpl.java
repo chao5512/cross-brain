@@ -40,6 +40,18 @@ public class HdfsModelImpl implements HdfsModel {
         FSDataInputStream fsDataInputStream = fileSystem.open(fileStatuses.getPath());
         return fsDataInputStream;
     }
+    @Override
+    public FileStatus[] allFiles(String uri)throws IOException{
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(URI.create(uri), conf);
+        FileStatus[] fileStatuses = fs.listStatus(new Path(uri));
+        return fileStatuses;
+    }
+    public FileSystem fs(String dir)throws IOException{
+        Configuration conf = new Configuration();
+        FileSystem fs = FileSystem.get(URI.create(dir), conf);
+        return fs;
+    }
 
     private FileSystem getFileSystem() {
         Configuration conf = new Configuration();
