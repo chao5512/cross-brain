@@ -11,6 +11,10 @@ public class HdfsConfig {
     private String url;
     @Value("${hadoop.port}")
     private long port;
+    @Value("${hadoop.defaultFs}")
+    private String defaultFs;
+    @Value("${hadoop.host}")
+    private String host;
 
     public String getHdfsUrl() {
         return url;
@@ -28,4 +32,19 @@ public class HdfsConfig {
         this.port = hdfsProt;
     }
 
+    public String getDefaultFs() {
+        return defaultFs;
+    }
+
+    public void setDefaultFs(String defaultFs) {
+        this.defaultFs = defaultFs;
+    }
+
+    public String getHost() {
+        return host;
+    }
+
+    public void setHost(String host) {
+        this.host = host;
+    }
 }

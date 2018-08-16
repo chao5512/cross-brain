@@ -12,6 +12,8 @@ public class Constants {
 
     //python微服务url 机器学习
     public static final String PY_SERVER = "http://182.92.82.3:3001/machinelearning/execute";
+    //python predict端口地址
+    public static final String PY_SERVER_PREDICT = "http://47.105.127.125:3001/machinelearning/predict";
 
     public static final String PY_SERVER_DEEP = "http://182.92.82.3:3002/deeplearning/execute";
 
