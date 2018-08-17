@@ -48,7 +48,8 @@ def execute():
         t.start()
         # 实例变量保存线程信息
         dlthreads[job_id] = t
-    except:
+    except BaseException as e:
+        logger.exception(e)
         result = {'status': 2,'msg':'任务提交失败!','jobId':job_id,'applicationId':""}
     else:
         result = {'status': 1,'msg':'任务提交成功!','jobId':job_id,'applicationId':""}
@@ -86,7 +87,8 @@ def submit(**kwaggs):
         HDFSUtil.append(job_path,"更新任务状态!\n",True)
         res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
         HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
-    except:
+    except BaseException as e:
+        logger.exception(e)
         HDFSUtil.append(job_path,"任务执行失败!\n",True)
         HDFSUtil.append(job_path,"更新任务状态!\n",True)
         res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})

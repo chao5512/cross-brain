@@ -128,11 +128,11 @@ class Vgg16(NeuralNetwork):
     def save(self,model):
         model.save(self.model_path)
 
-    def predict(self,network):
+    def predict(self):
         logger.info("prediction")
-        img = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
-        model = self.createModel(network)
-        model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
+        img = Image.open("/home/hadoop/ai_studio/vgg/data/image_0001.jpg")
+        model = self.createModel(self.buildNetwork(self.imageProcess()))
+        model.load("/home/hadoop/ai_studio/vgg/vgg_model/vgg16.tflearn")
         prediction = model.predict(img)
         print(prediction)
 
@@ -143,6 +143,11 @@ class Vgg16(NeuralNetwork):
         model = self.createModel(softmax)
         self.train(model,X,Y)
         self.save(model)
+        print('开始预测数据')
+        try:
+            model.load("/home/hadoop/ai_studio/vgg/vgg_model/vgg16.tflearn")
+            print("测试结果：",model.predict(X))
+        except BaseException as e:
+            logger.exception(e)
 
-        #self.predict(softmax)
 

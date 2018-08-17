@@ -135,5 +135,29 @@ def testDL():
     r = requests.post("http://localhost:3002/deeplearning/job/execute", data=json.dumps(dlpipe))
     print(r.text)
 
+def predictDL():
+    dlpipe = {
+        "appName": "testDL",
+        "jobId":"JOBID00065",
+        "userId":2288,
+        "modelId":"MDL00061",
+        "networktype":"vgg16",
+        "n_epoch":"10",
+        "batch_size":"1",
+        "num_class":"2",
+        "optimizer":"adam",
+        "loss":"categorical_crossentropy",
+        "checkpoint_path":"/Users/mengxin/Desktop/vgg/vgg-finetuning/check",
+        "tensorboard_dir":"/Users/mengxin/Desktop/vgg/logs",
+        "model_path":"/Users/mengxin/Desktop/vgg/vgg_model/vgg16",
+        "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
+        "shape":"None, 224, 224, 3",
+        "learning_rate":"0.001",
+        "snapshot_step":"200",
+        "validation_set":0.1
+    }
+    r = requests.post("http://47.105.127.125:3002/deeplearning/model/predict", data=json.dumps(dlpipe))
+    print(r.text)
+
 if __name__ == '__main__':
     testDL()
