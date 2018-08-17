@@ -15,7 +15,7 @@ def testML():
                  "HashingTF":"{'taskId':'TASKID00360','type':3}",
                  "LogisticRegression":"{'taskId':'TASKID00361','type':3}",
                  "Tokenizer":"{'taskId':'TASKID00359','type':3}",
-                 "evaluator":"{'taskId':'TASKID00362','type':4}"
+                 "MulticlassClassificationEvaluator":"{'taskId':'TASKID00362','type':4}"
                  },
         'datasource': {"filepath":"hdfs://182.92.82.3:9000/data"},
         'isSplitSample': {"trainRatio":0.6,"fault":1},

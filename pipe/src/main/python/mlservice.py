@@ -3,6 +3,7 @@ import json
 from flask import Flask, Response,jsonify, request, abort
 import json
 from mlpipeline import MLPipeline
+from pyspark.ml import PipelineModel
 from util.HDFSUtil import HDFSUtil
 from pyspark.sql.types import *
 import sys
@@ -12,6 +13,7 @@ import threading
 import requests
 import configparser
 import os
+import time
 print(sys.path[0])
 conf = configparser.ConfigParser()
 conf.read(sys.path[0]+"/conf/conf.ini")
@@ -150,6 +152,9 @@ def submit(*args,**kwaggs):
         file = rootPath+"/logs/pipeline.log"
         HDFSUtil.append(file,"",False) #创建日志文件
         HDFSUtil.append(file,"开始创建机器学习流程!\n开始训练数据!\n",True)
+        modelPath = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                    data["userId"] + "/" + data["modelId"] + "/" + data["jobId"] + "/model"
+        pipe.modelPath = modelPath
         model = pipe.buildPipeline(originalStages)
         HDFSUtil.append(file,"开始验证数据!\n",True)
         prediction = pipe.validator(model)
@@ -165,9 +170,13 @@ def submit(*args,**kwaggs):
     try:
         file = rootPath+"/logs/evaluator.log"
         HDFSUtil.append(file,"",False) #创建日志文件
+        evaluatorResult = rootPath+"/evaluator/evaluator.json"
+        HDFSUtil.append(evaluatorResult,"",False) #创建日志文件
         HDFSUtil.append(file,"开始运行评估器!\n",True)
-        accuracy = pipe.evaluator(originalEvaluator[task], prediction, "label")
-        logger.info("Test set accuracy = " + str(accuracy))
+        # lable
+        accuracy = pipe.evaluator(originalEvaluator, prediction, "label")
+        logger.info("Test evaluatorResult = " + str(accuracy))
+        HDFSUtil.append(evaluatorResult,accuracy,True)
         res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:
         logger.exception(e)
@@ -176,8 +185,88 @@ def submit(*args,**kwaggs):
 
     pipe.stop()
 
-    #任务运行成功,更新JOB信息
-    res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+
+'''
+url：http://47.105.127.125:3001/machinelearning/predict
+请求方式：post
+请求参数示例：{"appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
+'''
+@app.route("/machinelearning/predict",methods=['POST'])
+def predict():
+    logger.info("reqdata")
+    logger.info(request.get_data())
+    data = json.loads(request.get_data())
+    # step 1 create sparksession and dataframe
+    appName = data['appName']
+    jobId = data['jobId']
+    pipe = MLPipeline(appName)
+    try:
+        spark = pipe.create()
+        t =threading.Thread(target=predict_submit,args=(spark,pipe),kwargs=(data))
+        t.start()
+    except BaseException as e:
+        logger.error("job error!")
+        logger.error(e.args)
+        result = {'status': 2,'msg':'调用模型任务提交失败!','jobId':jobId,'applicationId':""}
+    else:
+        result = {'status': 1,'msg':'调用模型任务提交成功!','jobId':jobId,'applicationId':spark.sparkContext.applicationId}
+    logger.info(result)
+    return Response(json.dumps(result), mimetype='application/json')
+
+
+def predict_submit(*args, **kwaggs):
+    logger.info('start predict threading')
+    spark = args[0]
+    pipe = args[1]
+    data = kwaggs
+    # 保存数据变量
+    originalPreProcess = {}
+
+    try:
+        for task in data['tasks']:
+            t = data['tasks'][task]
+            if t['type'] == 2:
+                originalPreProcess[task]= data[task]
+    except BaseException as e:
+        logging.exception(e)
+    logger.info(originalPreProcess)
+
+    #Step 2 加载原始表信息 构建同样表结构
+    try:
+        train_table_name = data['datasource']['tablename']
+        predict_table_name = train_table_name + "_" + data["jobId"] + "_predict"
+        predict_data_path = conf.get("Job", "jobHdfsPath") + data["userId"] + \
+                            "/" + data["modelId"] + "/" + data["jobId"] + "/data"
+        spark.sql("create table if not exists %s like  %s LOCATION '%s'" % (
+            predict_table_name, train_table_name, predict_data_path))
+        pipe.loadDataSetFromTable(predict_table_name)
+    except BaseException as e:
+        logger.exception(e)
+    logger.info('predict process')
+    # Step 3 数据预处理
+    try:
+        pipe.buildProcess(originalPreProcess)
+    except BaseException as e:
+        logger.exception(e)
+
+    # Step 4 预测
+    logger.info('load  model')
+    try:
+        root_path = conf.get("cluster", "hadoopFS") + conf.get("Job","jobHdfsPath") + \
+                     data["userId"] + "/" + data["modelId"] + "/" + data["jobId"]
+        model_path = root_path + "/model"
+        model = PipelineModel.load(model_path)
+        prediction = model.transform(pipe.dataFrame)
+    except BaseException as e:
+        logger.exception(e)
+
+    logger.info('save  result')
+    try:
+        #Step 5 保存结果 todo 保存数据为parquet
+        prediction.write.save(root_path + "/result/" + str(time.time()))
+    except BaseException as e:
+        logger.exception(e)
+    pipe.stop()
 
 if __name__ == '__main__':
     app.run(port=3001, host='0.0.0.0',debug=True)
