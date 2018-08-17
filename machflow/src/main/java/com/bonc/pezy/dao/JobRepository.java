@@ -19,6 +19,8 @@ public interface JobRepository extends JpaRepository<Job, String>, JpaSpecificat
 
     Job findByJobId(String jobId);
 
+    public Job findByModelId(String modelId);
+
     @Transactional
     List<Job> findByModelId(String modelid, Sort sort);
 

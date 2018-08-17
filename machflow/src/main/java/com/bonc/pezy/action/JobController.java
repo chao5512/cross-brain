@@ -402,6 +402,15 @@ public class JobController extends HttpServlet{
         return result;
     }
 
+    @ApiOperation(value = "根据ModelID查询Job", httpMethod = "POST")
+    @RequestMapping(value = "/findJobByModelId", method = RequestMethod.POST)
+    @ResponseBody
+    public Result findJobsByModelID(@RequestParam(value = "modelId") String modelId) {
+        List<Job> jobs = jobService.findByModelId(modelId);
+        Result result = ResultUtil.success(jobs.get(0));
+        return result;
+    }
+
     @ApiOperation(value = "更新任务状态", httpMethod = "POST")
     @RequestMapping(value = "/updatejob", method = RequestMethod.POST)
     @ResponseBody
