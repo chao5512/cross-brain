@@ -189,7 +189,7 @@ def submit(*args,**kwaggs):
 '''
 url：http://47.105.127.125:3001/machinelearning/predict
 请求方式：post
-请求参数示例：{"appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
+请求参数示例：{"messagedata":"(\"1\",\"test content1 \"), (\"2\",\"test content2\")","appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
 '''
 @app.route("/machinelearning/predict",methods=['POST'])
 def predict():
@@ -236,10 +236,19 @@ def predict_submit(*args, **kwaggs):
         train_table_name = data['datasource']['tablename']
         predict_table_name = train_table_name + "_" + data["jobId"] + "_predict"
         predict_data_path = conf.get("Job", "jobHdfsPath") + data["userId"] + \
-                            "/" + data["modelId"] + "/" + data["jobId"] + "/data"
+                            "/" + data["modelId"] + "/" + data["jobId"]
+        if (data.get("messagedata") is None or data.get("messagedata") == ""):
+            predict_data_path += "/data"
+        else :
+            predict_data_path += "/messagedata"
         spark.sql("create table if not exists %s like  %s LOCATION '%s'" % (
             predict_table_name, train_table_name, predict_data_path))
         pipe.loadDataSetFromTable(predict_table_name)
+        if (not (data.get("messagedata") is None or data.get("messagedata") == "")):
+            logger.info("准备插入临时表，数据为:%s" % (data.get("messagedata")))
+            spark.sql("insert overwirite table  %s VALUES %s" % (
+                predict_table_name , data.get("messagedata")))
+            logger.info("数据插入完毕")
     except BaseException as e:
         logger.exception(e)
     logger.info('predict process')
@@ -262,8 +271,9 @@ def predict_submit(*args, **kwaggs):
 
     logger.info('save  result')
     try:
-        #Step 5 保存结果 todo 保存数据为parquet
-        prediction.write.save(root_path + "/result/" + str(time.time()))
+        #Step 5 保存结果
+        prediction.write.json(path=root_path + "/result/",mode="overwrite")
+        spark.sql("drop table if exists  %s " % (predict_table_name))
     except BaseException as e:
         logger.exception(e)
     pipe.stop()
