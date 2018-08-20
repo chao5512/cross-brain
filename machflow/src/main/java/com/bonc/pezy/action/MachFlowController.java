@@ -98,6 +98,7 @@ public class MachFlowController {
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/model");
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/result");
                 findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/evaluator");
+                findFile.mkdir("/"+userId+"/"+modelId+"/"+jobcom.getJobId()+"/messagedata");
             } catch (Exception e) {
                 e.printStackTrace();
             }
