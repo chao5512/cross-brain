@@ -5,6 +5,7 @@ import json
 from mlpipeline import MLPipeline
 from pyspark.ml import PipelineModel
 from util.HDFSUtil import HDFSUtil
+from util.hiveutil  import HiveUtil
 from pyspark.sql.types import *
 import sys
 import logging
@@ -18,6 +19,7 @@ print(sys.path[0])
 conf = configparser.ConfigParser()
 conf.read(sys.path[0]+"/conf/conf.ini")
 os.environ["PYSPARK_PYTHON"]=conf.get('config','python_home')
+
 #os.environ['SPARK_CONF_DIR'] = sys.path[0]+'../resources'
 #os.environ['HADOOP_CONF_DIR'] = sys.path[0]+'../resources'
 
@@ -189,7 +191,7 @@ def submit(*args,**kwaggs):
 '''
 url：http://47.105.127.125:3001/machinelearning/predict
 请求方式：post
-请求参数示例：{"messagedata":"(\"1\",\"test content1 \"), (\"2\",\"test content2\")","appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
+请求参数示例：{"messagedata":"(\"test content1 \"), (\"test content2\")","appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
 '''
 @app.route("/machinelearning/predict",methods=['POST'])
 def predict():
@@ -225,7 +227,7 @@ def predict_submit(*args, **kwaggs):
     try:
         for task in data['tasks']:
             t = data['tasks'][task]
-            if t['type'] == 2:
+            if t['type'] == 2 and "label" not in data[task].values():
                 originalPreProcess[task]= data[task]
     except BaseException as e:
         logging.exception(e)
@@ -244,6 +246,9 @@ def predict_submit(*args, **kwaggs):
         spark.sql("create table if not exists %s like  %s LOCATION '%s'" % (
             predict_table_name, train_table_name, predict_data_path))
         pipe.loadDataSetFromTable(predict_table_name)
+        # 创建的新表不应该有label列，这里将其移动到最后一列（没有直接删除的方法）
+        lastColumn = pipe.dataFrame.schema.fields[-1].name
+        HiveUtil.queryBySql("alter table $s  change label label STRING after $s" % ( predict_table_name, lastColumn))
         if (not (data.get("messagedata") is None or data.get("messagedata") == "")):
             logger.info("准备插入临时表，数据为:%s" % (data.get("messagedata")))
             spark.sql("insert overwirite table  %s VALUES %s" % (
