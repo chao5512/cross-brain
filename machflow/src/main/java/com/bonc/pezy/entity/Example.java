@@ -24,6 +24,10 @@ public class Example implements Serializable{
     private String createTime;//模型创建时间
     @Column(nullable = false,length = 14,name = "lastmodify_time")
     private String lastModifyTime;//模型最后修改时间
+    @Column(nullable = false,length = 64,name = "model_id")
+    private String modelId;//模型最后修改时间
+
+
 
     public String getExampleId() {
         return exampleId;
@@ -86,6 +90,15 @@ public class Example implements Serializable{
     }
 
     public void setLastModifyTime(String lastModifyTime) {
+
         this.lastModifyTime = lastModifyTime;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
     }
 }

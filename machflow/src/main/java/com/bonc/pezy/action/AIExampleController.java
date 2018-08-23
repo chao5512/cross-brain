@@ -1,5 +1,6 @@
 package com.bonc.pezy.action;
 
+import com.bonc.pezy.entity.Model;
 import com.bonc.pezy.service.ExampleService;
 import com.bonc.pezy.util.ResultUtil;
 import com.bonc.pezy.vo.Result;
@@ -43,4 +44,14 @@ public class AIExampleController {
         return ResultUtil.success(exampleService.findByExampleType(exampleType));
     }
 
+    @ApiOperation(value = "创建Model",httpMethod = "POST")
+    @RequestMapping(value= "/createModel",method = RequestMethod.POST)
+    @ResponseBody
+    public Result createModel(@RequestParam(name="exampleId")String exampleId,
+                              @RequestParam(name="owner") Long owner){
+        Model model = exampleService.createModel(exampleId,owner);
+        return ResultUtil.success(model);
     }
+
+    }
+

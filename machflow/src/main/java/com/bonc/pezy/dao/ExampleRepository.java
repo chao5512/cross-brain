@@ -8,5 +8,5 @@ import java.util.List;
 public interface ExampleRepository extends JpaRepository<Example, Long> {
     List<Example> findByExampleNameContaining(String exampleName);
     List<Example> findByExampleType(short exampleType);
-
+    Example findByExampleId(String exampleId);
 }
