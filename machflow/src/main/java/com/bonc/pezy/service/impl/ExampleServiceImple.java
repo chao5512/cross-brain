@@ -47,7 +47,7 @@ public class ExampleServiceImple implements ExampleService{
     }
 
     @Override
-    public Model createModel(String exampleId,Long owner) {
+    public Model createModel(String exampleId,Long owner,String modelName) {
         //根据exampleId查modelId
         Example example = exampleRepository.findByExampleId(exampleId);
 
@@ -60,6 +60,7 @@ public class ExampleServiceImple implements ExampleService{
         modelTemp.setModelName(model.getModelName());
         modelTemp.setModelType(model.getModelType());
         modelTemp.setOwner(owner);
+        modelTemp.setModelName(modelName);
         modelTemp = modelRepository.save(modelTemp);
 
         //根据ModelId查询job

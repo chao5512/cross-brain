@@ -48,8 +48,9 @@ public class AIExampleController {
     @RequestMapping(value= "/createModel",method = RequestMethod.POST)
     @ResponseBody
     public Result createModel(@RequestParam(name="exampleId")String exampleId,
-                              @RequestParam(name="owner") Long owner){
-        Model model = exampleService.createModel(exampleId,owner);
+                              @RequestParam(name="owner") Long owner,
+                              @RequestParam(name="modelName") String modelName){
+        Model model = exampleService.createModel(exampleId,owner,modelName);
         return ResultUtil.success(model);
     }
 

@@ -9,5 +9,5 @@ public interface ExampleService {
     public List<Example> findByModelNameContaining(String exampleName);
     public List<Example> findByExampleType(short exampleType);
     public List<Example> findAll();
-    public Model createModel(String exampleId,Long owner);
+    public Model createModel(String exampleId,Long owner,String modelName);
 }
