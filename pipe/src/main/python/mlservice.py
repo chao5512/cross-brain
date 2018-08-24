@@ -277,7 +277,8 @@ def predict_submit(*args, **kwaggs):
     logger.info('save  result')
     try:
         #Step 5 保存结果
-        prediction.write.json(path=root_path + "/result/",mode="overwrite")
+        logger.info(prediction.schema.fields)
+        prediction.select("prediction").write.json(path=root_path + "/result/",mode="overwrite")
         spark.sql("drop table if exists  %s " % (predict_table_name))
     except BaseException as e:
         logger.exception(e)
