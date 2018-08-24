@@ -26,7 +26,7 @@ spring:
 #    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   secondary:
-    url: jdbc:mysql://182.92.82.3:3306/hive_ai?createDatabaseIfNotExist=true
+    url: jdbc:mysql://182.92.82.3:3306/hive_ai2?createDatabaseIfNotExist=true
 #    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
     username: root
     password: 111111
@@ -54,7 +54,7 @@ spring:
     password:
 ####hive数据源配置#####
 hive:
-  url: jdbc:hive2://182.92.82.3
+  url: jdbc:hive2://47.105.127.125
 #  url: jdbc:hive2://172.16.31.91
   port: 10000
   schema: default
@@ -63,7 +63,7 @@ hive:
   password:
 ##hive表在hadoop中路径配置##
 hadoop:
-  url: hdfs://182.92.82.3
+  url: hdfs://47.105.127.125
   port: 9000
 
 
