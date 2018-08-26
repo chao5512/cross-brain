@@ -12,6 +12,10 @@ import sys
 import logging
 from logging.config import fileConfig
 
+import numpy as np
+
+from deep.MetricCallback import MetricCallback
+
 fileConfig(sys.path[0]+'/conf/logging.conf')
 logger=logging.getLogger('pipline')
 
@@ -63,9 +67,12 @@ class Vgg16(NeuralNetwork):
 
     def loadImage(self):
         logger.info(self.model_path)
-        X, Y = image_preloader(self.train_set, image_shape=(self.shape[1], self.shape[2]), mode='file',
+        try:
+            X, Y = image_preloader(self.train_set, image_shape=(self.shape[1], self.shape[2]), mode='file',
                                categorical_labels=True, normalize=False,
                                files_extension=['.jpg', '.png'], filter_channel=True)
+        except BaseException as e:
+            logger.exception(e)
         return X,Y
 
     def imageProcess(self):
@@ -75,40 +82,42 @@ class Vgg16(NeuralNetwork):
         return img_prep
 
     def buildNetwork(self,img_prep):
-        input = tflearn.input_data(shape=self.shape, name='input',
-                                   data_preprocessing=img_prep)
-        x = tflearn.conv_2d(input, 64, 3, activation='relu', scope='conv1_1')
-        x = tflearn.conv_2d(x, 64, 3, activation='relu', scope='conv1_2')
-        x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool1')
+        try:
+            input = tflearn.input_data(shape=self.shape, name='input',
+                                       data_preprocessing=img_prep)
+            x = tflearn.conv_2d(input, 64, 3, activation='relu', scope='conv1_1')
+            x = tflearn.conv_2d(x, 64, 3, activation='relu', scope='conv1_2')
+            x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool1')
 
-        x = tflearn.conv_2d(x, 128, 3, activation='relu', scope='conv2_1')
-        x = tflearn.conv_2d(x, 128, 3, activation='relu', scope='conv2_2')
-        x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool2')
+            x = tflearn.conv_2d(x, 128, 3, activation='relu', scope='conv2_1')
+            x = tflearn.conv_2d(x, 128, 3, activation='relu', scope='conv2_2')
+            x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool2')
 
-        x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_1')
-        x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_2')
-        x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_3')
-        x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool3')
+            x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_1')
+            x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_2')
+            x = tflearn.conv_2d(x, 256, 3, activation='relu', scope='conv3_3')
+            x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool3')
 
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_1')
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_2')
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_3')
-        x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool4')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_1')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_2')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv4_3')
+            x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool4')
 
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_1')
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_2')
-        x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_3')
-        x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool5')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_1')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_2')
+            x = tflearn.conv_2d(x, 512, 3, activation='relu', scope='conv5_3')
+            x = tflearn.max_pool_2d(x, 2, strides=2, name='maxpool5')
 
-        x = tflearn.fully_connected(x, 4096, activation='relu', scope='fc6')
-        x = tflearn.dropout(x, 0.5, name='dropout1')
+            x = tflearn.fully_connected(x, 4096, activation='relu', scope='fc6')
+            x = tflearn.dropout(x, 0.5, name='dropout1')
 
-        x = tflearn.fully_connected(x, 4096, activation='relu', scope='fc7')
-        x = tflearn.dropout(x, 0.5, name='dropout2')
+            x = tflearn.fully_connected(x, 4096, activation='relu', scope='fc7')
+            x = tflearn.dropout(x, 0.5, name='dropout2')
 
-        x = tflearn.fully_connected(x, self.num_class, activation='softmax', scope='fc8',
-                                restore=False)
-
+            x = tflearn.fully_connected(x, self.num_class, activation='softmax', scope='fc8',
+                                    restore=False)
+        except BaseException as e:
+            print(e)
         return x
 
     def createModel(self,softmax):
@@ -121,33 +130,52 @@ class Vgg16(NeuralNetwork):
         return model
 
     def train(self,model,X,Y):
-        model.fit(X, Y, n_epoch=self.n_epoch, validation_set=self.validation_set, shuffle=True,
+        try:
+            early_stopping_cb = MetricCallback()
+            model.fit(X, Y, n_epoch=self.n_epoch, validation_set=self.validation_set, shuffle=True,
                   show_metric=True, batch_size=self.batch_size, snapshot_epoch=False,
-                  snapshot_step=self.snapshot_step, run_id=self.run_id)
+                  snapshot_step=self.snapshot_step, run_id=self.run_id,callbacks=early_stopping_cb)
+        except BaseException as e:
+            print(e)
 
     def save(self,model):
         model.save(self.model_path)
 
     def predict(self):
-        logger.info("prediction")
-        img = Image.open("/home/hadoop/ai_studio/vgg/data/image_0001.jpg")
-        model = self.createModel(self.buildNetwork(self.imageProcess()))
-        model.load("/home/hadoop/ai_studio/vgg/vgg_model/vgg16.tflearn")
-        prediction = model.predict(img)
-        print(prediction)
+        try:
+            print('预测数据')
+            logger.info("prediction")
+            img1 = Image.open("/Users/mengxin/Desktop/vgg/data/image_0001.jpg")
+            img1 = img1.resize((224, 224), Image.ANTIALIAS)
+            img2 = Image.open("/Users/mengxin/Desktop/vgg/data/image_0002.jpg")
+            img2 = img2.resize((224, 224), Image.ANTIALIAS)
+            print('图像转换')
+            imgarray1 = np.asarray(img1, dtype="float32")
+            imgarray2 = np.asarray(img2, dtype="float32")
+            imgs = []
+            imgs.append(imgarray1)
+            #imgs.append(imgarray2)
+            print('转换完成')
+            model = self.createModel(self.buildNetwork(self.imageProcess()))
+            model.load("/Users/mengxin/Desktop/vgg/vgg_model/vgg16")
+            prediction = model.predict(imgs)
+            print(prediction)
+        except BaseException as e:
+            print(e.args)
+            logger.exception(e)
 
     def run(self):
+        print('params')
         self.printParams()
+        print('loadImage')
         X,Y = self.loadImage()
+        print('network')
         softmax = self.buildNetwork(self.imageProcess())
+        print('model')
         model = self.createModel(softmax)
+        print('train')
         self.train(model,X,Y)
         self.save(model)
-        print('开始预测数据')
-        try:
-            model.load("/home/hadoop/ai_studio/vgg/vgg_model/vgg16.tflearn")
-            print("测试结果：",model.predict(X))
-        except BaseException as e:
-            logger.exception(e)
+        print('end')
 
 

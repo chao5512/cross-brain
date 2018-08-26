@@ -119,7 +119,7 @@ public class HiveTableController {
      * @auther: 王培文
      * @date: 2018/6/5 16:05
      */
-    @RequestMapping(value = "getTableMeta/{datasetId}")
+    @RequestMapping(value = "getTableMeta/{datasetId}",method = RequestMethod.POST)
     public ApiResult getHiveTableMeta(@PathVariable("datasetId") String datasetId){
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(datasetId));

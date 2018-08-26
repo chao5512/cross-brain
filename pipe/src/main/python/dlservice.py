@@ -61,13 +61,19 @@ def predict():
     data = json.loads(request.get_data())
     pipe = DLPipeline(data)
     pipe.predict()
+    result = {'status': 1}
+    return Response(json.dumps(result), mimetype='application/json')
 
 # 终止正在执行的深度学习任务
 @app.route("/deeplearning/job/kill",methods=['POST'])
 def kill():
+    print('kill job!')
     data = json.loads(request.get_data())
     job_id = data['jobId']
+    print(dlthreads[job_id])
     _stop_thread(dlthreads[job_id])#根据jobid停止执行中线程
+    result = {'status': 1}
+    return Response(json.dumps(result), mimetype='application/json')
 
 # 任务执行
 def submit(**kwaggs):
@@ -79,24 +85,25 @@ def submit(**kwaggs):
     rootPath = conf.get("Job","jobHdfsPath")
     job_path = rootPath+str(data["userId"])+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
     logger.info("logfile location:"+job_path)
-    HDFSUtil.append(job_path,"",False) #创建日志文件
+    #HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
-        HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
+        #HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
         pipe.run()
-        HDFSUtil.append(job_path,"任务执行成功!\n",True)
-        HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
-        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
+        #HDFSUtil.append(job_path,"任务执行成功!\n",True)
+        #HDFSUtil.append(job_path,"更新任务状态!\n",True)
+        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+        #HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
     except BaseException as e:
         logger.exception(e)
-        HDFSUtil.append(job_path,"任务执行失败!\n",True)
-        HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
-        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
+        #HDFSUtil.append(job_path,"任务执行失败!\n",True)
+        #HDFSUtil.append(job_path,"更新任务状态!\n",True)
+        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+        #HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
 
 def _async_raise(tid, exctype):
     """raises the exception, performs cleanup if needed"""
     tid = ctypes.c_long(tid)
+    print(tid)
     if not inspect.isclass(exctype):
         exctype = type(exctype)
     res = ctypes.pythonapi.PyThreadState_SetAsyncExc(tid, ctypes.py_object(exctype))
