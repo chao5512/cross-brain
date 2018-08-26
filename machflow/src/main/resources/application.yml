@@ -5,7 +5,7 @@ server:
 eureka:
  client:
    serviceUrl:
-     defaultZone: http://47.105.127.125:8081/stretch/eureka/
+     defaultZone: http://47.105.127.125:8051/stretch/eureka/
 
 spring:
   cloud:
