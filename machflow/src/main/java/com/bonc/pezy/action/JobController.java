@@ -291,7 +291,7 @@ public class JobController extends HttpServlet{
             Map map = new LinkedHashMap();
             String pipe = null;
             List<Task> tasks = taskService.findByJobId(job.getJobId());
-            param.put("messagedata",param);
+            param.put("messagedata",content);
             param.put("appName",job.getJobName());
             param.put("jobId",job.getJobId());
             param.put("modelId",job.getModelId());
