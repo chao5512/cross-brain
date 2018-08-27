@@ -1,12 +1,13 @@
 package com.dataset.management.service;
 
-import com.dataset.management.PrimaryDao.DataSetRepository;
+import com.dataset.management.dao.datasetdao.DataSetRepository;
 import com.dataset.management.entity.DataSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 @Service
 public class DataSetService implements IntDataSetService {
@@ -28,14 +29,15 @@ public class DataSetService implements IntDataSetService {
         return dataSetRepository.findById(datasetId);
     }
 
-    public DataSet findByDataSetEnglishName(String datasetName){
-        return dataSetRepository.findByDataSetEnglishName(datasetName);
+    public DataSet findByDataSetNameAndUserId(String datasetName,int userId){
+        return dataSetRepository.findByDataSetNameAndUserId(datasetName,userId);
     }
-    public DataSet findByDataSetName(String datasetName){
-        return dataSetRepository.findByDataSetName(datasetName);
+    public DataSet findByDataSetEnglishNameAndUserId(String datasetEnglishName,int userId){
+        return dataSetRepository.findByDataSetEnglishNameAndUserId(datasetEnglishName,userId);
     }
-    public List<DataSet> findByUserName(String userName){
-        return dataSetRepository.findByUserName(userName);
+
+    public List<DataSet> findByUserIdAndDataSetNameLike(int userId,String nameLike){
+        return dataSetRepository.findByUserIdAndDataSetNameLike(userId,nameLike);
     }
     public List<DataSet> findByUserId(int userId){
         return dataSetRepository.findByUserId(userId);
@@ -53,7 +55,8 @@ public class DataSetService implements IntDataSetService {
      * 删除数据集
      * */
     @Transactional
-    public void deleteById(int datasetId){
+    @Override
+    public void deleteById(int datasetId)throws IOException{
         dataSetRepository.deleteById(datasetId);
     }
 

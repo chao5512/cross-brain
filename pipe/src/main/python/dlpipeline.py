@@ -157,6 +157,7 @@ class DLPipeline():
                               float(self.jsonData['learning_rate']),str(self.jsonData['checkpoint_path']))
         elif(isinstance(network,Vgg16)):
             logger.info('execute vgg16')
+            print('vgg16')
             network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
                               int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
                               str(self.jsonData['optimizer']),str(self.jsonData['loss']),

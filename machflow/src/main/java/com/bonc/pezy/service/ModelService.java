@@ -15,9 +15,7 @@ public interface ModelService {
 
     public long delModel(String[] id, String userid);
 
-    public List<Model> findModels(String startData, String endData, String type, String userid);
-
-    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType,String owner);
+    public List<Model> findByTimeAndType(String startData, String endData, short modelType, String owner);
 
     public List<Model> findByModelNameLike(String modelName,String owner);
 }

@@ -3,6 +3,7 @@
 
 import requests
 import json
+import time
 
 def testML():
     mlpipe = {
@@ -114,11 +115,11 @@ def testDL():
     '''
     dlpipe = {
         "appName": "testDL",
-        "jobId":"dl123",
+        "jobId":"JOBID00065",
         "userId":2288,
         "modelId":"MDL00061",
         "networktype":"vgg16",
-        "n_epoch":"10",
+        "n_epoch":"5",
         "batch_size":"1",
         "num_class":"2",
         "optimizer":"adam",
@@ -142,7 +143,7 @@ def predictDL():
         "userId":2288,
         "modelId":"MDL00061",
         "networktype":"vgg16",
-        "n_epoch":"10",
+        "n_epoch":"2",
         "batch_size":"1",
         "num_class":"2",
         "optimizer":"adam",
@@ -151,13 +152,22 @@ def predictDL():
         "tensorboard_dir":"/Users/mengxin/Desktop/vgg/logs",
         "model_path":"/Users/mengxin/Desktop/vgg/vgg_model/vgg16",
         "train_set":"/Users/mengxin/Desktop/vgg/data/list.txt",
-        "shape":"None, 224, 224, 3",
+        "shape":"None,224, 224, 3",
         "learning_rate":"0.001",
         "snapshot_step":"200",
         "validation_set":0.1
     }
-    r = requests.post("http://47.105.127.125:3002/deeplearning/model/predict", data=json.dumps(dlpipe))
+    r = requests.post("http://localhost:3002/deeplearning/model/predict", data=json.dumps(dlpipe))
+    print(r.text)
+
+def killDLJob():
+    dlpipe = {
+        "jobId":"JOBID00065"
+    }
+    r = requests.post("http://localhost:3002/deeplearning/job/kill", data=json.dumps(dlpipe))
     print(r.text)
 
 if __name__ == '__main__':
     testDL()
+    #time.sleep(3)
+    #killDLJob()

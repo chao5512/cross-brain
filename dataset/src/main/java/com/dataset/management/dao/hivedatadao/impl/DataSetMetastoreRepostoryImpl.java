@@ -1,6 +1,6 @@
-package com.dataset.management.SecondaryDao.impl;
+package com.dataset.management.dao.hivedatadao.impl;
 
-import com.dataset.management.SecondaryDao.DataSetMetastoreRepository;
+import com.dataset.management.dao.hivedatadao.DataSetMetastoreRepository;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.util.TableTypeTransform;

@@ -1,5 +1,6 @@
 package com.bonc.pezy.flow;
 
+import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.bonc.pezy.constants.Constants;
 import com.bonc.pezy.entity.Job;
@@ -16,7 +17,7 @@ import java.util.*;
  */
 public class MLFlow {
 
-    public Process generateMLBpmnModel(JSONObject jb, Job job, JobService jobService){
+    public Process generateMLBpmnModel(JSONArray jb, Job job, JobService jobService){
 
         GenerateNode generateNode = new GenerateNode();
         Process process=new Process();
@@ -27,20 +28,28 @@ public class MLFlow {
         FlowElement[] flowElements = new FlowElement[100];
         List<SequenceFlow> sequenceFlows = new ArrayList<SequenceFlow>();
 
-        ((Map)jb.get("node")).forEach((key,value)->{
+        for(int i=0;i<jb.size();i++){
+        //((Map)jb.get("node")).forEach((key,value)->{
+            JSONObject json = jb.getJSONObject(i);
             Task task = new Task();
             task.setJobId(job.getJobId());
             task.setOwner(job.getOwner());
-            task.setTaskName(key.toString());
-            task.setInputNodeId(((Map)value).get("InputNodeId").toString());
-            task.setOutputNodeId(((Map)value).get("outputNodeId").toString());
-            task.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
-            task.setParam(((Map)value).get("param").toString());
-            task.setTaskType(Integer.parseInt(((Map)value).get("type").toString()));
+            task.setTaskName((String)json.get("taskName"));
+            task.setInputNodeId(json.get("inputNodeId").toString());
+            task.setOutputNodeId(json.get("outputNodeId").toString());
+            task.setSno(Integer.parseInt(json.get("sno").toString()));
+            task.setParam(json.get("param").toString());
+            task.setTaskType(Integer.parseInt(json.get("type").toString()));
+            //task.setTaskName(key.toString());
+            //task.setInputNodeId(((Map)value).get("InputNodeId").toString());
+            //task.setOutputNodeId(((Map)value).get("outputNodeId").toString());
+            //task.setSno(Integer.parseInt(((Map)value).get("sno").toString()));
+            //task.setParam(((Map)value).get("param").toString());
+            //task.setTaskType(Integer.parseInt(((Map)value).get("type").toString()));
             task.setTaskStatus(0);
             task.setCreateTime(new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()));
             tasks.add(task);
-        });
+        };
         Collections.sort(tasks);
         job.setTasks(tasks);
         jobService.save(job);

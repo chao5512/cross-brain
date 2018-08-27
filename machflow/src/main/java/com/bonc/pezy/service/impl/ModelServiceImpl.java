@@ -34,12 +34,6 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> findModels(String startData, String endData, String type, String userid){
-        return moduleRepository.findByModelTypeAndOwnerAndCreateTimeGreaterThanEqualAndCreateTimeLessThanEqual(Short.parseShort(type),
-                Long.parseLong(userid),startData+"000000",endData+"235959");
-    }
-
-    @Override
     @Transactional
     public long delModel(String[] id,String userid){
         return moduleRepository.deleteByIds(Arrays.asList(id),Long.parseLong(userid));
@@ -51,7 +45,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public List<Model> findByCreateTimeAndType(String startData, String endData,short modelType,String owner){
+    public List<Model> findByTimeAndType(String startData, String endData, short modelType, String owner){
         return moduleRepository.findByCreateTimeGreaterThanEqualAndCreateTimeLessThanEqualAndModelTypeAndOwner(startData+"000000",endData+"235959",modelType,Long.valueOf(owner));
     }
 

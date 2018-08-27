@@ -1,6 +1,8 @@
-package com.dataset.management.PrimaryDao;
+package com.dataset.management.dao.datasetdao;
 
 import com.dataset.management.entity.DataSet;
+
+import java.io.IOException;
 import java.util.List;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -15,9 +17,9 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
      * 定位dataset 方式
      * */
     public DataSet findById(int datasetId);
-    public DataSet findByDataSetEnglishName (String datasetName);
-    public DataSet findByDataSetName(String datasetName);
-    public List<DataSet> findByUserName(String userName);
+    public DataSet findByDataSetNameAndUserId(String datasetName,int userId);
+    public DataSet findByDataSetEnglishNameAndUserId(String datasetEnglishName,int userId);
+    public List<DataSet> findByUserIdAndDataSetNameLike(int userId,String nameLike);
     public List<DataSet> findByUserId(int userId);
     /**
      * 数据集概览
@@ -27,12 +29,11 @@ public interface DataSetRepository extends JpaRepository<DataSet,String> {
     /**
      * 删除数据集
      * */
-    public void deleteById(int datasetId);
+    public void deleteById(int datasetId)throws IOException;
 
     /**
-     * 删除文件
+     * 删除全部
      * */
     public void deleteAll();
-
 
 }

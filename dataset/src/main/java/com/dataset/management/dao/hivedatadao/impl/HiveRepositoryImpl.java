@@ -1,10 +1,8 @@
-package com.dataset.management.SecondaryDao.impl;
+package com.dataset.management.dao.hivedatadao.impl;
 
-import com.dataset.management.SecondaryDao.HiveRepository;
+import com.dataset.management.dao.hivedatadao.HiveRepository;
 import com.dataset.management.entity.*;
-import com.dataset.management.service.IntDataSetOptService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
 import org.springframework.stereotype.Repository;

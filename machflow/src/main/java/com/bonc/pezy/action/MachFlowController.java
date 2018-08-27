@@ -2,6 +2,7 @@ package com.bonc.pezy.action;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 import com.bonc.pezy.dataconfig.ServiceMap;
 import com.bonc.pezy.entity.Job;
 import com.bonc.pezy.entity.Model;
@@ -76,7 +77,7 @@ public class MachFlowController {
 
         MachFlow mf = new MachFlow();
         System.out.print(jsondata);
-        JSONObject jb = JSON.parseObject(jsondata);
+
         Model model = modelService.findById(modelId);
 
         List<Job> list = jobService.findByModelId(modelId);
@@ -109,10 +110,12 @@ public class MachFlowController {
         }
         Process process = null;
         if(model.getModelType()==1){
+            JSONArray jb = JSONArray.parseArray(jsondata);
             MLFlow mlFlow = new MLFlow();
             process = mlFlow.generateMLBpmnModel(jb,jobcom,jobService);
         }
         if(model.getModelType()==2){
+            JSONObject jb = JSON.parseObject(jsondata);
             DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
             process = deepLearnFlow.generateDLBpmnModel(jb,jobcom,taskService);
         }

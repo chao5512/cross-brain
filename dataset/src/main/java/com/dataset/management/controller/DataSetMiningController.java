@@ -1,4 +1,4 @@
-package com.dataset.management.rest;
+package com.dataset.management.controller;
 
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;

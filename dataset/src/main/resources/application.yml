@@ -18,14 +18,14 @@ spring:
     client:
       ipAddress: localhost
   #数据库配置mysql
-  primary:
+  dataset_jdbc:
     url: jdbc:mysql://182.92.82.3:3306/ai_studio?useUnicode=true&characterEncoding=utf-8
 #    url: jdbc:mysql://172.16.31.91/ai_studio?useUnicode=true&characterEncoding=utf-8
     username: root
     password: 111111
 #    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
-  secondary:
+  hivedata_jdbc:
     url: jdbc:mysql://182.92.82.3:3306/hive_ai2?createDatabaseIfNotExist=true
 #    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
     username: root

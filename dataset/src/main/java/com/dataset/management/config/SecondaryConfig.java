@@ -23,7 +23,7 @@ import java.util.Map;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactorySecondary",
         transactionManagerRef = "transactionManagerSecondary",
-        basePackages = {"com.dataset.management.SecondaryDao"})
+        basePackages = {"com.dataset.management.dao.hivedatadao"})
 public class SecondaryConfig {
     @Resource
     @Qualifier("secondaryDataSource")

@@ -1,4 +1,4 @@
-package com.dataset.management.rest;
+package com.dataset.management.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.dataset.management.common.ApiResult;
@@ -10,7 +10,6 @@ import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.service.HdfsService;
 import com.dataset.management.service.IntDataSetFileService;
-import com.dataset.management.service.IntDataSetOptService;
 import com.dataset.management.service.IntDataSetService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -45,8 +44,6 @@ public class DataSetFileController {
     @Autowired
     IntDataSetFileService dataSetFileService;
 
-    @Autowired
-    IntDataSetOptService dataSetOptService;
 
     @Autowired
     HdfsService hdfsService;
@@ -73,108 +70,117 @@ public class DataSetFileController {
         BufferedOutputStream outputStream;
         int upload =0;
 
-        contentdDataSet = dataSetService.findById(dataSetId);
+        try {
+            contentdDataSet = dataSetService.findById(dataSetId);
 
-        int count = contentdDataSet.getDataSetFileCount();
-        logger.info("修改当前数据集 "+contentdDataSet+"   上传文件状态：");
-        contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_LOADING);
-        dataSetService.save(contentdDataSet);
+            int count = contentdDataSet.getDataSetFileCount();
+            logger.info("修改当前数据集 "+contentdDataSet+"   上传文件状态：");
+            contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_LOADING);
+            dataSetService.save(contentdDataSet);
 
-        //获取数据集存储路径
-        String hdfsUrl = hdfsConfig.getHdfsUrl();
-        Long hdfsPort = hdfsConfig.getHdfsProt();
+            //获取数据集存储路径
+            String hdfsUrl = hdfsConfig.getHdfsUrl();
+            Long hdfsPort = hdfsConfig.getHdfsProt();
 
-        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
-        //hdfs:8.8.8.8:900/DATASETSYSTEM/user/datasetName
+            String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+                    +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
+            //hdfs:8.8.8.8:900/DATASETSYSTEM/user/datasetName
 
-        logger.info("数据集当前根目录："+dataStoreUrl);
+            logger.info("数据集当前根目录："+dataStoreUrl);
 
-        String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
-                +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
-        logger.info("hdfs中数据集路径："+tmpPath);
-        //校验文件是否存在
-        List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
-        logger.info("获取当前数据集中已经存在的文件列表："+estsDataSetFiles);
+            String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
+                    +"/"+contentdDataSet.getUserId()+"/"+contentdDataSet.getDataSetName();
+            logger.info("hdfs中数据集路径："+tmpPath);
+            //校验文件是否存在
+            List<DataSetFile> estsDataSetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
+            logger.info("获取当前数据集中已经存在的文件列表："+estsDataSetFiles);
 
-        //已经存在的数据集中文件名称：
-        List<String> estsFilesNmaes = isExistsFiles(estsDataSetFiles);
-        logger.info("当前数据集存在文件名称列表："+estsDataSetFiles);
-        logger.info("上传数据集文件列表：");
+            //已经存在的数据集中文件名称：
+            List<String> estsFilesNmaes = isExistsFiles(estsDataSetFiles);
+            logger.info("当前数据集存在文件名称列表："+estsDataSetFiles);
+            logger.info("上传数据集文件列表：");
 
-        if(multipartFiles.length<=0){
-            return ResultUtil.error(-1,"没有获取到文件");
-        }
-        for(int i=0;i<multipartFiles.length;i++){
-            //遍历每一个媒体文件
-            MultipartFile setFile = multipartFiles[i];
-            //路径还是文件名称？？？
-            String name = setFile.getOriginalFilename();
-            logger.info("看看是路径还是文件名："+name);
-            String nameTRUE = name.substring(name.lastIndexOf("/")+1,name.length());
-            logger.info("字段切分后的文件名："+nameTRUE);
-
-            //不存在的话 就准备上传
-            if(!estsFilesNmaes.contains(name)){
-                cntentDataSetFile = new DataSetFile();
-
-                long timetmp = System.currentTimeMillis();
-                SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
-
-                //构造 DatasetFile
-                cntentDataSetFile.setFilePath(tmpPath);
-                cntentDataSetFile.setFileDesc(null);
-                cntentDataSetFile.setFileSortType(DataSetFileConsts.FILE_SORT_BY_FILENAME);
-                cntentDataSetFile.setFileSortBy(DataSetFileConsts.FILE_SORT_TYPE_ASC);
-                cntentDataSetFile.setFileName(name);
-                File file = new File(name);
-                String filesize = GetFileSize(file);
-                cntentDataSetFile.setOnloadTimeDate(newTime);
-                cntentDataSetFile.setFileSize(filesize);
-                cntentDataSetFile.setDataSetId(dataSetId);
-
-                outputStream = new BufferedOutputStream(
-                        new FileOutputStream(
-                                new File(name)
-                        )
-                );
-                outputStream.write(setFile.getBytes());
-                outputStream.flush();
-                logger.info("准备hdfs  上传数据文件");
-                hdfsService.copyFileToHDFS(name,tmpPath);
-
-                logger.info("数据库中添加文件信息——");
-                estsFilesNmaes.add(name);
-                dataSetFileService.save(cntentDataSetFile);
-                upload = upload+1;
-                outputStream.close();
+            if(multipartFiles.length<=0){
+                return ResultUtil.error(-1,"没有获取到文件");
             }
-        }
-        List<DataSetFile> newDatasetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
-        //修改数据集必要参数
-        logger.info("上传完毕，数据集状态更改");
-        contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
-        logger.info("修改时对应数据集上文件数：");
-        int newCount = count + upload;
-        contentdDataSet.setDataSetFileCount(newCount);
-        contentdDataSet.setDataSetUpdateDesc("upload the files ");
+            for(int i=0;i<multipartFiles.length;i++){
+                //遍历每一个媒体文件
+                MultipartFile setFile = multipartFiles[i];
+                //路径还是文件名称？？？
+                String name = setFile.getOriginalFilename();
+                logger.info("路径还是文件名："+name);
+                String nameTRUE = name.substring(name.lastIndexOf("/")+1,name.length());
+                logger.info("字段切分后的文件名："+nameTRUE);
 
-        long timetmp = System.currentTimeMillis();
-        SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
-        contentdDataSet.setDataSetLastUpdateTime(newTime);
-        dataSetService.save(contentdDataSet);
-        return ResultUtil.success(newDatasetFiles);
+                //不存在的话 就准备上传
+                if(!estsFilesNmaes.contains(name)){
+                    cntentDataSetFile = new DataSetFile();
+
+                    long timetmp = System.currentTimeMillis();
+                    SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+
+                    //构造 DatasetFile
+                    cntentDataSetFile.setFilePath(tmpPath);
+                    cntentDataSetFile.setFileDesc(null);
+                    cntentDataSetFile.setFileSortType(DataSetFileConsts.FILE_SORT_BY_FILENAME);
+                    cntentDataSetFile.setFileSortBy(DataSetFileConsts.FILE_SORT_TYPE_ASC);
+                    cntentDataSetFile.setFileName(name);
+                    File file = new File(name);
+                    String filesize = hdfsService.GetFileSize(file);
+                    cntentDataSetFile.setOnloadTimeDate(newTime);
+                    cntentDataSetFile.setFileSize(filesize);
+                    cntentDataSetFile.setDataSetId(dataSetId);
+
+                    outputStream = new BufferedOutputStream(
+                            new FileOutputStream(
+                                    new File(name)
+                            )
+                    );
+                    outputStream.write(setFile.getBytes());
+                    outputStream.flush();
+                    logger.info("准备hdfs  上传数据文件");
+                    hdfsService.copyFileToHDFS(name,tmpPath);
+
+                    logger.info("数据库中添加文件信息——");
+                    estsFilesNmaes.add(name);
+                    dataSetFileService.save(cntentDataSetFile);
+                    upload = upload+1;
+                    outputStream.close();
+                }
+            }
+            List<DataSetFile> newDatasetFiles = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
+            //修改数据集必要参数
+            logger.info("上传完毕，数据集状态更改");
+            contentdDataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
+            logger.info("修改时对应数据集上文件数：");
+            int newCount = count + upload;
+            contentdDataSet.setDataSetFileCount(newCount);
+            contentdDataSet.setDataSetUpdateDesc("upload the files ");
+
+            //数据集文件夹大小
+            String dirsize = hdfsService.GetFileSize(dataStoreUrl);
+            contentdDataSet.setDataSetSize(dirsize);
+
+            long timetmp = System.currentTimeMillis();
+            SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
+            contentdDataSet.setDataSetLastUpdateTime(newTime);
+            dataSetService.save(contentdDataSet);
+            return ResultUtil.success(newDatasetFiles);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(-1,"文件上传失败");
+        }
     }
 
     //查询
     @ApiOperation(value = "依据指定的排序方式查询当前用户下的所有数据集文件",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = {"/listFileAll/{filesSortBy}/{filesSortType}/{dataSetId}"},method = RequestMethod.GET)
-    public ApiResult selectAllFiles(@PathVariable(value = "filesSortBy") String sortBy,
-                                    @PathVariable(value = "filesSortType") String sortType,
-                                    @PathVariable(value = "dataSetId") int dataSetId){
+    @RequestMapping(value = {"/listFileAll"},method = RequestMethod.GET)
+    public ApiResult selectAllFiles(@RequestParam(value = "filesSortBy") String sortBy,
+                                    @RequestParam(value = "filesSortType") String sortType,
+                                    @RequestParam(value = "dataSetId") int dataSetId){
         Sort sort;
 
         //设置文件排序方式
@@ -194,17 +200,22 @@ public class DataSetFileController {
         logger.info("数据集文件排序方式："+sortBy+"  "+sortType);
         sort = basicSortBy();
         logger.info("查看数据集文件的列表：");
-        List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
-        for(DataSetFile dataSetFile:fileList){
-            logger.info("更改数据库中字段排序方式");
-            dataSetFile.setFileSortBy(sortBy);
-            dataSetFile.setFileSortType(sortType);
-            dataSetFileService.save(dataSetFile);
+        try {
+            List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
+            for(DataSetFile dataSetFile:fileList){
+                logger.info("更改数据库中字段排序方式");
+                dataSetFile.setFileSortBy(sortBy);
+                dataSetFile.setFileSortType(sortType);
+                dataSetFileService.save(dataSetFile);
+            }
+            if(fileList.isEmpty()){
+                return ResultUtil.error(-1,"没有文件");
+            }
+            return ResultUtil.success(fileList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(-1,"文件查询操作异常");
         }
-        if(fileList.isEmpty()){
-            return ResultUtil.error(-1,"没有文件");
-        }
-        return ResultUtil.success(fileList);
     }
 
 //    //查询  fileName
@@ -266,10 +277,11 @@ public class DataSetFileController {
     //删除
     @ApiOperation(value = "依据指定文件Id 删除文件",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = {"/deleteSomeFiles/{deleteFileId}"},method = RequestMethod.POST)
-    public ApiResult deleteFiles(@PathVariable(value = "deleteFileId") int fileId){
+    @RequestMapping(value = {"/deleteSomeFiles"},method = RequestMethod.POST)
+    public ApiResult deleteFiles(@RequestParam(value = "deleteFileId") int fileId){
         logger.info("获取数据集：");
-        DataSetFile dataSetFile = dataSetFileService.findDataSetFileById(fileId);
+        try {
+            DataSetFile dataSetFile = dataSetFileService.findDataSetFileById(fileId);
             if(dataSetFile.getFileName().isEmpty() || dataSetFile.getId() == 0){
                 logger.info("数据集中没有文件："+dataSetFile.getFileName());
             }else {
@@ -280,7 +292,11 @@ public class DataSetFileController {
                 dataSetFileService.deleteById(dataSetFile.getId());
             }
 
-        return ResultUtil.success();
+            return ResultUtil.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResultUtil.error(-1,"删除失败");
+        }
     }
 
     /**
@@ -291,36 +307,6 @@ public class DataSetFileController {
      *                        所选文件大小
      *                        文件保存路径
      * */
-    public List<DataSetFile> packageDataSetFiles(String filesJson)throws IOException{
-        List<DataSetFile> dataSetFiles = JSON.parseArray(filesJson,DataSetFile.class);
-        return dataSetFiles;
-    }
-
-    private static String GetFileSize(String Path){
-        return GetFileSize(new File(Path));
-    }
-
-    private static String GetFileSize(File file){
-        String size = "";
-        if(file.exists() && file.isFile()){
-            long fileS = file.length();
-            DecimalFormat df = new DecimalFormat("#.00");
-            if (fileS < 1024) {
-                size = df.format((double) fileS) + "BT";
-            } else if (fileS < 1048576) {
-                size = df.format((double) fileS / 1024) + "KB";
-            } else if (fileS < 1073741824) {
-                size = df.format((double) fileS / 1048576) + "MB";
-            } else {
-                size = df.format((double) fileS / 1073741824) +"GB";
-            }
-        }else if(file.exists() && file.isDirectory()){
-            size = "";
-        }else{
-            size = "0BT";
-        }
-        return size;
-    }
 
     private Sort changSortBy(String orderType, String orderColumn){
         Sort sort = new Sort(Sort.Direction.fromString(orderType),orderColumn);
