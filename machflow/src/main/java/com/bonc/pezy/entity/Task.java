@@ -21,6 +21,9 @@ public class Task implements Serializable,Comparable<Task>{
     @Column(name = "taskName", nullable = false)
     private String taskName;
 
+    @Column(name = "taskCnName", nullable = false)
+    private String taskCnName;
+
     @Column(name = "jobId")
     private String jobId;
 
@@ -52,13 +55,20 @@ public class Task implements Serializable,Comparable<Task>{
     @Column(nullable = false,length = 14,name = "createtime")
     private String createTime;//模型创建时间
 
-
     public String getTaskId() {
         return taskId;
     }
 
     public void setTaskId(String taskId) {
         this.taskId = taskId;
+    }
+
+    public String getTaskCnName() {
+        return taskCnName;
+    }
+
+    public void setTaskCnName(String taskCnName) {
+        this.taskCnName = taskCnName;
     }
 
     public String getTaskName() {

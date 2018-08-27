@@ -40,6 +40,7 @@ public class MLFlow {
             task.setSno(Integer.parseInt(json.get("sno").toString()));
             task.setParam(json.get("param").toString());
             task.setTaskType(Integer.parseInt(json.get("type").toString()));
+            task.setTaskCnName(json.get("name").toString());
             //task.setTaskName(key.toString());
             //task.setInputNodeId(((Map)value).get("InputNodeId").toString());
             //task.setOutputNodeId(((Map)value).get("outputNodeId").toString());
