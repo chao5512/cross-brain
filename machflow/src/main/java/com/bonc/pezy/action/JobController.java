@@ -224,7 +224,7 @@ public class JobController extends HttpServlet{
     public Result qryResultData(@RequestParam(name = "jobId") String jobId,
             HttpServletResponse res) throws IOException{
         Result result = null;
-        String fileName = "evaluator.txt";  //模型文件
+        String fileName = "evaluator.json";  //模型文件
         Job thisjob= jobService.findByJobId(jobId);
         String modelId = thisjob.getModelId();
         Long userId = thisjob.getOwner();
