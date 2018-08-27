@@ -13,16 +13,30 @@ import com.bonc.pezy.service.HdfsModel;
 import com.bonc.pezy.service.JobService;
 import com.bonc.pezy.service.TaskService;
 import com.bonc.pezy.util.ResultUtil;
-import com.bonc.pezy.util.Upload;
 import com.bonc.pezy.vo.JobQuery;
 import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import java.io.BufferedOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,16 +48,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import java.util.*;
 
 @Controller
 @RequestMapping("Job")
@@ -277,38 +281,49 @@ public class JobController extends HttpServlet{
     @ApiOperation(value = "调用模型(消息)", httpMethod = "POST")
     @RequestMapping(value = "/callModelByMessage", method = RequestMethod.POST)
     public Result callModelByMessage(@RequestParam(name = "jobId") String jobId,
-            @RequestParam(name = "content") String content,
-            HttpServletResponse res) {
+            @RequestParam(name = "content") String content) {
         Result result = null;
-        String fileName = "1.png";
-        res.setHeader("content-type", "application/octet-stream");
-        res.setContentType("application/octet-stream");
-        res.setHeader("Content-Disposition", "attachment;filename=" + fileName);
-        byte[] buff = new byte[1024];
-        BufferedInputStream bis = null;
-        OutputStream os = null;
-        try {
-            os = res.getOutputStream();
-            bis = new BufferedInputStream(new FileInputStream(new File("d://"
-                    + fileName)));
-            int i = bis.read(buff);
-            while (i != -1) {
-                os.write(buff, 0, buff.length);
-                os.flush();
-                i = bis.read(buff);
+        try{
+            //携带数据向python发送请求
+            jobId = jobId.trim();
+            Job job = jobService.findByJobId(jobId);
+            Map<String,Object> param = new LinkedHashMap();
+            Map map = new LinkedHashMap();
+            String pipe = null;
+            List<Task> tasks = taskService.findByJobId(job.getJobId());
+            param.put("messagedata",param);
+            param.put("appName",job.getJobName());
+            param.put("jobId",job.getJobId());
+            param.put("modelId",job.getModelId());
+            param.put("userId", String.valueOf(job.getOwner()));
+            String url = Constants.PY_SERVER_PREDICT;
+            for(Task task:tasks){
+                Map<String,Object> tmp = new HashMap();
+                tmp.put("taskId",task.getTaskId());
+                tmp.put("type",task.getTaskType());
+                param.put(task.getTaskName(),JSON.parse(task.getParam()));
+                map.put(task.getTaskName(),tmp);
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (bis != null) {
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+            param.put("tasks",map);
+            pipe = JSONUtils.toJSONString(param);
+            if (!"".equals(pipe)){
+                JavaRequestPythonService jrps = new JavaRequestPythonService();
+                String pyresult = jrps.requestPythonService(pipe,url);
+                JSONObject resultjson = JSON.parseObject(pyresult);
+                String applicationid = resultjson.get("applicationId").toString();
+                int status = Integer.parseInt(resultjson.get("status").toString());
+                String message = resultjson.get("msg").toString();
+                if(status == 1){
+                    result =  ResultUtil.success("applicationid:"+applicationid);
+                }else if(status == 2){
+                    result =  ResultUtil.error(-1,message+" applicationId:"+applicationid);
                 }
             }
+        } catch (Exception e){
+            e.printStackTrace();
+            result =  ResultUtil.error(-1,"模型调用异常");
+            logger.error("模型调用异常");
         }
-        result = ResultUtil.success();
         return result;
     }
 
