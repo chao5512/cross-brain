@@ -1,9 +1,7 @@
-package com.dataset.management.consts;
+package com.dataset.management.constant;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-public class DataSetFileConsts {
-    private DataSetFileConsts(){
+public class DataSetFileConstants {
+    private DataSetFileConstants(){
 
     }
     public static final String STATUS_ONLINE = "ONLINE";

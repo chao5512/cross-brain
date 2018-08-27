@@ -1,16 +1,14 @@
 package com.dataset.management.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
-import com.dataset.management.consts.DataSetConsts;
+import com.dataset.management.constant.DataSetConstants;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
 import com.dataset.management.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,22 +56,18 @@ public class DataSetController {
                                    @RequestParam(value = "dataSetEnglishName") String dataSetEnglishName,
                                    @RequestParam(value = "dataSetDesc") String datSetDesc,
                                    @RequestParam(value = "dataSetPower") String dataSetPower,
-                                   @RequestParam(value = "userId") int userId,
-                                   @RequestParam(value = "dataSetFileType") String dataSetFileType,
-                                   @RequestParam(value = "userName") String userName) throws IOException{
+                                   @RequestParam(value = "userId") int userId) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
         dataSet.setDataSetName(dataSetName);
         dataSet.setUserId(userId);
-        dataSet.setUserName(userName);
         dataSet.setDataSetBasicDesc(datSetDesc);
         dataSet.setDataSetPower(dataSetPower);
         dataSet.setDataSetEnglishName(dataSetEnglishName);
-        dataSet.setDatatype(dataSetFileType);
 
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
-        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
                 +"/"+userId+"/"+dataSetName;
         dataSet.setDataSetStoreUrl(dataStoreUrl);
 
@@ -196,66 +190,11 @@ public class DataSetController {
             return ResultUtil.error(-1,"查询失败");
         }
     }
-//
-//
-//    //查询全部
-//    @ApiOperation(value = "变更数据集排序方式",httpMethod = "GET")
-//    @ResponseBody
-//    @RequestMapping(value = "/selectAll",method = RequestMethod.GET)
-//    public ApiResult selectAllDataSet(@RequestParam(value = "dataSetSortBy") String sortBy,
-//                                      @RequestParam(value = "dataSetSortType") String sortType) throws IOException{
-//        Sort sort;
-//        //默认根据英文名字排序
-//        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME)
-//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_CREATE_TIME)
-//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_UPDATE_TIME)
-//                && !sortBy.equals(DataSetConsts.SORT_BY_DATASET_POWER)){
-//            return ResultUtil.error(-1,"排序规则不符合规定");
-//        }
-//        if(!sortBy.equals(DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME )
-//                || !sortType.equals(DataSetConsts.SORTTYPE_ASC)){
-//            logger.info("数据集基本表排序方式需要变更");
-//            sort = changSortBy(sortType,sortBy);
-//            // list<DataSet>
-//            logger.info("按照"+sortBy+" 方式排序");
-//        }else {
-//            sort = basicSortBy();
-//            logger.info("按照默认方式排序");
-//        }
-//
-//        List<DataSet> dataSets = dataSetService.findAll(sort);
-//        logger.info("更改所有数据集排序规则：");
-//        for(DataSet dataSet: dataSets){
-//            dataSet.setDataSetSortType(sortType);
-//            dataSet.setDataSetSortBY(sortBy);
-//            dataSetService.save(dataSet);
-//        }
-//        logger.info("开始罗列所有数据集系统表：");
-//        return ResultUtil.success(dataSets);
-//    }
-
 
     /**
-     * 修改 ：  由System 移动到 basic 中
-     * 修改依据：  datasetId
-     *          可以  手选   修改项：
-     *
-     String en_datasetName,
-     String ch_datasetName,
-     String path,
-     String basicDesc,
-     String hivetableName,
-     String sortBy,
-     String sortType,
-     String powerStatus,
-     String updateDesc,
-     int newMax,
-     String dataType,总计   11 个更改
-
      String dataSetStatus          状态随动，依据数据集文件上传的状态而定
      String dataSetLastUpdateTime  状态随动  伴随更改操作而定；
      int filesCount：              状态随动  依据数据集内文件数量变更；
-
      * */
     @ApiOperation(value = "依据客户端数据集属性，修改数据集",httpMethod = "POST")
     @ResponseBody
@@ -282,7 +221,7 @@ public class DataSetController {
             String hdfsUrl = hdfsConfig.getHdfsUrl();
             Long hdfsPort = hdfsConfig.getHdfsProt();
             int userId = dataSet.getUserId();
-            String newdataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+            String newdataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
                     +"/"+userId+"/"+newDataSetName;
             dataSet.setDataSetStoreUrl(newdataStoreUrl);//new
 
@@ -291,9 +230,6 @@ public class DataSetController {
             }else {
                 return ResultUtil.error(-1,"原旧数据集文件夹不存在，请在 hdfs 中确认后重新修改");
             }
-
-            String newDesc = "update the dataset "+dataSet.getDataSetName();
-            dataSet.setDataSetUpdateDesc(newDesc);
 
             dataSet.setDataSetBasicDesc(newDataSetDesc);    //desc
             dataSet.setDataSetName(newDataSetName);         //name
@@ -329,7 +265,7 @@ public class DataSetController {
             String dataSetName =dataSet.getDataSetName();
             int userId = dataSet.getUserId();
 
-            String tmpPath = DataSetConsts.DATASET_STOREURL_DIR
+            String tmpPath = DataSetConstants.DATASET_STOREURL_DIR
                     +"/"+userId+"/"+dataSetName;
 
             dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
@@ -345,9 +281,6 @@ public class DataSetController {
                 SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
                 dataSet.setDataSetLastUpdateTime(newTime);
-
-                String newDesc = "clean the dataset: "+ dataSetName;
-                dataSet.setDataSetUpdateDesc(newDesc);
 
                 dataSet.setDataSetFileCount(0);
                 dataSetService.save(dataSet);
@@ -392,9 +325,9 @@ public class DataSetController {
 
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
-        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
+        String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
                 +"/"+userId+"/"+dataSetName;
-        String tmpUrl = DataSetConsts.DATASET_STOREURL_DIR
+        String tmpUrl = DataSetConstants.DATASET_STOREURL_DIR
                 +"/"+userId+"/"+dataSetName;
 
 
@@ -419,23 +352,20 @@ public class DataSetController {
         return sort;
     }
     private Sort basicSortBy(){
-        return new Sort(Sort.Direction.fromString(DataSetConsts.SORTTYPE_ASC),DataSetConsts.SORT_BY_DATASET_ENGLISH_NAME);
+        return new Sort(Sort.Direction.fromString(DataSetConstants.SORTTYPE_ASC),DataSetConstants.SORT_BY_DATASET_ENGLISH_NAME);
     }
     private DataSet packageDataSet(){
         DataSet dataSet = new DataSet();
         //总计 17项
-        dataSet.setUserName(DataSetConsts.DATASET_USER_NAME);
-        dataSet.setUserId(DataSetConsts.DATASET_USER_ID);
-        dataSet.setDataSetEnglishName(DataSetConsts.DATASET_ENGLISH_NAME);
-        dataSet.setDataSetName(DataSetConsts.DATASET_CHINA_NAME);
-        dataSet.setDataSetStatus(DataSetConsts.UPLOAD_STATUS_COMPLETE);
-        dataSet.setDataSetUpdateDesc(null);
-        dataSet.setDataSetSortBY(DataSetConsts.SORT_BY_DATASET_NAME);
-        dataSet.setDataSetSortType(DataSetConsts.SORTTYPE_ASC);
-        dataSet.setDataSetSize(DataSetConsts.MAX_CONTENER);
-        dataSet.setDataSetFileCount(DataSetConsts.DATASET_FILECOUNT_ZERO);
-        dataSet.setDataSetBasicDesc(DataSetConsts.DATASET_BASIC_DESC);
-        dataSet.setDataSetPower(DataSetConsts.POWER_PRIVATE);
+        dataSet.setUserId(DataSetConstants.DATASET_USER_ID);
+        dataSet.setDataSetEnglishName(DataSetConstants.DATASET_ENGLISH_NAME);
+        dataSet.setDataSetName(DataSetConstants.DATASET_CHINA_NAME);
+        dataSet.setDataSetStatus(DataSetConstants.UPLOAD_STATUS_COMPLETE);
+
+        dataSet.setDataSetSize(DataSetConstants.MAX_CONTENER);
+        dataSet.setDataSetFileCount(DataSetConstants.DATASET_FILECOUNT_ZERO);
+        dataSet.setDataSetBasicDesc(DataSetConstants.DATASET_BASIC_DESC);
+        dataSet.setDataSetPower(DataSetConstants.POWER_PRIVATE);
 
         long time =System.currentTimeMillis();
         SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");//这个是你要转成后的时间的格式
@@ -443,9 +373,8 @@ public class DataSetController {
         dataSet.setDataSetCreateTime(sd);
         dataSet.setDataSetLastUpdateTime(sd);
         dataSet.setDataSetStoreUrl(null);
-        dataSet.setDataSetHiveTableName(DataSetConsts.DATASET_ENGLISH_NAME);
-        dataSet.setDataSetHiveTableId(null);
-        dataSet.setDatatype(DataSetConsts.DATASET_DATATYPE);
+        dataSet.setDataSetHiveTableName(DataSetConstants.DATASET_ENGLISH_NAME);
+
         return dataSet;
     }
     public  List<String> listName(List<DataSet> dataSets){

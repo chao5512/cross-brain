@@ -25,10 +25,10 @@ public class DataSetFile implements Serializable{
     private  String filePath;
     @Column(name = "upload_time")
     private String uploadTime;
-    @Column(name = "file_sort_by")
-    private String fileSortBy;
-    @Column(name = "file_sort_type")
-    private String fileSortType;
+//    @Column(name = "file_sort_by")
+//    private String fileSortBy;
+//    @Column(name = "file_sort_type")
+//    private String fileSortType;
     @Column(name = "description")
     private String fileDesc;
     @Column(name = "size")
@@ -83,19 +83,19 @@ public class DataSetFile implements Serializable{
         filesize = fileSize;
     }
 
-    public String getFileSortBy() {
-        return fileSortBy;
-    }
-    public void setFileSortBy(String fileSortBy) {
-        this.fileSortBy = fileSortBy;
-    }
-
-    public String getFileSortType() {
-        return fileSortType;
-    }
-    public void setFileSortType(String fileSortType) {
-        this.fileSortType = fileSortType;
-    }
+//    public String getFileSortBy() {
+//        return fileSortBy;
+//    }
+//    public void setFileSortBy(String fileSortBy) {
+//        this.fileSortBy = fileSortBy;
+//    }
+//
+//    public String getFileSortType() {
+//        return fileSortType;
+//    }
+//    public void setFileSortType(String fileSortType) {
+//        this.fileSortType = fileSortType;
+//    }
 
     public int getDataSetId() {
         return dataSetId;
