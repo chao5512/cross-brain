@@ -139,8 +139,7 @@ public class JobController extends HttpServlet{
 
     @ApiOperation(value = "获取节点运行日志", httpMethod = "POST")
     @RequestMapping(value = "/qryTaskLog", method = RequestMethod.POST)
-    public Result qryLog(@RequestParam(name = "jobId") String jobId,
-            @RequestParam(name = "taskId") String taskId, @RequestParam(name = "type") int type,
+    public Result qryLog(@RequestParam(name = "jobId") String jobId, @RequestParam(name = "type") int type,
             HttpServletResponse res) throws IOException{
         Result result = null;
         String fileName = "";  //模型文件
