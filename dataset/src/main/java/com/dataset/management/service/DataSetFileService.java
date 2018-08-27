@@ -1,6 +1,6 @@
 package com.dataset.management.service;
 
-import com.dataset.management.PrimaryDao.DataSetFileRepository;
+import com.dataset.management.dao.datasetdao.DataSetFileRepository;
 import com.dataset.management.consts.DataSetFileConsts;
 import com.dataset.management.entity.DataSetFile;
 import org.slf4j.Logger;

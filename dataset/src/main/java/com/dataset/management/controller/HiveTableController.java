@@ -1,4 +1,4 @@
-package com.dataset.management.rest;
+package com.dataset.management.controller;
 
 import com.dataset.management.aop.annotation.PreventRepetitionAnnotation;
 import com.dataset.management.common.ApiResult;
@@ -6,7 +6,6 @@ import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.consts.DataSetConsts;
 import com.dataset.management.entity.DataSet;
-import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
@@ -16,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.Path;
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @ClassName HiveTableController
@@ -119,7 +115,7 @@ public class HiveTableController {
      * @auther: 王培文
      * @date: 2018/6/5 16:05
      */
-    @RequestMapping(value = "getTableMeta/{datasetId}",method = RequestMethod.POST)
+    @RequestMapping(value = "getTableMeta/{datasetId}")
     public ApiResult getHiveTableMeta(@PathVariable("datasetId") String datasetId){
         DataSet dataSet = new DataSet();
         dataSet.setId(Integer.parseInt(datasetId));

@@ -4,6 +4,7 @@ import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
 import org.springframework.data.domain.Sort;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -22,10 +23,10 @@ public interface IntDataSetService {
      * */
     public DataSet findById(int datasetId);
 
-    public DataSet findByDataSetEnglishName(String datasetEnglishName);
-    public DataSet findByDataSetName(String datasetName);
+    public DataSet findByDataSetEnglishNameAndUserId(String datasetEnglishName,int userId);
+    public DataSet findByDataSetNameAndUserId(String datasetName,int userId)throws IOException;
 
-    public List<DataSet> findByUserName(String userName);
+    public List<DataSet> findByUserIdAndDataSetNameLike(int userId,String nameLike);
     public List<DataSet> findByUserId(int userId);
 
     /**
@@ -36,7 +37,7 @@ public interface IntDataSetService {
     /**
      * 删除数据集
      * */
-    public void deleteById(int datasetId);
+    public void deleteById(int datasetId)throws IOException;
 
     /**
      * 删除文件
