@@ -4,7 +4,7 @@ import com.dataset.management.aop.annotation.PreventRepetitionAnnotation;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
-import com.dataset.management.consts.DataSetConsts;
+import com.dataset.management.constant.DataSetConstants;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
@@ -87,12 +87,12 @@ public class HiveTableController {
                 long timetmp = System.currentTimeMillis();
                 String hiveTableID = hiveTableName+"_"+timetmp;
                 dataSetConTent.setDataSetHiveTableName(hiveTableName);
-                dataSetConTent.setDataSetHiveTableId(hiveTableID);
+
 
                 String hdfsUrl = hdfsConfig.getHdfsUrl();
                 Long hdfsPort = hdfsConfig.getHdfsProt();
-                String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConsts.DATASET_STOREURL_DIR
-                        +"/"+dataSetConTent.getUserName()+"/"+dataSetConTent.getDataSetName();
+                String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
+                        +"/"+dataSetConTent.getId()+"/"+dataSetConTent.getDataSetName();
                 dataSetConTent.setDataSetStoreUrl(dataStoreUrl);
                 dataSetService.save(dataSetConTent);
 

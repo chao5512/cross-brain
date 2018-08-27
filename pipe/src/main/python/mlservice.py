@@ -191,7 +191,7 @@ def submit(*args,**kwaggs):
 '''
 url：http://47.105.127.125:3001/machinelearning/predict
 请求方式：post
-请求参数示例：{"messagedata":"(\"test content1 \"), (\"test content2\")","appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
+请求参数示例：{"messagedata":"\"test content1 \"","appName":"hanweitest","jobId":"JOBID00066","modelId":"MDL00061","userId":"2288","datasource":{"tablename":"sougou"},"TypeTransfer":{"castType":"Double","outputCol":"label","inputCol":"label"},"isSplitSample":{"trainRatio":0.7,"fault":1},"Tokenizer":{"outputCol":"words","inputCol":"content"},"HashingTF":{"outputCol":"features","inputCol":"words"},"LogisticRegression":{"maxIter":10,"regParam":0.001},"MulticlassClassificationEvaluator":{"method":"MulticlassClassificationEvaluator"},"tasks":{"datasource":{"type":0,"taskId":"TASKID00474"},"TypeTransfer":{"type":2,"taskId":"TASKID00475"},"isSplitSample":{"type":1,"taskId":"TASKID00476"},"Tokenizer":{"type":3,"taskId":"TASKID00477"},"HashingTF":{"type":3,"taskId":"TASKID00478"},"LogisticRegression":{"type":3,"taskId":"TASKID00479"},"MulticlassClassificationEvaluator":{"type":4,"taskId":"TASKID00480"}}}
 '''
 @app.route("/machinelearning/predict",methods=['POST'])
 def predict():
@@ -248,11 +248,13 @@ def predict_submit(*args, **kwaggs):
         pipe.loadDataSetFromTable(predict_table_name)
         # 创建的新表不应该有label列，这里将其移动到最后一列（没有直接删除的方法）
         lastColumn = pipe.dataFrame.schema.fields[-1].name
-        HiveUtil.queryBySql("alter table %s  change label label STRING after %s" % ( predict_table_name, lastColumn))
+        if(lastColumn != "label"):
+            HiveUtil.queryBySql("alter table %s  change label label STRING after %s" % ( predict_table_name, lastColumn))
+            pipe.loadDataSetFromTable(predict_table_name)
         if (not (data.get("messagedata") is None or data.get("messagedata") == "")):
             logger.info("准备插入临时表，数据为:%s" % (data.get("messagedata")))
-            spark.sql("insert overwirite table  %s VALUES %s" % (
-                predict_table_name , data.get("messagedata")))
+            messagedata = data.get("messagedata")
+            spark.sql("insert overwrite table  %s VALUES (%s)" % (predict_table_name , messagedata+',""'))
             logger.info("数据插入完毕")
     except BaseException as e:
         logger.exception(e)
@@ -277,8 +279,7 @@ def predict_submit(*args, **kwaggs):
     logger.info('save  result')
     try:
         #Step 5 保存结果
-        logger.info(prediction.schema.fields)
-        prediction.select("prediction").write.json(path=root_path + "/result/",mode="overwrite")
+        prediction.write.json(path=root_path + "/result/",mode="overwrite")
         spark.sql("drop table if exists  %s " % (predict_table_name))
     except BaseException as e:
         logger.exception(e)

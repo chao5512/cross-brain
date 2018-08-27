@@ -1,15 +1,6 @@
-package com.dataset.management.consts;
+package com.dataset.management.constant;
 
-import com.dataset.management.entity.DataSet;
-import org.omg.CORBA.PUBLIC_MEMBER;
-
-import javax.swing.plaf.PanelUI;
-
-public class DataSetConsts {
-
-    private DataSetConsts(){
-
-    }
+public class DataSetConstants {
 
     public static final String POWER_PUBLIC = "PUBLIC";
 

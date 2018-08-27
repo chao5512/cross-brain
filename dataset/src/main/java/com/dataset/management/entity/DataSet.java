@@ -16,8 +16,6 @@ public class DataSet implements Serializable{
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private int id;
-    @Column(name = "user_name")
-    private String userName;
     @Column(name ="user_Id")
     private int userId;
     //数据集英文名称
@@ -33,14 +31,14 @@ public class DataSet implements Serializable{
     @Column(name = "dataset_updated_time")
     private String dataSetLastUpdateTime;
     //数据集最后修改描述
-    @Column(name = "dataset_modified_info")
-    private String dataSetUpdateDesc;
+//    @Column(name = "dataset_modified_info")
+//    private String dataSetUpdateDesc;
     //数据集排序方式
-    @Column(name = "dataset_rank_mode")
-    private String dataSetSortBY;
-    @Column(name = "dataset_sort_type")
-    private String dataSetSortType;
-    //数据集容量大小
+//    @Column(name = "dataset_rank_mode")
+//    private String dataSetSortBY;
+//    @Column(name = "dataset_sort_type")
+//    private String dataSetSortType;
+    //数据集当前文件大小
     @Column(name = "dataset_size")
     private String dataSetSize;
     //数据及当前文件数量
@@ -62,11 +60,9 @@ public class DataSet implements Serializable{
     @Column(name = "dataset_hivetable_name")
     private String dataSetHiveTableName;
     //H表ID
-    @Column(name = "dataset_hivetable_id")
-    private  String dataSetHiveTableId;
     //数据集数据类型
-    @Column(name = "dataset_data_type")
-    private String datatype;
+//    @Column(name = "dataset_data_type")
+//    private String datatype;
 
 
     //自动创建的ID
@@ -78,12 +74,12 @@ public class DataSet implements Serializable{
     }
 
     //用户名称
-    public String getUserName() {
-        return userName;
-    }
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
+//    public String getUserName() {
+//        return userName;
+//    }
+//    public void setUserName(String userName) {
+//        this.userName = userName;
+//    }
 
     //数据集名称(en)
     public String getDataSetEnglishName() {
@@ -124,26 +120,26 @@ public class DataSet implements Serializable{
         dataSetLastUpdateTime = datasetLastUpdateTime;
     }
 
-    public String getDataSetUpdateDesc() {
-        return dataSetUpdateDesc;
-    }
-    public void setDataSetUpdateDesc(String datasetUpdateDesc) {
-        dataSetUpdateDesc = datasetUpdateDesc;
-    }
-
-    //排序方式
-    public String getDataSetSortBY() {
-        return dataSetSortBY;
-    }
-    public void setDataSetSortBY(String datasetSortBy) { dataSetSortBY= datasetSortBy; }
-
-    //排序升降序方式
-    public  String getDataSetSortType() {
-        return dataSetSortType;
-    }
-    public  void setDataSetSortType(String datasetSortType) {
-        dataSetSortType = datasetSortType;
-    }
+//    public String getDataSetUpdateDesc() {
+//        return dataSetUpdateDesc;
+//    }
+//    public void setDataSetUpdateDesc(String datasetUpdateDesc) {
+//        dataSetUpdateDesc = datasetUpdateDesc;
+//    }
+//
+//    //排序方式
+//    public String getDataSetSortBY() {
+//        return dataSetSortBY;
+//    }
+//    public void setDataSetSortBY(String datasetSortBy) { dataSetSortBY= datasetSortBy; }
+//
+//    //排序升降序方式
+//    public  String getDataSetSortType() {
+//        return dataSetSortType;
+//    }
+//    public  void setDataSetSortType(String datasetSortType) {
+//        dataSetSortType = datasetSortType;
+//    }
 
 
     //数据及大小
@@ -193,19 +189,19 @@ public class DataSet implements Serializable{
        dataSetHiveTableName = datasetHiveTableName;
     }
 
-    public String getDataSetHiveTableId() {
-        return dataSetHiveTableId;
-    }
-    public void setDataSetHiveTableId(String datasetHiveTableId) {
-        dataSetHiveTableId = datasetHiveTableId;
-    }
-
-    public String getDatatype() {
-        return datatype;
-    }
-    public void setDatatype(String datatype1) {
-        datatype = datatype1;
-    }
+//    public String getDataSetHiveTableId() {
+//        return dataSetHiveTableId;
+//    }
+//    public void setDataSetHiveTableId(String datasetHiveTableId) {
+//        dataSetHiveTableId = datasetHiveTableId;
+//    }
+//
+//    public String getDatatype() {
+//        return datatype;
+//    }
+//    public void setDatatype(String datatype1) {
+//        datatype = datatype1;
+//    }
 
     public int getUserId() {
         return userId;

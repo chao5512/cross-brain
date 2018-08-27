@@ -1,7 +1,7 @@
 package com.dataset.management.service;
 
 import com.dataset.management.dao.datasetdao.DataSetFileRepository;
-import com.dataset.management.consts.DataSetFileConsts;
+import com.dataset.management.constant.DataSetFileConstants;
 import com.dataset.management.entity.DataSetFile;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +33,7 @@ public class DataSetFileService implements IntDataSetFileService {
 
     @Override
     public List<DataSetFile> findAll(){
-        Sort sort = new Sort(Sort.Direction.fromString(DataSetFileConsts.FILE_SORT_TYPE_ASC),DataSetFileConsts.FILE_SORT_BY_FILENAME);
+        Sort sort = new Sort(Sort.Direction.fromString(DataSetFileConstants.FILE_SORT_TYPE_ASC), DataSetFileConstants.FILE_SORT_BY_FILENAME);
         return findAll(sort);
     }
 
