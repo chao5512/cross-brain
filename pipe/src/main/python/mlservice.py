@@ -279,6 +279,8 @@ def predict_submit(*args, **kwaggs):
     logger.info('save  result')
     try:
         #Step 5 保存结果
+        selection = ",".join('"'+column.name+'"' for column in prediction.schema.fields if column.name != "label")
+        selection += ',"prediction"'
         prediction.write.json(path=root_path + "/result/",mode="overwrite")
         spark.sql("drop table if exists  %s " % (predict_table_name))
     except BaseException as e:
