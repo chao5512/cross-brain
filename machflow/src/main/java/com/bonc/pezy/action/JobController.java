@@ -280,6 +280,7 @@ public class JobController extends HttpServlet{
 
     @ApiOperation(value = "调用模型(消息)", httpMethod = "POST")
     @RequestMapping(value = "/callModelByMessage", method = RequestMethod.POST)
+    @ResponseBody
     public Result callModelByMessage(@RequestParam(name = "jobId") String jobId,
             @RequestParam(name = "content") String content) {
         Result result = null;
