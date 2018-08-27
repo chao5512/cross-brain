@@ -33,7 +33,7 @@ public class PreventRepetitionAspect {
     private static final String PARAM_TOKEN_FLAG = "tokenFlag";
 
 //    切入点
-    @Pointcut("execution(public * com.dataset.management.rest.HiveTableController.*(..))")
+    @Pointcut("execution(public * com.dataset.management.controller.HiveTableController.*(..))")
     public void repeatLock(){
 
     }

@@ -42,7 +42,7 @@ public class DataSet implements Serializable{
     private String dataSetSortType;
     //数据集容量大小
     @Column(name = "dataset_size")
-    private int dataSetSize;
+    private String dataSetSize;
     //数据及当前文件数量
     @Column(name = "dataset_filecount")
     private  int dataSetFilesCount;
@@ -68,9 +68,6 @@ public class DataSet implements Serializable{
     @Column(name = "dataset_data_type")
     private String datatype;
 
-    //模型路径
-    @Column(name ="models_url")
-    private String modelsUrl;
 
     //自动创建的ID
     public int getId() {
@@ -150,10 +147,10 @@ public class DataSet implements Serializable{
 
 
     //数据及大小
-    public int getDataSetSize() {
+    public String getDataSetSize() {
         return dataSetSize;
     }
-    public void setDataSetSize(int maxContener1) {
+    public void setDataSetSize(String maxContener1) {
         dataSetSize= maxContener1;
     }
 
@@ -217,11 +214,5 @@ public class DataSet implements Serializable{
         this.userId = userId;
     }
 
-    public String getModelsUrl() {
-        return modelsUrl;
-    }
-    public void setModelsUrl(String modelsUrl) {
-        this.modelsUrl = modelsUrl;
-    }
 
 }

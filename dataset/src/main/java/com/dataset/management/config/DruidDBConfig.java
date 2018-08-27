@@ -15,22 +15,22 @@ import org.springframework.jdbc.core.JdbcTemplate;
 public class DruidDBConfig {
     private Logger logger = LoggerFactory.getLogger(DruidDBConfig.class);
 
-    @Value("${spring.primary.url}")
+    @Value("${spring.dataset_jdbc.url}")
     private String dbUrl1;
 
-    @Value("${spring.primary.username}")
+    @Value("${spring.dataset_jdbc.username}")
     private String username1;
 
-    @Value("${spring.primary.password}")
+    @Value("${spring.dataset_jdbc.password}")
     private String password1;
 
-    @Value("${spring.secondary.username}")
+    @Value("${spring.hivedata_jdbc.username}")
     private String username2;
 
-    @Value("${spring.secondary.password}")
+    @Value("${spring.hivedata_jdbc.password}")
     private String password2;
 
-    @Value("${spring.secondary.url}")
+    @Value("${spring.hivedata_jdbc.url}")
     private String dbUrl2;
 
     @Value("com.mysql.jdbc.Driver")

@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @EnableJpaRepositories(
         entityManagerFactoryRef = "entityManagerFactoryPrimary",
         transactionManagerRef = "transactionManagerPrimary",
-        basePackages = {"com.dataset.management.PrimaryDao"})
+        basePackages = {"com.dataset.management.dao.datasetdao"})
 public class PrimaryConfig {
     @Resource
     private JpaProperties jpaProperties;

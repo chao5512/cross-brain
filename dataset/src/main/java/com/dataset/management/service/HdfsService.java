@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.URI;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -132,7 +133,6 @@ public class HdfsService {
                 names.add(stats[i].getPath().toString());
             }
         }
-
         fs.close();
         return names;
     }
@@ -169,6 +169,30 @@ public class HdfsService {
         }
     }
 
+    public String GetFileSize(String Path){
+        return GetFileSize(new File(Path));
+    }
+    public String GetFileSize(File file){
+        String size = "";
+        if(file.exists() && file.isFile()){
+            long fileS = file.length();
+            DecimalFormat df = new DecimalFormat("#.00");
+            if (fileS < 1024) {
+                size = df.format((double) fileS) + "BT";
+            } else if (fileS < 1048576) {
+                size = df.format((double) fileS / 1024) + "KB";
+            } else if (fileS < 1073741824) {
+                size = df.format((double) fileS / 1048576) + "MB";
+            } else {
+                size = df.format((double) fileS / 1073741824) +"GB";
+            }
+        }else if(file.exists() && file.isDirectory()){
+            size = "";
+        }else{
+            size = "0BT";
+        }
+        return size;
+    }
 
     public String getUserName() {
         return userName;
