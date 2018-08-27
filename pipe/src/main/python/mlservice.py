@@ -178,7 +178,7 @@ def submit(*args,**kwaggs):
         # lable
         accuracy = pipe.evaluator(originalEvaluator, prediction, "label")
         logger.info("Test evaluatorResult = " + str(accuracy))
-        HDFSUtil.append(evaluatorResult,accuracy,True)
+        HDFSUtil.append(evaluatorResult,str(accuracy),True)
         res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:
         logger.exception(e)
