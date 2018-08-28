@@ -1,7 +1,11 @@
-package com.dataset.management.dao.hivedatadao.impl;
+package com.dataset.management.dao.hivedao.impl;
 
-import com.dataset.management.dao.hivedatadao.HiveRepository;
+import com.dataset.management.controller.DataSetController;
+import com.dataset.management.dao.hivedao.HiveRepository;
 import com.dataset.management.entity.*;
+import com.dataset.management.service.IntDataSetService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.*;
@@ -22,6 +26,9 @@ import java.util.List;
  **/
 @Repository
 public class HiveRepositoryImpl implements HiveRepository {
+
+    private static Logger logger = LoggerFactory.getLogger(HiveRepositoryImpl.class);
+
     @Resource(name = "hiveJdbcTemplate")
     private JdbcTemplate hiveJdbcTemplate;
 
@@ -29,7 +36,7 @@ public class HiveRepositoryImpl implements HiveRepository {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private IntDataSetOptService dataSetOptService;
+    private IntDataSetService dataSetOptService;
 
 
     /*@Value("${hadoop.hive-path}")
@@ -45,48 +52,61 @@ public class HiveRepositoryImpl implements HiveRepository {
      * @date: 2018/6/5 15:58
      */
     @Override
-    public void createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) throws IOException {
+    public boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet){
 //        tableMeta.getLineDelim()==""
-        StringBuffer sb = new StringBuffer("");
-        sb.append("create external table if not exists ");
-        String tableName = dataSet.getId()+"_"+tableMeta.getTableName();
-        sb.append(tableName+"(");
-        List<FieldMeta> fields = tableMeta.getFields();
-        for (int i = 0; i <fields.size() ; i++) {
-            FieldMeta fieldMeta = fields.get(i);
-            sb.append(fieldMeta.getFieldName()+" ");
-            if(fieldMeta.getFieldType().equals("float")){
-                sb.append("float comment '");
-                sb.append(fieldMeta.getFieldComment()+"'");
+        try {
+            StringBuffer sb = new StringBuffer("");
+            sb.append("create external table if not exists ");
+            String tableName = dataSet.getId()+"_"+tableMeta.getTableName();
+            sb.append(tableName+"(");
+            List<FieldMeta> fields = tableMeta.getFields();
+            for (int i = 0; i <fields.size() ; i++) {
+                FieldMeta fieldMeta = fields.get(i);
+                sb.append(fieldMeta.getFieldName()+" ");
+                if(fieldMeta.getFieldType().equals("float")){
+                    sb.append("float comment '");
+                    sb.append(fieldMeta.getFieldComment()+"'");
+                }else{
+                    sb.append(fieldMeta.getFieldType()+" comment '");
+                    sb.append(fieldMeta.getFieldComment()+"'");
+                }
+                if (i!=(fields.size()-1)){
+                    sb.append(",");
+                }
+            }
+            sb.append(")");
+            sb.append("comment '");
+            sb.append(tableMeta.getTableComment()+"' ");
+            sb.append("row format delimited fields terminated by '");
+            sb.append(tableMeta.getFieldDelim()+"' ");
+            //根据是否存在行分隔符进行创建表
+            if(tableMeta.getLineDelim()!=""){
+                //有行分隔符
+                sb.append("lines terminated by '");
+                sb.append(tableMeta.getLineDelim()+"' ");
             }else{
-                sb.append(fieldMeta.getFieldType()+" comment '");
-                sb.append(fieldMeta.getFieldComment()+"'");
+                //无行分隔符
             }
-            if (i!=(fields.size()-1)){
-                sb.append(",");
-            }
+            sb.append("stored as ");
+            sb.append(tableMeta.getFiletype());
+            sb.append(" location '");
+            DataSet data = dataSetOptService.findById(dataSet.getId());
+            sb.append(data.getDataSetStoreUrl()+"'");
+            String sql = sb.toString();
+            logger.info("建表语句：" + sql);
+            hiveJdbcTemplate.execute(sql);
+            logger.info("表" + tableName +"创建成功");
+            //保存到数据库
+            DataSet oldDataSet = dataSetOptService.findById(dataSet.getId());
+            oldDataSet.setDataSetHiveTableName(tableName);
+            dataSetOptService.save(oldDataSet);
+            logger.info("表" + tableName + "更新数据库总的字段成功");
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return false;
         }
-        sb.append(")");
-        sb.append("comment '");
-        sb.append(tableMeta.getTableComment()+"' ");
-        sb.append("row format delimited fields terminated by '");
-        sb.append(tableMeta.getFieldDelim()+"' ");
-        //根据是否存在行分隔符进行创建表
-        if(tableMeta.getLineDelim()!=""){
-            //有行分隔符
-            sb.append("lines terminated by '");
-            sb.append(tableMeta.getLineDelim()+"' ");
-        }else{
-            //无行分隔符
-        }
-        sb.append("stored as ");
-        sb.append(tableMeta.getFiletype());
-        sb.append(" location '");
-        DataSystem dataSystem = dataSetOptService.findByDataSetId(dataSet.getId());
-        sb.append(dataSystem.getDatasetStoreurl()+"'");
-        String sql = sb.toString();
-        System.out.println(sql);
-        hiveJdbcTemplate.execute(sql);
+        return true;
     }
 
     /**
@@ -99,25 +119,31 @@ public class HiveRepositoryImpl implements HiveRepository {
     @Override
     public boolean isExist(DataSet dataSet) {
         //SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE 'people01%'
-        StringBuffer sb = new StringBuffer();
-        sb.append("SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE ?");
-        ArrayList<Object> params = new ArrayList<Object>();
-        //SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE '2\_%'
-        params.add(dataSet.getId()+"\\_%");
-        Integer query = jdbcTemplate.query(sb.toString(), params.toArray(), new ResultSetExtractor<Integer>() {
-            @Override
-            public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
-                int count = 0;
-                if (resultSet.next()) {
-                    count = resultSet.getInt(1);
+        try {
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE ?");
+            ArrayList<Object> params = new ArrayList<Object>();
+            //SELECT COUNT(*) FROM TBLS T WHERE T.TBL_NAME LIKE '2\_%'
+            params.add(dataSet.getId()+"\\_%");
+            Integer query = jdbcTemplate.query(sb.toString(), params.toArray(), new ResultSetExtractor<Integer>() {
+                @Override
+                public Integer extractData(ResultSet resultSet) throws SQLException, DataAccessException {
+                    int count = 0;
+                    if (resultSet.next()) {
+                        count = resultSet.getInt(1);
+                    }
+                    return count;
                 }
-                return count;
+            });
+            if(query == 0){
+                return false;
+            }else {
+                return true;
             }
-        });
-        if(query == 0){
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
             return false;
-        }else {
-            return true;
         }
     }
 
@@ -230,6 +256,24 @@ public class HiveRepositoryImpl implements HiveRepository {
         System.out.println("修改表存储类型语句："+updateTableStoreTypeSql);
         int updateTableStoreTypeCount = hiveJdbcTemplate.update(updateTableStoreTypeSql);
         System.out.println("更改表存储类型影响行数："+updateTableStoreTypeCount);
+        return true;
+    }
+
+    @Override
+    public boolean dropTableByName(String name) {
+        try {
+            StringBuffer dropTableStringBuffer = new StringBuffer("");
+            dropTableStringBuffer.append("DROP TABLE IF EXISTS ");
+            dropTableStringBuffer.append(name);
+            String dropTableSql = dropTableStringBuffer.toString();
+            logger.debug("删除语句：" + dropTableSql);
+            hiveJdbcTemplate.update(dropTableSql);
+            logger.info("表" + name + "删除成功");
+        } catch (DataAccessException e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return false;
+        }
         return true;
     }
 }

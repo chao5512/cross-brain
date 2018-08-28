@@ -1,10 +1,13 @@
 package com.dataset.management.service.impl;
 
-import com.dataset.management.dao.hivedatadao.HiveRepository;
+import com.dataset.management.dao.hivedao.HiveRepository;
+import com.dataset.management.dao.hivedao.impl.HiveRepositoryImpl;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.HiveTableService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,8 @@ import java.io.IOException;
  **/
 @Service
 public class HiveTableServiceImpl implements HiveTableService {
+
+    private static Logger logger = LoggerFactory.getLogger(HiveTableServiceImpl.class);
     @Autowired
     private HiveRepository hiveRepository;
     /**
@@ -53,8 +58,22 @@ public class HiveTableServiceImpl implements HiveTableService {
      */
     @Override
     @Transactional
-    public boolean alterTableStructure(HiveTableMeta tableMeta, DataSet dataSet) {
-        return hiveRepository.alterTableStructure(tableMeta,dataSet);
+    public boolean alterTableStructure(HiveTableMeta tableMeta, User user,DataSet dataSet) {
+        try {
+            String tableName = tableMeta.getTableName();
+            //DROP TABLE IF EXISTS employee
+            boolean isDelete = hiveRepository.dropTableByName(tableName);
+            if(isDelete){
+                boolean isCreate = hiveRepository.createTable(tableMeta, user, dataSet);
+                boolean result = isCreate ? true:false;
+                return result;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return false;
+        }
     }
 
     /**

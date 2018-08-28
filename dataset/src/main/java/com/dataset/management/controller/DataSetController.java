@@ -6,6 +6,8 @@ import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.constant.DataSetConstants;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
+import com.dataset.management.entity.FieldMeta;
+import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -47,6 +49,14 @@ public class DataSetController {
 
     @Autowired
     HdfsConfig hdfsConfig;
+
+    //dataset元数据服务
+    @Autowired
+    DataSetMetastoreService metastoreService;
+
+    //hive操作相关服务
+    @Autowired
+    HiveTableService tableService;
 
     //创建
     @ResponseBody
@@ -396,6 +406,60 @@ public class DataSetController {
             }
         }
         return ss;
+    }
+
+    /**
+     * 功能描述:根据用户id查数据集名字
+     * @param userId
+     * @return: com.dataset.management.common.ApiResult
+     * @auther: 王培文
+     * @date: 2018/8/27 17:18
+     */
+    @RequestMapping(value = "dataSetTableName")
+    public ApiResult getDataSetName(@RequestParam("userId") String userId){
+        try {
+            logger.debug("用户id" + userId);
+            List<DataSet> dataSets = dataSetService.findByUserId(Integer.parseInt(userId));
+            List<String> dataSetTableNameList = new ArrayList<>();
+            for (DataSet dataSet:dataSets) {
+                String tableName = tableService.getTableNameByDataSet(dataSet);
+                if(tableName != null){
+                    dataSetTableNameList.add(tableName);
+                }
+            }
+            return ResultUtil.success(dataSetTableNameList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"获取表明失败");
+        }
+    }
+
+    /**
+     * 功能描述: 根据表名获取所有列信息
+     * @param tableName
+     * @return: com.dataset.management.common.ApiResult
+     * @auther: 王培文
+     * @date: 2018/8/27 17:24
+     */
+    @RequestMapping("dataSetColumns")
+    public ApiResult getDataSetColumns(@RequestParam("tableName") String tableName){
+        try {
+            logger.debug("表名：" + tableName);
+            HiveTableMeta tableMeta = metastoreService.getHiveTableMeta(tableName);
+            List<FieldMeta> fields = tableMeta.getFields();
+            //fieldNameList 存放查询出来的表字段信息
+            List<String> fieldNameList = new ArrayList<String>();
+            for (FieldMeta field:fields) {
+                String fieldName = field.getFieldName();
+                fieldNameList.add(fieldName);
+            }
+            return  ResultUtil.success(fieldNameList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"获取表字段信息失败");
+        }
     }
 
 

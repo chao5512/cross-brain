@@ -1,5 +1,6 @@
 package com.dataset.management.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.dataset.management.aop.annotation.PreventRepetitionAnnotation;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
@@ -11,6 +12,8 @@ import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +30,9 @@ import java.io.IOException;
 @RestController
 @RequestMapping("hive")
 public class HiveTableController {
+
+    private static Logger logger = LoggerFactory.getLogger(DataSetController.class);
+
     @Autowired
     private HiveTableService hiveTableService;
     @Autowired
@@ -46,65 +52,66 @@ public class HiveTableController {
 
     /**
      * 功能描述:创建或修改表
-     * @param tableMeta
-     * @param userId
-     * @param dataSetId
+     * @param jsonData
      * @return: com.dataset.management.common.ApiResult
      * @auther: 王培文
-     * @date: 2018/6/5 16:04
+     * @date: 2018/8/28 15:25
      */
     @PreventRepetitionAnnotation
-    @RequestMapping(value = "{userId}/{dataSetId}/{token}",method = RequestMethod.POST)
-    public ApiResult createOrUpdateTable(HiveTableMeta tableMeta,
-                                         @PathVariable("userId") String userId,
-                                         @PathVariable("dataSetId") String dataSetId,
-                                         @PathVariable("token") String token){
-        User user = new User();
-        long id = Long.parseLong(userId);
-        user.setId(id);
-        DataSet dataSet = new DataSet();
-        dataSet.setId(Integer.parseInt(dataSetId));
-        System.out.println(dataSet.getId());
-        boolean exist = hiveTableService.isExist(dataSet);
-        if(exist){
-            try {
-                boolean result = hiveTableService.alterTableStructure(tableMeta, dataSet);
-                if(result){
-                    return ResultUtil.success();
+    @RequestMapping(value = "save",method = RequestMethod.POST)
+    public ApiResult createOrUpdateTableAndPreventRepeat(@RequestBody String jsonData){
+
+        try {
+            //解析json
+            logger.info(jsonData);
+            JSONObject jsonObject = JSONObject.parseObject(jsonData);
+            long userId = jsonObject.getLongValue("userId");
+            logger.info("userId: " + userId);
+            int dataSetId = jsonObject.getIntValue("dataSetId");
+            logger.info("dataSetId: " + dataSetId);
+            String token = jsonObject.getString("token");
+            logger.info("token: " + token);
+            HiveTableMeta tableMeta = jsonObject.getObject("tableMeta", HiveTableMeta.class);
+            User user = new User();
+            user.setId(userId);
+            DataSet dataSet = new DataSet();
+            dataSet.setId(dataSetId);
+            boolean exist = hiveTableService.isExist(dataSet);
+            if(exist){
+                try {
+                    boolean result = hiveTableService.alterTableStructure(tableMeta, user,dataSet);
+                    if(result){
+                        logger.info("表更新成功");
+                        return ResultUtil.success();
+                    }
+                    logger.error("更新失败");
+                    return ResultUtil.error(-1,"更新失败");
+                }catch (Exception e){
+                    e.printStackTrace();
+                    logger.error(String.valueOf(e.getStackTrace()));
+                    return ResultUtil.error(-1,"更新失败");
                 }
-                return ResultUtil.error(-1,"更新失败");
-            }catch (Exception e){
-                e.printStackTrace();
-                return ResultUtil.error(-1,"更新失败");
-            }
-        }else{
-            boolean table = false;
-            try {
-                table = hiveTableService.createTable(tableMeta, user, dataSet);
-                //更新hive 表名称和其他相关
-                DataSet dataSetConTent = dataSetService.findById(Integer.parseInt(dataSetId));
-                String hiveTableName = tableMeta.getTableName();
-                long timetmp = System.currentTimeMillis();
-                String hiveTableID = hiveTableName+"_"+timetmp;
-                dataSetConTent.setDataSetHiveTableName(hiveTableName);
-
-
-                String hdfsUrl = hdfsConfig.getHdfsUrl();
-                Long hdfsPort = hdfsConfig.getHdfsProt();
-                String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
-                        +"/"+dataSetConTent.getId()+"/"+dataSetConTent.getDataSetName();
-                dataSetConTent.setDataSetStoreUrl(dataStoreUrl);
-                dataSetService.save(dataSetConTent);
-
-                if(table){
-                    return ResultUtil.success();
-                }else {
-                    return ResultUtil.error(-1,"表已经存在");
+            }else{
+                boolean table = false;
+                try {
+                    table = hiveTableService.createTable(tableMeta, user, dataSet);
+                    if(table){
+                        logger.info("创建成功");
+                        return ResultUtil.success();
+                    }else {
+                        logger.error("创建失败,表已经存在");
+                        return ResultUtil.error(-1,"表已经存在");
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    logger.error(String.valueOf(e.getStackTrace()));
+                    return ResultUtil.error(-1,"创建表失败");
                 }
-            } catch (IOException e) {
-                e.printStackTrace();
-                return ResultUtil.error(-1,"更新失败");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"参数异常");
         }
     }
 
@@ -115,17 +122,24 @@ public class HiveTableController {
      * @auther: 王培文
      * @date: 2018/6/5 16:05
      */
-    @RequestMapping(value = "getTableMeta/{datasetId}")
-    public ApiResult getHiveTableMeta(@PathVariable("datasetId") String datasetId){
-        DataSet dataSet = new DataSet();
-        dataSet.setId(Integer.parseInt(datasetId));
-        HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
-        String tableName = hiveTableMeta.getTableName();
-        int length = tableName.length();
-        int index = tableName.indexOf("_");
-        String subTableName = tableName.substring(index + 1, length);
-        hiveTableMeta.setTableName(subTableName);
-        return ResultUtil.success(hiveTableMeta);
+    @RequestMapping(value = "getTableMeta",method = RequestMethod.POST)
+    public ApiResult getHiveTableMeta(@RequestParam("datasetId") String datasetId){
+        try {
+            DataSet dataSet = new DataSet();
+            dataSet.setId(Integer.parseInt(datasetId));
+            HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
+            String tableName = hiveTableMeta.getTableName();
+            int length = tableName.length();
+            int index = tableName.indexOf("_");
+            String subTableName = tableName.substring(index + 1, length);
+            hiveTableMeta.setTableName(subTableName);
+            logger.info("查询成功");
+            return ResultUtil.success(hiveTableMeta);
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"获取表信息失败");
+        }
     }
 
 }

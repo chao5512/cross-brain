@@ -26,7 +26,7 @@ spring:
 #    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   hivedata_jdbc:
-    url: jdbc:mysql://182.92.82.3:3306/hive_ai2?createDatabaseIfNotExist=true
+    url: jdbc:mysql://182.92.82.3:3306/ai_studio?createDatabaseIfNotExist=true
 #    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
     username: root
     password: 111111
@@ -41,7 +41,7 @@ spring:
     show-sql: true
 #  redis配置
   redis:
-    host: 182.92.82.3
+    host: 47.105.127.125
     database: 0
     port: 6379
     jedis:
