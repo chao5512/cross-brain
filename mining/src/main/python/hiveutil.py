@@ -1,6 +1,7 @@
 from sqlalchemy import *
 import pandas as pd
 import configparser
+import sys
 
 
 class HiveClient:
@@ -15,7 +16,7 @@ class HiveClient:
         从配置文件中读取配置
         """
         cf = configparser.ConfigParser()
-        cf.read("../resources/ini.cfg")
+        cf.read(sys.path[0]+"/../resources/ini.cfg")
         """
         创建 engine
         """

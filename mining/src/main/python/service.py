@@ -92,7 +92,7 @@ def head():
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
         except BaseException as e:
-            logging.info(e.args)
+            logging.exception(e)
             result= Result(code=1002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
