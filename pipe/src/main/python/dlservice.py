@@ -38,6 +38,7 @@ def health():
 @app.route("/deeplearning/job/execute",methods=['POST'])
 def execute():
     data = json.loads(request.get_data())
+    logger.info("请求参数:"+data)
     # step 1 create job thread
     job_id = data['jobId']
     logger.info("job_id:"+job_id)
