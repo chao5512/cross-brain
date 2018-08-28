@@ -63,7 +63,7 @@ public class DataSetController {
     @ApiOperation(value = "创建数据集",httpMethod = "POST")
     @RequestMapping(value = "/create",method = RequestMethod.POST)
     public ApiResult createDataSet(@RequestParam(value = "dataSetName") String dataSetName,
-                                   @RequestParam(value = "dataSetEnglishName") String dataSetEnglishName,
+                                   @RequestParam(value = "dataSetEnglishName",required = false) String dataSetEnglishName,
                                    @RequestParam(value = "dataSetDesc") String datSetDesc,
                                    @RequestParam(value = "dataSetPower") int dataSetPower,
                                    @RequestParam(value = "userId") int userId) throws IOException{
