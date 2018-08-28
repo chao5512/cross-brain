@@ -15,7 +15,7 @@ public class Constants {
     //python predict端口地址
     public static final String PY_SERVER_PREDICT = "http://47.105.127.125:3001/machinelearning/predict";
 
-    public static final String PY_SERVER_DEEP = "http://47.105.127.125:3002/deeplearning/execute";
+    public static final String PY_SERVER_DEEP = "http://47.105.127.125:3002/deeplearning/job/execute";
 
     //监听类
     public static final String LR_LISTENER_U = "com.bonc.pezy.algorithmmodel.classification.LRUserTask";
