@@ -178,7 +178,7 @@ def submit(*args,**kwaggs):
         # lable
         accuracy = pipe.evaluator(originalEvaluator, prediction, "label")
         logger.info("Test evaluatorResult = " + str(accuracy))
-        HDFSUtil.append(evaluatorResult,accuracy,True)
+        HDFSUtil.append(evaluatorResult,str(accuracy),True)
         res = requests.post(req_task_address,params={'jobId':data['jobId'],'taskId':originalEvaluator,'status':1})
     except BaseException as e:
         logger.exception(e)
@@ -279,7 +279,9 @@ def predict_submit(*args, **kwaggs):
     logger.info('save  result')
     try:
         #Step 5 保存结果
-        prediction.write.json(path=root_path + "/result/",mode="overwrite")
+        selection = [column.name for column in pipe.dataFrame.schema.fields if column.name != "label"]
+        selection.append("prediction")
+        prediction.select(*selection).write.json(path=root_path + "/result/", mode="overwrite")
         spark.sql("drop table if exists  %s " % (predict_table_name))
     except BaseException as e:
         logger.exception(e)

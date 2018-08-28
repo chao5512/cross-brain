@@ -1,7 +1,7 @@
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://182.92.82.3:8081/stretch/eureka/
+      defaultZone: http://localhost:8051/stretch/eureka/
 server:
   port: 7777
   ip: localhost
@@ -26,7 +26,7 @@ spring:
 #    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   hivedata_jdbc:
-    url: jdbc:mysql://182.92.82.3:3306/ai_studio?createDatabaseIfNotExist=true
+    url: jdbc:mysql://182.92.82.3:3306/hive_ai2?createDatabaseIfNotExist=true
 #    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
     username: root
     password: 111111

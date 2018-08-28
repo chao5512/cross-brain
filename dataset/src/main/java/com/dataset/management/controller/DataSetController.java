@@ -65,7 +65,7 @@ public class DataSetController {
     public ApiResult createDataSet(@RequestParam(value = "dataSetName") String dataSetName,
                                    @RequestParam(value = "dataSetEnglishName") String dataSetEnglishName,
                                    @RequestParam(value = "dataSetDesc") String datSetDesc,
-                                   @RequestParam(value = "dataSetPower") String dataSetPower,
+                                   @RequestParam(value = "dataSetPower") int dataSetPower,
                                    @RequestParam(value = "userId") int userId) throws IOException{
         //先生成默认的
         DataSet dataSet = packageDataSet();
@@ -99,11 +99,11 @@ public class DataSetController {
             //数据集表信息
             logger.info("数据集基本表创建。。。。。。");
             DataSet dataSetcreate = dataSetService.save(dataSet);
-            int datasetId = dataSetcreate.getId();
 
             return  ResultUtil.success(dataSetService.save(dataSetcreate));
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("创建失败");
             return ResultUtil.error(-1,"创建失败");
         }
     }
@@ -122,6 +122,7 @@ public class DataSetController {
             return ResultUtil.success(dataSet);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("查询失败");
             return ResultUtil.error(-1,"查询失败");
         }
     }
@@ -141,6 +142,7 @@ public class DataSetController {
             return ResultUtil.success(dataSet);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("查询失败");
             return ResultUtil.error(-1,"查询失败");
         }
     }
@@ -160,6 +162,7 @@ public class DataSetController {
             return ResultUtil.success(dataSet);
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("查询失败");
             return ResultUtil.error(-1,"查询失败");
         }
     }
@@ -179,6 +182,7 @@ public class DataSetController {
             return ResultUtil.success(dataSets);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("查询失败");
             return ResultUtil.error(-1,"查询失败");
         }
     }
@@ -197,6 +201,7 @@ public class DataSetController {
             return ResultUtil.success(dataSets);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("查询失败");
             return ResultUtil.error(-1,"查询失败");
         }
     }
@@ -211,7 +216,7 @@ public class DataSetController {
     @RequestMapping(value = "/update",method = RequestMethod.POST)
     public ApiResult updateDataByJson(@RequestParam(value = "newDataSetName") String newDataSetName,
                                       @RequestParam(value = "newDataSetDesc") String newDataSetDesc,
-                                      @RequestParam(value = "newDataSetPower") String newDataSetPower,
+                                      @RequestParam(value = "newDataSetPower") int newDataSetPower,
                                       @RequestParam(value = "dataSetId") int dataSetId) throws IOException{
 
         try {
@@ -250,6 +255,7 @@ public class DataSetController {
             return ResultUtil.success(newDataSet);
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            logger.error("修改失败");
             return ResultUtil.error(-1,"修改失败");
         }
     }
@@ -300,6 +306,7 @@ public class DataSetController {
             return ResultUtil.error(-1,"清空失败");
         } catch (NumberFormatException e) {
             e.printStackTrace();
+            logger.error("清空失败");
             return ResultUtil.error(-1,"清空失败");
         }
     }
@@ -327,9 +334,11 @@ public class DataSetController {
             }else {
                 logger.info("准备从数据集文件表中删除数据集：");
                 dataSetFileService.deleteDataSetFilesByDataSetId(dataSetId);
+
             }
         } catch (IOException e) {
             e.printStackTrace();
+            logger.error("删除失败");
             return ResultUtil.error(-1,"删除失败");
         }
 
@@ -351,6 +360,8 @@ public class DataSetController {
             }
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("删除失败");
+            return ResultUtil.error(-1,"删除失败");
         }
         return ResultUtil.success();
     }
@@ -362,7 +373,14 @@ public class DataSetController {
         return sort;
     }
     private Sort basicSortBy(){
-        return new Sort(Sort.Direction.fromString(DataSetConstants.SORTTYPE_ASC),DataSetConstants.SORT_BY_DATASET_ENGLISH_NAME);
+        List<Sort.Order> sortList = new ArrayList<Sort.Order>();
+        Sort.Order datasetNameSortBy = new Sort.Order(Sort.Direction.DESC,DataSetConstants.SORT_BY_DATASET_NAME);
+        Sort.Order datasetPowerSortBy = new Sort.Order(Sort.Direction.DESC,DataSetConstants.SORT_BY_DATASET_POWER);
+        Sort.Order datasetUploadSortBy = new Sort.Order(Sort.Direction.DESC,DataSetConstants.SORT_BY_DATASET_CREATE_TIME);
+        sortList.add(datasetPowerSortBy);
+        sortList.add(datasetUploadSortBy);
+        sortList.add(datasetNameSortBy);
+        return new Sort(sortList);
     }
     private DataSet packageDataSet(){
         DataSet dataSet = new DataSet();

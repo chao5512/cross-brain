@@ -2,9 +2,9 @@ package com.dataset.management.constant;
 
 public class DataSetConstants {
 
-    public static final String POWER_PUBLIC = "PUBLIC";
+    public static final int POWER_PUBLIC = 0;
 
-    public static final String POWER_PRIVATE = "PRIVATE";
+    public static final int POWER_PRIVATE = 1;
 
     public static final String SORT_BY_DATASET_ENGLISH_NAME = "dataSetEnglishName";
 
@@ -20,11 +20,11 @@ public class DataSetConstants {
 
     public static final String SORTTYPE_DESC = "desc";
 
-    public static final String MAX_CONTENER = "150";
+    public static final String MAX_CONTENER = "0kb";
 
-    public static final String UPLOAD_STATUS_LOADING = "LOADING";
+    public static final int UPLOAD_STATUS_LOADING = 0;
 
-    public static final String UPLOAD_STATUS_COMPLETE = "COMPLETE";
+    public static final int UPLOAD_STATUS_COMPLETE = 1;
 
     public static final String DATASET_ENGLISH_NAME ="admin";
 

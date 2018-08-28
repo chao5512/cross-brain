@@ -32,9 +32,9 @@ class DLPipeline():
 
     def predict(self):
         logger.info("running")
-        network = Factory.network(str(self.jsonData['networktype']))
-        logger.info(self.jsonData['networktype'])
-        spape = self.jsonData['shape'].split(',')
+        network = Factory.network(str(self.jsonData['vgg16']['networktype']))
+        logger.info(self.jsonData['vgg16']['networktype'])
+        spape = self.jsonData['picture']['shape'].split(',')
         s = []
         for i in spape:
             if(i=='None'):
@@ -102,9 +102,9 @@ class DLPipeline():
 
     def run(self):
         logger.info("running")
-        network = Factory.network(str(self.jsonData['networktype']))
-        logger.info(self.jsonData['networktype'])
-        spape = self.jsonData['shape'].split(',')
+        network = Factory.network(str(self.jsonData['vgg16']['networktype']))
+        logger.info(self.jsonData['vgg16']['networktype'])
+        spape = self.jsonData['picture']['shape'].split(',')
         s = []
         for i in spape:
             if(i=='None'):
@@ -158,14 +158,14 @@ class DLPipeline():
         elif(isinstance(network,Vgg16)):
             logger.info('execute vgg16')
             print('vgg16')
-            network.setParams(str(self.jsonData['jobId']),int(self.jsonData['n_epoch']),
-                              int(self.jsonData['batch_size']),int(self.jsonData['num_class']),
-                              str(self.jsonData['optimizer']),str(self.jsonData['loss']),
-                              str(self.jsonData['checkpoint_path']),str(self.jsonData['tensorboard_dir']),
-                              str(self.jsonData['model_path']),
-                              str(self.jsonData['train_set']),list(s),
-                              float(self.jsonData['learning_rate']),
-                              int(self.jsonData['snapshot_step']),float(self.jsonData['validation_set']))
+            network.setParams(str(self.jsonData['jobId']),int(self.jsonData['vgg16']['n_epoch']),
+                              int(self.jsonData['vgg16']['batch_size']),int(self.jsonData['vgg16']['num_class']),
+                              str(self.jsonData['vgg16']['optimizer']),str(self.jsonData['vgg16']['loss']),
+                              str(self.jsonData['vgg16']['checkpoint_path']),str(self.jsonData['vgg16']['tensorboard_dir']),
+                              str(self.jsonData['vgg16']['model_path']),
+                              str(self.jsonData['picture']['train_set']),list(s),
+                              float(self.jsonData['vgg16']['learning_rate']),
+                              int(self.jsonData['vgg16']['snapshot_step']),float(self.jsonData['vgg16']['validation_set']))
         elif(isinstance(network,LSTM)):
             logger.info('execute lstm')
             network.setParams()
