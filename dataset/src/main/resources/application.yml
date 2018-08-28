@@ -10,7 +10,7 @@ token:
   type: client_credentials
   scope: select
   client_secret: 123456
-  url: http://localhost:8082/oauth/token
+  url: htt8082p://localhost:/oauth/token
 spring:
   application:
     name: dataset
