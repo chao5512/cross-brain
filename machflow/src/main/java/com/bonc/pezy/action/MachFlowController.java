@@ -115,9 +115,9 @@ public class MachFlowController {
             process = mlFlow.generateMLBpmnModel(jb,jobcom,jobService);
         }
         if(model.getModelType()==2){
-            JSONObject jb = JSON.parseObject(jsondata);
-            DeepLearnFlow deepLearnFlow = new DeepLearnFlow();
-            process = deepLearnFlow.generateDLBpmnModel(jb,jobcom,taskService);
+            JSONArray jb = JSONArray.parseArray(jsondata);
+            MLFlow mlFlow = new MLFlow();
+            process = mlFlow.generateMLBpmnModel(jb,jobcom,jobService);
         }
         filename = modelId+"."+"bpmn20.bpmn";
         if(process != null&&(!"".equals(filename))){
