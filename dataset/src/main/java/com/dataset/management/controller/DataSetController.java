@@ -433,7 +433,7 @@ public class DataSetController {
      * @auther: 王培文
      * @date: 2018/8/27 17:18
      */
-    @RequestMapping(value = "dataSetTableName")
+    @RequestMapping(value = "dataSetTableName",method = RequestMethod.POST)
     public ApiResult getDataSetName(@RequestParam("userId") String userId){
         try {
             logger.debug("用户id" + userId);
@@ -460,7 +460,7 @@ public class DataSetController {
      * @auther: 王培文
      * @date: 2018/8/27 17:24
      */
-    @RequestMapping("dataSetColumns")
+    @RequestMapping(value="dataSetColumns",method = RequestMethod.POST)
     public ApiResult getDataSetColumns(@RequestParam("tableName") String tableName){
         try {
             logger.debug("表名：" + tableName);
