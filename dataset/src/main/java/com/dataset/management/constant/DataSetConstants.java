@@ -20,7 +20,7 @@ public class DataSetConstants {
 
     public static final String SORTTYPE_DESC = "desc";
 
-    public static final String MAX_CONTENER = "150";
+    public static final String MAX_CONTENER = "0kb";
 
     public static final int UPLOAD_STATUS_LOADING = 0;
 
