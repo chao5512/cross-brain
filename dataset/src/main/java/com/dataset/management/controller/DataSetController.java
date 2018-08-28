@@ -109,9 +109,9 @@ public class DataSetController {
     }
 
     //查询  Id
-    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectById",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectById",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetId(@RequestParam("dataSetId") int dataSetId){
         logger.info("开始罗列数据据基本信息");
         try {
@@ -128,9 +128,9 @@ public class DataSetController {
     }
 
     //查询  datasetEnglishName
-    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetEnglishName(@RequestParam("dataSetEnglishName") String dataSetEnglishName,
                                                          @RequestParam(value = "userId") int userId){
         logger.info("开始罗列数据据基本信息");
@@ -148,9 +148,9 @@ public class DataSetController {
     }
 
     //查询  datasetName
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetName(@RequestParam("dataSetName") String dataSetName,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
@@ -168,9 +168,9 @@ public class DataSetController {
     }
 
     //模糊查询  datasetNameLike
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetNameLike(@RequestParam("dataSetName") String dataSetNameLike,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
@@ -188,9 +188,9 @@ public class DataSetController {
     }
 
     //查询全部  user  Id
-    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByUserId",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByUserId",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByUserId(@RequestParam("UserId") int userId){
         logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
         try {
@@ -433,6 +433,8 @@ public class DataSetController {
      * @auther: 王培文
      * @date: 2018/8/27 17:18
      */
+    @ResponseBody
+    @ApiOperation(value = "根据用户id查数据集名字",httpMethod = "POST")
     @RequestMapping(value = "dataSetTableName",method = RequestMethod.POST)
     public ApiResult getDataSetName(@RequestParam("userId") String userId){
         try {
@@ -460,6 +462,8 @@ public class DataSetController {
      * @auther: 王培文
      * @date: 2018/8/27 17:24
      */
+    @ResponseBody
+    @ApiOperation(value = "根据表名获取所有列信息",httpMethod = "POST")
     @RequestMapping(value="dataSetColumns",method = RequestMethod.POST)
     public ApiResult getDataSetColumns(@RequestParam("tableName") String tableName){
         try {
