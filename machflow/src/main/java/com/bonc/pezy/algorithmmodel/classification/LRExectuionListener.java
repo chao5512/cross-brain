@@ -62,7 +62,8 @@ public class LRExectuionListener implements Serializable, ExecutionListener{
             }
             param.put("tasks",map);
             pipe = JSONUtils.toJSONString(param);
-            System.out.println(pipe);
+            System.out.println("请求JSON："+pipe);
+            System.out.println("请求URL："+url);
             if (!"".equals(pipe)){
                 JavaRequestPythonService jrps = new JavaRequestPythonService();
                 String result = jrps.requestPythonService(pipe,url);

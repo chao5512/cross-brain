@@ -37,11 +37,11 @@ def health():
 # 深度学习任务执行服务
 @app.route("/deeplearning/job/execute",methods=['POST'])
 def execute():
-    data = json.loads(request.get_data())
-    # step 1 create job thread
-    job_id = data['jobId']
-    logger.info("job_id:"+job_id)
     try:
+        data = json.loads(request.get_data())
+        job_id = data['jobId']
+        logger.info("job_id:"+job_id)
+        # step 1 create job thread
         # 创建深度学习任务线程
         t =threading.Thread(target=submit,kwargs=(data))
         # 启动
@@ -88,6 +88,7 @@ def submit(**kwaggs):
     #HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
         #HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
+        print('start dl')
         pipe.run()
         #HDFSUtil.append(job_path,"任务执行成功!\n",True)
         #HDFSUtil.append(job_path,"更新任务状态!\n",True)
