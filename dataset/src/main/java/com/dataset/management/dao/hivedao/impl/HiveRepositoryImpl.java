@@ -74,7 +74,7 @@ public class HiveRepositoryImpl implements HiveRepository {
                     sb.append(",");
                 }
             }
-            sb.append(")");
+            sb.append(") ");
             sb.append("comment '");
             sb.append(tableMeta.getTableComment()+"' ");
             sb.append("row format delimited fields terminated by '");
@@ -97,9 +97,8 @@ public class HiveRepositoryImpl implements HiveRepository {
             hiveJdbcTemplate.execute(sql);
             logger.info("表" + tableName +"创建成功");
             //保存到数据库
-            DataSet oldDataSet = dataSetOptService.findById(dataSet.getId());
-            oldDataSet.setDataSetHiveTableName(tableName);
-            dataSetOptService.save(oldDataSet);
+            data.setDataSetHiveTableName(tableName);
+            dataSetOptService.save(data);
             logger.info("表" + tableName + "更新数据库总的字段成功");
         } catch (DataAccessException e) {
             e.printStackTrace();
@@ -262,11 +261,12 @@ public class HiveRepositoryImpl implements HiveRepository {
     @Override
     public boolean dropTableByName(String name) {
         try {
+            logger.info("表名：" + name);
             StringBuffer dropTableStringBuffer = new StringBuffer("");
             dropTableStringBuffer.append("DROP TABLE IF EXISTS ");
             dropTableStringBuffer.append(name);
             String dropTableSql = dropTableStringBuffer.toString();
-            logger.debug("删除语句：" + dropTableSql);
+            logger.info("删除语句：" + dropTableSql);
             hiveJdbcTemplate.update(dropTableSql);
             logger.info("表" + name + "删除成功");
         } catch (DataAccessException e) {

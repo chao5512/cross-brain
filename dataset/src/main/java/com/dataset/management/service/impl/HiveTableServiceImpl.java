@@ -61,6 +61,9 @@ public class HiveTableServiceImpl implements HiveTableService {
     public boolean alterTableStructure(HiveTableMeta tableMeta, User user,DataSet dataSet) {
         try {
             String tableName = tableMeta.getTableName();
+            //完成表名的拼接
+            tableName = dataSet.getId() + "_" +tableName;
+            logger.info("表名：" + tableName);
             //DROP TABLE IF EXISTS employee
             boolean isDelete = hiveRepository.dropTableByName(tableName);
             if(isDelete){

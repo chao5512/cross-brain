@@ -26,7 +26,7 @@ import java.util.Map;
         basePackages = {"com.dataset.management.dao.hivedao"})
 public class SecondaryConfig {
     @Resource
-    @Qualifier("hivedata_jdbc")
+    @Qualifier("secondaryDataSource")
     private DataSource secondaryDataSource;
 
     @Bean(name = "entityManagerSecondary")

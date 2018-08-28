@@ -126,16 +126,18 @@ public class HiveTableController {
     public ApiResult getHiveTableMeta(@RequestParam("datasetId") String datasetId){
         try {
             DataSet dataSet = new DataSet();
+            logger.info("datasetId: "+datasetId);
             dataSet.setId(Integer.parseInt(datasetId));
             HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
             String tableName = hiveTableMeta.getTableName();
+            logger.info("tableName: " + tableName);
             int length = tableName.length();
             int index = tableName.indexOf("_");
             String subTableName = tableName.substring(index + 1, length);
             hiveTableMeta.setTableName(subTableName);
             logger.info("查询成功");
             return ResultUtil.success(hiveTableMeta);
-        } catch (NumberFormatException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
             return ResultUtil.error(-1,"获取表信息失败");

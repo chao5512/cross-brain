@@ -26,7 +26,7 @@ spring:
 #    password: 123456
     driver-class-name: com.mysql.jdbc.Driver
   hivedata_jdbc:
-    url: jdbc:mysql://182.92.82.3:3306/hive_ai2?createDatabaseIfNotExist=true
+    url: jdbc:mysql://182.92.82.3:3306/hive_ali2?createDatabaseIfNotExist=true
 #    url: jdbc:mysql://172.16.31.234:3306/hive_91?createDatabaseIfNotExist=true
     username: root
     password: 111111
