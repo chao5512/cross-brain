@@ -164,6 +164,7 @@ public class DataSetFileController {
             return ResultUtil.success(newDatasetFiles);
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("文件上传失败");
             return ResultUtil.error(-1,"文件上传失败");
         }
     }
@@ -176,6 +177,7 @@ public class DataSetFileController {
         Sort sort;
 
         sort = basicSortBy();
+
         logger.info("查看数据集文件的列表：");
         try {
             List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId,sort);
@@ -189,7 +191,8 @@ public class DataSetFileController {
             return ResultUtil.success(fileList);
         } catch (Exception e) {
             e.printStackTrace();
-            return ResultUtil.error(-1,"文件查询操作异常");
+            logger.error("文件查询操作失败");
+            return ResultUtil.error(-1,"文件查询操作失败");
         }
     }
 
@@ -216,6 +219,7 @@ public class DataSetFileController {
             return ResultUtil.success();
         } catch (Exception e) {
             e.printStackTrace();
+            logger.error("删除失败");
             return ResultUtil.error(-1,"删除失败");
         }
     }
@@ -231,7 +235,12 @@ public class DataSetFileController {
     }
 
     private Sort basicSortBy(){
-        return new Sort(Sort.Direction.fromString(DataSetFileConstants.FILE_SORT_TYPE_ASC), DataSetFileConstants.FILE_SORT_BY_FILENAME);
+        List<Sort.Order> sortList = new ArrayList<Sort.Order>();
+        Sort.Order datasetFileNameSortBy = new Sort.Order(Sort.Direction.DESC, DataSetFileConstants.FILE_SORT_BY_FILENAME);
+        Sort.Order datasetFileUpdateTime = new Sort.Order(Sort.Direction.DESC,DataSetFileConstants.FILE_SORT_BY_UPLOADTIME);
+        sortList.add(datasetFileNameSortBy);
+        sortList.add(datasetFileUpdateTime);
+        return new Sort(sortList);
     }
 
     private List<String> isExistsFiles(List<DataSetFile> dataSetFiles){

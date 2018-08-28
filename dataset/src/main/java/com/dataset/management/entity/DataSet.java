@@ -23,10 +23,10 @@ public class DataSet implements Serializable{
     private String dataSetEnglishName;
     //数据集上传文件状态
     @Column(name = "dataset_status")
-    private String dataSetStatus;
+    private int dataSetStatus;
     //数据集公开状态
     @Column(name = "dataset_if_public")
-    private String dataSetPower;
+    private int dataSetPower;
     //数据集最后修改时间
     @Column(name = "dataset_updated_time")
     private String dataSetLastUpdateTime;
@@ -90,18 +90,18 @@ public class DataSet implements Serializable{
     }
 
     //数据集当前上传文件状态：
-    public String getDataSetStatus() {
+    public int getDataSetStatus() {
         return dataSetStatus;
     }
-    public void setDataSetStatus(String datasetStatus) {
+    public void setDataSetStatus(int datasetStatus) {
         dataSetStatus = datasetStatus;
     }
 
     //数据集公开状态
-    public String getDataSetPower() {
+    public int getDataSetPower() {
         return dataSetPower;
     }
-    public void setDataSetPower(String datasetPower) {
+    public void setDataSetPower(int datasetPower) {
         dataSetPower = datasetPower;
     }
 
