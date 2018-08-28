@@ -1,6 +1,6 @@
-package com.dataset.management.dao.hivedatadao.impl;
+package com.dataset.management.dao.hivedao.impl;
 
-import com.dataset.management.dao.hivedatadao.DataSetMetastoreRepository;
+import com.dataset.management.dao.hivedao.DataSetMetastoreRepository;
 import com.dataset.management.entity.FieldMeta;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.util.TableTypeTransform;
@@ -79,7 +79,7 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                 StringBuffer sb = new StringBuffer("");
                 boolean existLineDelim = isExistLineDelim(tableName);
                 if(!existLineDelim){
-                    sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME,C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM,PT.PART_NAME,S.INPUT_FORMAT\n" +
+                    sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME,C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM,S.INPUT_FORMAT\n" +
                             "FROM TBLS T " +
                             "LEFT JOIN TABLE_PARAMS P " +
                             "ON T.TBL_ID = P.TBL_ID " +
@@ -87,8 +87,6 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                             "ON T.SD_ID = S.SD_ID " +
                             "LEFT JOIN COLUMNS_V2 C " +
                             "ON S.CD_ID = C.CD_ID " +
-                            "LEFT JOIN PARTITIONS PT " +
-                            "ON T.TBL_ID = PT.TBL_ID " +
                             "LEFT JOIN SERDE_PARAMS D1 " +
                             "ON S.SERDE_ID = D1.SERDE_ID " +
                             "WHERE P.PARAM_KEY = 'comment' " +
@@ -97,18 +95,16 @@ public class DataSetMetastoreRepostoryImpl implements DataSetMetastoreRepository
                 }else{
                     sb.append("SELECT T.TBL_NAME,P.PARAM_VALUE TABLE_COMMENT,C.COLUMN_NAME," +
                             "C.TYPE_NAME,C.COMMENT COLUMN_COMMENT,D1.PARAM_VALUE FIELD_DELIM," +
-                            "D2.PARAM_VALUE LINE_DELIM,PT.PART_NAME,S.INPUT_FORMAT " +
+                            "D2.PARAM_VALUE LINE_DELIM,S.INPUT_FORMAT " +
                             "FROM TBLS T " +
                             "JOIN TABLE_PARAMS P " +
                             "JOIN SDS S " +
                             "JOIN COLUMNS_V2 C " +
-                            "JOIN PARTITIONS PT " +
                             "JOIN SERDE_PARAMS D1 " +
                             "JOIN SERDE_PARAMS D2 " +
                             "WHERE T.TBL_ID = P.TBL_ID " +
                             "AND T.SD_ID = S.SD_ID " +
                             "AND S.CD_ID = C.CD_ID " +
-                            "AND T.TBL_ID = PT.TBL_ID " +
                             "AND S.SERDE_ID = D1.SERDE_ID " +
                             "AND S.SERDE_ID = D2.SERDE_ID " +
                             "AND P.PARAM_KEY = 'comment' " +

@@ -6,6 +6,8 @@ import com.dataset.management.config.HdfsConfig;
 import com.dataset.management.constant.DataSetConstants;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.DataSetFile;
+import com.dataset.management.entity.FieldMeta;
+import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -48,12 +50,20 @@ public class DataSetController {
     @Autowired
     HdfsConfig hdfsConfig;
 
+    //dataset元数据服务
+    @Autowired
+    DataSetMetastoreService metastoreService;
+
+    //hive操作相关服务
+    @Autowired
+    HiveTableService tableService;
+
     //创建
     @ResponseBody
     @ApiOperation(value = "创建数据集",httpMethod = "POST")
     @RequestMapping(value = "/create",method = RequestMethod.POST)
     public ApiResult createDataSet(@RequestParam(value = "dataSetName") String dataSetName,
-                                   @RequestParam(value = "dataSetEnglishName") String dataSetEnglishName,
+                                   @RequestParam(value = "dataSetEnglishName",required = false,defaultValue = "") String dataSetEnglishName,
                                    @RequestParam(value = "dataSetDesc") String datSetDesc,
                                    @RequestParam(value = "dataSetPower") int dataSetPower,
                                    @RequestParam(value = "userId") int userId) throws IOException{
@@ -99,9 +109,9 @@ public class DataSetController {
     }
 
     //查询  Id
-    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectById",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectById",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetId(@RequestParam("dataSetId") int dataSetId){
         logger.info("开始罗列数据据基本信息");
         try {
@@ -118,9 +128,9 @@ public class DataSetController {
     }
 
     //查询  datasetEnglishName
-    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetEnglishName(@RequestParam("dataSetEnglishName") String dataSetEnglishName,
                                                          @RequestParam(value = "userId") int userId){
         logger.info("开始罗列数据据基本信息");
@@ -138,9 +148,9 @@ public class DataSetController {
     }
 
     //查询  datasetName
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetName(@RequestParam("dataSetName") String dataSetName,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
@@ -158,9 +168,9 @@ public class DataSetController {
     }
 
     //模糊查询  datasetNameLike
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByDataSetNameLike(@RequestParam("dataSetName") String dataSetNameLike,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
@@ -178,9 +188,9 @@ public class DataSetController {
     }
 
     //查询全部  user  Id
-    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "GET")
+    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "POST")
     @ResponseBody
-    @RequestMapping(value = "/selectByUserId",method = RequestMethod.GET)
+    @RequestMapping(value = "/selectByUserId",method = RequestMethod.POST)
     public ApiResult listInfoDataSetByUserId(@RequestParam("UserId") int userId){
         logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
         try {
@@ -414,6 +424,64 @@ public class DataSetController {
             }
         }
         return ss;
+    }
+
+    /**
+     * 功能描述:根据用户id查数据集名字
+     * @param userId
+     * @return: com.dataset.management.common.ApiResult
+     * @auther: 王培文
+     * @date: 2018/8/27 17:18
+     */
+    @ResponseBody
+    @ApiOperation(value = "根据用户id查数据集名字",httpMethod = "POST")
+    @RequestMapping(value = "dataSetTableName",method = RequestMethod.POST)
+    public ApiResult getDataSetName(@RequestParam("userId") String userId){
+        try {
+            logger.debug("用户id" + userId);
+            List<DataSet> dataSets = dataSetService.findByUserId(Integer.parseInt(userId));
+            List<String> dataSetTableNameList = new ArrayList<>();
+            for (DataSet dataSet:dataSets) {
+                String tableName = tableService.getTableNameByDataSet(dataSet);
+                if(tableName != null){
+                    dataSetTableNameList.add(tableName);
+                }
+            }
+            return ResultUtil.success(dataSetTableNameList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"获取表明失败");
+        }
+    }
+
+    /**
+     * 功能描述: 根据表名获取所有列信息
+     * @param tableName
+     * @return: com.dataset.management.common.ApiResult
+     * @auther: 王培文
+     * @date: 2018/8/27 17:24
+     */
+    @ResponseBody
+    @ApiOperation(value = "根据表名获取所有列信息",httpMethod = "POST")
+    @RequestMapping(value="dataSetColumns",method = RequestMethod.POST)
+    public ApiResult getDataSetColumns(@RequestParam("tableName") String tableName){
+        try {
+            logger.debug("表名：" + tableName);
+            HiveTableMeta tableMeta = metastoreService.getHiveTableMeta(tableName);
+            List<FieldMeta> fields = tableMeta.getFields();
+            //fieldNameList 存放查询出来的表字段信息
+            List<String> fieldNameList = new ArrayList<String>();
+            for (FieldMeta field:fields) {
+                String fieldName = field.getFieldName();
+                fieldNameList.add(fieldName);
+            }
+            return  ResultUtil.success(fieldNameList);
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.error(String.valueOf(e.getStackTrace()));
+            return ResultUtil.error(-1,"获取表字段信息失败");
+        }
     }
 
 

@@ -15,7 +15,7 @@ import java.io.IOException;
  **/
 public interface HiveTableService {
     boolean createTable(HiveTableMeta tableMeta, User user, DataSet dataSet) throws IOException;
-    boolean alterTableStructure(HiveTableMeta tableMeta,DataSet dataSet);
+    boolean alterTableStructure(HiveTableMeta tableMeta,User user,DataSet dataSet);
     boolean isExist(DataSet dataSet);
     String getTableNameByDataSet(DataSet dataSet);
 }

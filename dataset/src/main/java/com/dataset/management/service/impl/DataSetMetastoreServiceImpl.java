@@ -1,7 +1,7 @@
 package com.dataset.management.service.impl;
 
-import com.dataset.management.dao.hivedatadao.DataSetMetastoreRepository;
-import com.dataset.management.dao.hivedatadao.HiveRepository;
+import com.dataset.management.dao.hivedao.DataSetMetastoreRepository;
+import com.dataset.management.dao.hivedao.HiveRepository;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.service.DataSetMetastoreService;
