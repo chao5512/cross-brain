@@ -17,6 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URI;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static org.apache.hadoop.record.meta.TypeID.RIOType.BUFFER;
 
 
 @Service
@@ -96,7 +102,8 @@ public class HdfsModelImpl implements HdfsModel {
         }
     }
 
-    private FileSystem getFileSystem() {
+    @Override
+    public FileSystem getFileSystem() {
         Configuration conf = new Configuration();
         FileSystem fs = null;
         hdfs = hdfsConfig.getHdfsUrl()+":"+hdfsConfig.getHdfsProt();
@@ -118,4 +125,41 @@ public class HdfsModelImpl implements HdfsModel {
         return fs;
     }
 
+    public boolean hdfszip(String uri,ZipOutputStream outZip)throws IOException{
+        FileSystem fs = getFileSystem();
+        FileStatus[] fileStatuses = fs.listStatus(new Path(uri));
+
+        Path sourceFilePath;
+        try {
+            for (int i = 0; i < fileStatuses.length; i++) {
+                sourceFilePath = new Path(uri + fileStatuses[i].getPath().getName());
+                System.out.println(sourceFilePath.getName());
+                if(fileStatuses[i].isDirectory()){
+                    System.out.println(fileStatuses[i].getPath().toString()+"  是路径  ");
+                    hdfszip(fileStatuses[i].getPath().toString(),outZip);
+                }else {
+                    FSDataInputStream in = fs.open(fileStatuses[i].getPath());
+                    logger.info("文件路径："+fileStatuses[i].getPath().toString());
+                    int bytesRead = 0;
+                    //建立檔案的 entry
+                    ZipEntry entry = new ZipEntry(fileStatuses[i].getPath().toString());
+                    outZip.putNextEntry(entry);
+                    byte[] buffer = new byte[1024];
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                    outZip.write(buffer, 0, bytesRead);
+//                        outZip.write(buffer, 0,buffer.length);
+//                        outZip.flush();
+//                  outZip.flush();
+                    }
+                    in.close();
+                }
+            }
+            outZip.flush();
+            return  true;
+        } catch(Exception e) {
+            outZip.close();
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
