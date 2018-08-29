@@ -85,11 +85,11 @@ public class HiveTableController {
                         return ResultUtil.success();
                     }
                     logger.error("更新失败");
-                    return ResultUtil.error(-2021,"更新失败");
+                    return ResultUtil.error(2021,"更新失败");
                 }catch (Exception e){
                     e.printStackTrace();
                     logger.error(String.valueOf(e.getStackTrace()));
-                    return ResultUtil.error(-2021,"更新失败");
+                    return ResultUtil.error(2021,"更新失败");
                 }
             }else{
                 boolean table = false;
@@ -100,18 +100,18 @@ public class HiveTableController {
                         return ResultUtil.success();
                     }else {
                         logger.error("创建失败,表已经存在");
-                        return ResultUtil.error(-2022,"表已经存在");
+                        return ResultUtil.error(2022,"表已经存在");
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     logger.error(String.valueOf(e.getStackTrace()));
-                    return ResultUtil.error(-2023,"创建表失败");
+                    return ResultUtil.error(2023,"创建表失败");
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-2024,"参数异常");
+            return ResultUtil.error(2024,"参数异常");
         }
     }
 
@@ -140,7 +140,7 @@ public class HiveTableController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-2025,"获取表信息失败");
+            return ResultUtil.error(2025,"获取表信息失败");
         }
     }
 
