@@ -143,7 +143,7 @@ public class JobController extends HttpServlet{
     @RequestMapping(value = "/qryTaskLog", method = RequestMethod.POST)
     @ResponseBody
     public Result qryLog(@RequestParam(name = "jobId") String jobId,
-            @RequestParam(name = "taskId") String taskId, @RequestParam(name = "type") int type,
+             @RequestParam(name = "type") int type,
             HttpServletResponse res) throws IOException{
         Result result = null;
         String fileName = "aa.txt";  //模型文件
