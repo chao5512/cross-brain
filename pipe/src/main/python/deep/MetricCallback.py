@@ -15,5 +15,6 @@ class MetricCallback(Callback):
         (or when training ends regardless). This would be a good time to store any additional
         information that tflearn doesn't store already.
         """
+        print("record result "+self.evaluator_path)
         HDFSUtil.append(self.evaluator_path,"",False) #创建日志文件
         HDFSUtil.append(self.evaluator_path,"{'accuracy':"+training_state.acc_value,True)
