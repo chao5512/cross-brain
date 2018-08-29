@@ -183,7 +183,7 @@ public class JobController extends HttpServlet{
         logger.info(hdfsPath);
 
         //测试使用
-        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/"+fileName;
+        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/logs/"+fileName;
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
