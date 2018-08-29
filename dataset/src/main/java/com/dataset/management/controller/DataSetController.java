@@ -86,7 +86,7 @@ public class DataSetController {
             List<DataSet> dataSets = dataSetService.findAll(sort);
             List<String> cnDatasetNames = listName(dataSets);
             if(cnDatasetNames.contains(dataSet.getDataSetName())){
-                return ResultUtil.error(-1,"数据集名称已经存在,请重新命名。。。");
+                return ResultUtil.error(2001,"数据集名称已经存在,请重新命名。。。");
             }
             logger.info("检测远程hdfs 相关目录(数据集和模型)");
             if(!hdfsService.existDir(dataStoreUrl,false)){
@@ -451,7 +451,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-1,"获取表明失败");
+            return ResultUtil.error(2016,"获取表明失败");
         }
     }
 
@@ -480,7 +480,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-1,"获取表字段信息失败");
+            return ResultUtil.error(2015,"获取表字段信息失败");
         }
     }
 
