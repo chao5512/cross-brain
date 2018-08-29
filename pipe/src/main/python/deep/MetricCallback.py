@@ -17,4 +17,4 @@ class MetricCallback(Callback):
         """
         print("record result "+self.evaluator_path)
         HDFSUtil.append(self.evaluator_path,"",False) #创建日志文件
-        HDFSUtil.append(self.evaluator_path,"{'accuracy':"+training_state.acc_value,True)
+        HDFSUtil.append(self.evaluator_path,"{'accuracy':'"+str(training_state.acc_value)+"'",True)
