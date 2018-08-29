@@ -131,6 +131,7 @@ class Vgg16(NeuralNetwork):
 
     def train(self,model,X,Y):
         try:
+            print(self.evaluator_path)
             early_stopping_cb = MetricCallback(self.evaluator_path)
             model.fit(X, Y, n_epoch=self.n_epoch, validation_set=self.validation_set, shuffle=True,
                   show_metric=True, batch_size=self.batch_size, snapshot_epoch=False,
