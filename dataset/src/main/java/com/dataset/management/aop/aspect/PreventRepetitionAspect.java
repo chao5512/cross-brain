@@ -1,11 +1,14 @@
 package com.dataset.management.aop.aspect;
 
 import com.dataset.management.common.ResultUtil;
+import com.dataset.management.controller.DataSetController;
 import com.dataset.management.util.JedisUtils;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Component;
@@ -26,6 +29,8 @@ import java.util.UUID;
 @EnableAspectJAutoProxy(proxyTargetClass = true)
 public class PreventRepetitionAspect {
 
+    private static Logger logger = LoggerFactory.getLogger(DataSetController.class);
+
     @Autowired
     private JedisUtils jedisUtils;
 
@@ -33,7 +38,7 @@ public class PreventRepetitionAspect {
     private static final String PARAM_TOKEN_FLAG = "tokenFlag";
 
 //    切入点
-    @Pointcut("execution(public * com.dataset.management.controller.HiveTableController.*(..))")
+    @Pointcut("execution(public * com.dataset.management.controller.*.*(..))")
     public void repeatLock(){
 
     }
@@ -50,11 +55,11 @@ public class PreventRepetitionAspect {
 //            注意这里固定最后一个参数是为防止重复提交而设置的token
             int length = args.length;
             String functionName = joinPoint.getSignature().getName();
-            System.out.println("方法名："+functionName);
+            logger.info("方法名：" + functionName);
             if("toUuid".equals(functionName)){
 //                        这是生成token方法
                 result = generate(joinPoint, PARAM_TOKEN_FLAG);
-            }else if("createOrUpdateTable".equals(functionName)){
+            }else if(functionName.endsWith("PreventRepeat")){
 //               获取token信息，该接口最后一个参数为token
                 String token = (String) args[length-1];
                 result = validation(joinPoint, PARAM_TOKEN_FLAG, token);
@@ -62,7 +67,7 @@ public class PreventRepetitionAspect {
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("执行防止重复提交功能AOP失败，原因：" + e.getMessage());
+            logger.error("执行防止重复提交功能AOP失败，原因：" + e.getMessage());
             return ResultUtil.error(-1,"执行防止重复提交功能AOP失败，原因：" + e.getMessage());
         }
     }
@@ -75,18 +80,18 @@ public class PreventRepetitionAspect {
 
     public Object validation(ProceedingJoinPoint joinPoint,String tokenFlag, String token) throws Throwable {
         String requestFlag = token;
-        System.out.println("token: "+token);
+        logger.debug("token: "+ token);
         //redis加锁
         boolean lock = jedisUtils.tryGetDistributedLock(tokenFlag + requestFlag, requestFlag, 60000);
-        System.out.println("lock:" + lock + "," + Thread.currentThread().getName());
+        logger.debug("lock:" + lock + "," + Thread.currentThread().getName());
         if(lock){
             //加锁成功
             //执行方法
-            System.out.println("加锁成功。。。");
+            logger.info("加锁成功......");
             Object funcResult = joinPoint.proceed();
             //方法执行完之后进行解锁
             jedisUtils.releaseDistributedLock(tokenFlag + requestFlag, requestFlag);
-            System.out.println("最终结果："+funcResult);
+            logger.debug("最终结果："+funcResult);
             return funcResult;
         }else{
             //锁已存在

@@ -127,10 +127,12 @@ public class JobController extends HttpServlet{
     @RequestMapping(value = "/qryTaskLog", method = RequestMethod.POST)
     @ResponseBody
     public Result qryLog(@RequestParam(name = "jobId") String jobId,
-            @RequestParam(name = "taskId") String taskId, @RequestParam(name = "type") int type,
+                         @RequestParam(name = "userId") String userId,
+                         @RequestParam(name = "modelId") String modelId,
+             @RequestParam(name = "type") int type,
             HttpServletResponse res) throws IOException{
         Result result = null;
-        String fileName = "aa.txt";  //模型文件
+        String fileName = "";  //模型文件
 
         switch(type){
             case 0:
@@ -165,7 +167,7 @@ public class JobController extends HttpServlet{
         logger.info(hdfsPath);
 
         //测试使用
-        String fileNamePath ="hdfs://172.16.11.222:9000/machen/mmm/aa.txt";
+        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/logs/"+fileName;
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");

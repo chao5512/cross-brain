@@ -4,7 +4,7 @@ spring:
   application:
     name: mining
 sidecar:
-  port: 3002
+  port: 3003
   health-uri: http://localhost:${sidecar.port}/health
 logging:
   level:
@@ -13,4 +13,4 @@ logging:
 eureka:
   client:
     serviceUrl:
-      defaultZone: http://localhost:8081/stretch/eureka/
+      defaultZone: http://localhost:8051/stretch/eureka/

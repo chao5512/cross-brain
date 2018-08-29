@@ -37,11 +37,11 @@ def health():
 # 深度学习任务执行服务
 @app.route("/deeplearning/job/execute",methods=['POST'])
 def execute():
-    data = json.loads(request.get_data())
-    # step 1 create job thread
-    job_id = data['jobId']
-    logger.info("job_id:"+job_id)
     try:
+        data = json.loads(request.get_data())
+        job_id = data['jobId']
+        logger.info("job_id:"+job_id)
+        # step 1 create job thread
         # 创建深度学习任务线程
         t =threading.Thread(target=submit,kwargs=(data))
         # 启动
@@ -83,22 +83,22 @@ def submit(**kwaggs):
     data = kwaggs
     pipe = DLPipeline(data)
     rootPath = conf.get("Job","jobHdfsPath")
-    job_path = rootPath+str(data["userId"])+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/job.log"
+    job_path = rootPath+str(data["userId"])+"/"+data["modelId"]+"/"+data["jobId"]+"/logs/process.log"
     logger.info("logfile location:"+job_path)
-    #HDFSUtil.append(job_path,"",False) #创建日志文件
+    HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
-        #HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
+        HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
         pipe.run()
-        #HDFSUtil.append(job_path,"任务执行成功!\n",True)
-        #HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
-        #HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
+        HDFSUtil.append(job_path,"任务执行成功!\n",True)
+        HDFSUtil.append(job_path,"更新任务状态!\n",True)
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
     except BaseException as e:
         logger.exception(e)
-        #HDFSUtil.append(job_path,"任务执行失败!\n",True)
-        #HDFSUtil.append(job_path,"更新任务状态!\n",True)
-        #res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
-        #HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
+        HDFSUtil.append(job_path,"任务执行失败!\n",True)
+        HDFSUtil.append(job_path,"更新任务状态!\n",True)
+        res = requests.post(req_job_address,params={'jobId':data['jobId'],'taskId':"",'status':1})
+        HDFSUtil.append(job_path,"完成任务状态更新!\n",True)
 
 def _async_raise(tid, exctype):
     """raises the exception, performs cleanup if needed"""

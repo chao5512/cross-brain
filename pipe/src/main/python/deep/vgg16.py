@@ -37,8 +37,8 @@ class Vgg16(NeuralNetwork):
     def setParams(self,run_id,
                   n_epoch,batch_size,num_class,optimizer,loss,
                   checkpoint_path,tensorboard_dir,model_path,train_set,shape,learning_rate,
-                  snapshot_step,validation_set):
-        self.setJobParams(run_id,n_epoch,batch_size,num_class,optimizer,loss,model_path)
+                  snapshot_step,validation_set,evaluator_path):
+        self.setJobParams(run_id,n_epoch,batch_size,num_class,optimizer,loss,model_path,evaluator_path)
         self.train_set = train_set
         self.shape = shape
         self.learning_rate = learning_rate
@@ -131,7 +131,7 @@ class Vgg16(NeuralNetwork):
 
     def train(self,model,X,Y):
         try:
-            early_stopping_cb = MetricCallback()
+            early_stopping_cb = MetricCallback(self.evaluator_path)
             model.fit(X, Y, n_epoch=self.n_epoch, validation_set=self.validation_set, shuffle=True,
                   show_metric=True, batch_size=self.batch_size, snapshot_epoch=False,
                   snapshot_step=self.snapshot_step, run_id=self.run_id,callbacks=early_stopping_cb)

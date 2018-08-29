@@ -36,8 +36,8 @@ def count():
     tableName = data['tableName']
     logging.info("tableName:" + tableName)
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -51,7 +51,7 @@ def count():
                             mimetype='application/json')
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="显示失败")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
 
@@ -62,8 +62,8 @@ def head():
     requestData = request.form.to_dict()
     tableName = requestData['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -82,16 +82,18 @@ def head():
                     return Response(json.dumps(result, cls=JsonCustomEncoder),
                                     mimetype='application/json')
                 else:
-                    result= Result(code=1001, data=None, message="行号格式不正确")
+                    result= Result(code=3003, data=None, message="行号格式必须为正整数")
                     return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                     mimetype='application/json')
             else:
-                result= Result(code=1001, data=None, message="行号不能为空")
-                return Response(json.dumps(result, default=lambda obj: obj.__dict__),
-                                mimetype='application/json')
+                raise AttributeError("行号不能为空")
+        except AttributeError :
+            result= Result(code=3004, data=None, message="行号不能为空")
+            return Response(json.dumps(result, default=lambda obj: obj.__dict__),
+                        mimetype='application/json')
         except BaseException as e:
-            logging.info(e.args)
-            result= Result(code=1002, data=None, message="显示失败")
+            logging.exception(e)
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
 
@@ -101,8 +103,8 @@ def sheet():
     requestData = request.form.to_dict()
     tableName = requestData['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -131,7 +133,7 @@ def sheet():
                             mimetype='application/json')
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="显示失败")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
 
@@ -142,8 +144,8 @@ def hist():
     requestData = request.form.to_dict()
     tableName = requestData['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -167,7 +169,7 @@ def hist():
                 col = x[2]
                 hue = x[3]
             else :
-                result= Result(code=1001, data=None, message="横坐标值不能超过3个或者少于2个")
+                result= Result(code=3005, data=None, message="横坐标值不能超过3个或者少于2个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -180,7 +182,7 @@ def hist():
             return base64image()
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="画图失败，请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
 
@@ -190,8 +192,8 @@ def boxplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -206,7 +208,7 @@ def boxplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
             if (len(y) == 1 and y[0]!=''):
@@ -214,7 +216,7 @@ def boxplot():
             elif (len(y) == 1 and y[0]==''):
                 y = None
             else:
-                result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
+                result= Result(code=3007, data=None, message="纵坐标值最多选一个值")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -222,7 +224,7 @@ def boxplot():
             sns.boxplot(y=y, x=x, hue=hue, data=train_df, palette="muted")
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -234,8 +236,8 @@ def violinplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -250,7 +252,7 @@ def violinplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             if (len(y) == 1 and y[0]!=''):
@@ -258,7 +260,7 @@ def violinplot():
             elif (len(y) == 1 and y[0]==''):
                 y = None
             else:
-                result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
+                result= Result(code=3007, data=None, message="纵坐标值最多选一个值")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -267,7 +269,7 @@ def violinplot():
                        palette="muted")
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -279,8 +281,8 @@ def swarmplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -295,7 +297,7 @@ def swarmplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             if (len(y) == 1 and y[0]!=''):
@@ -303,7 +305,7 @@ def swarmplot():
             elif (len(y) == 1 and y[0]==''):
                 y = None
             else:
-                result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
+                result= Result(code=3007, data=None, message="纵坐标值最多选一个值")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -312,7 +314,7 @@ def swarmplot():
                       palette="muted")
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -324,8 +326,8 @@ def barplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -340,7 +342,7 @@ def barplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             if (len(y) == 1 and y[0]!=''):
@@ -348,7 +350,7 @@ def barplot():
             elif (len(y) == 1 and y[0]==''):
                 y = None
             else:
-                result= Result(code=1001, data=None, message="纵坐标值最多选一个值")
+                result= Result(code=3007, data=None, message="纵坐标值最多选一个值")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -358,7 +360,7 @@ def barplot():
                     estimator=np.median, ci=0)
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -370,8 +372,8 @@ def countplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -384,7 +386,7 @@ def countplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -392,7 +394,7 @@ def countplot():
             sns.countplot(x=x, hue=hue, data=train_df, palette="muted")
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -404,8 +406,8 @@ def factorplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -418,7 +420,7 @@ def factorplot():
             elif (len(x) == 2):
                 x, col = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -426,7 +428,7 @@ def factorplot():
             sns.factorplot(x=x, col=col, data=train_df, kind="count")
         except BaseException as e:
             logging.info(e.args)
-            result= Result(code=1002, data=None, message="请重新选择坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -438,8 +440,8 @@ def lmplot():
     data = request.form.to_dict()
     tableName = data['tableName']
     # 未选择表名时，取到的是默认值0
-    if tableName == '0':
-        result= Result(code=1001, data=None, message="请选择表名")
+    if tableName == '':
+        result= Result(code=3001, data=None, message="请选择表名")
         return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                         mimetype='application/json')
     else:
@@ -454,13 +456,13 @@ def lmplot():
             elif (len(x) == 2):
                 x, hue = x
             else:
-                result= Result(code=1001, data=None, message="横坐标值不能超过两个或者少于一个")
+                result= Result(code=3006, data=None, message="横坐标值不能超过两个或者少于一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             if (len(y) == 1 and y[0]!=''):
                 y = y[0]
             else:
-                result= Result(code=1001, data=None, message="纵坐标值不能少于一个或多余一个")
+                result= Result(code=3007, data=None, message="纵坐标值不能少于一个或多余一个")
                 return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                                 mimetype='application/json')
             train_df = HiveClient.queryForAll(tablename=tableName)
@@ -469,7 +471,7 @@ def lmplot():
                    data=train_df, palette="muted", order=2)
         except BaseException as e:
             print(e.args)
-            result= Result(code=1002, data=None, message="画图失败，请重新选择行列坐标")
+            result= Result(code=3002, data=None, message="服务暂不可用")
             return Response(json.dumps(result, default=lambda obj: obj.__dict__),
                             mimetype='application/json')
         return base64image()
@@ -487,4 +489,4 @@ def base64image():
 
 
 if __name__ == '__main__':
-    app.run(port=3002, host='0.0.0.0', debug=True)
+    app.run(port=3003, host='0.0.0.0', debug=True)
