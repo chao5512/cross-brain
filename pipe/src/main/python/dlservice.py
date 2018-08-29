@@ -88,7 +88,6 @@ def submit(**kwaggs):
     HDFSUtil.append(job_path,"",False) #创建日志文件
     try:
         HDFSUtil.append(job_path,"开始执行深度学习任务!job_id:"+data["jobId"]+"\n",True)
-        print('start dl')
         pipe.run()
         HDFSUtil.append(job_path,"任务执行成功!\n",True)
         HDFSUtil.append(job_path,"更新任务状态!\n",True)

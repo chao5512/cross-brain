@@ -21,14 +21,20 @@ import sys
 import logging
 from logging.config import fileConfig
 
+import configparser
+
 fileConfig(sys.path[0]+'/conf/logging.conf')
 logger=logging.getLogger('pipline')
+
+conf = configparser.ConfigParser()
+conf.read(sys.path[0]+"/conf/conf.ini")
 
 class DLPipeline():
     jsonData = '{}'
 
     def __init__(self,jsonData):
         self.jsonData = jsonData
+        self.evaluator_path = conf.get("Job","jobHdfsPath")+str(jsonData["userId"])+"/"+jsonData["modelId"]+"/"+jsonData["jobId"]+"/evaluator/evaluator.log"
 
     def predict(self):
         logger.info("running")
@@ -102,6 +108,7 @@ class DLPipeline():
 
     def run(self):
         logger.info("running")
+
         network = Factory.network(str(self.jsonData['vgg16']['networktype']))
         logger.info(self.jsonData['vgg16']['networktype'])
         spape = self.jsonData['picture']['shape'].split(',')
@@ -164,7 +171,8 @@ class DLPipeline():
                               str(self.jsonData['vgg16']['model_path']),
                               str(self.jsonData['picture']['train_set']),list(s),
                               float(self.jsonData['vgg16']['learning_rate']),
-                              int(self.jsonData['vgg16']['snapshot_step']),float(self.jsonData['vgg16']['validation_set']))
+                              int(self.jsonData['vgg16']['snapshot_step']),float(self.jsonData['vgg16']['validation_set']),
+                              self.evaluator_path)
         elif(isinstance(network,LSTM)):
             logger.info('execute lstm')
             network.setParams()
