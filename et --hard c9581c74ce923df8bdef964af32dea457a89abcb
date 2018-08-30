@@ -1,0 +1,303 @@
+[33mcommit c9581c74ce923df8bdef964af32dea457a89abcb[m
+Author: mengxin <19868847@qq.com>
+Date:   Wed Aug 8 11:14:37 2018 +0800
+
+    update pipeline
+
+[33mcommit 1fdcc50875d940e137eb4afd6e24f04c71c09571[m
+Author: mengxin <19868847@qq.com>
+Date:   Wed Aug 8 11:00:08 2018 +0800
+
+    update pipeline
+
+[33mcommit 6537a9aaf22bdca023510e15a166380ffc272459[m
+Merge: fc4db4a c86950a
+Author: mengxin <19868847@qq.com>
+Date:   Wed Aug 8 10:56:20 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit fc4db4a96c0bc349c11fad425e68c69269dbee68[m
+Author: mengxin <19868847@qq.com>
+Date:   Wed Aug 8 10:56:09 2018 +0800
+
+    update pipeline
+
+[33mcommit c86950abe047994c10e374bfcb54c6408ad38d67[m
+Author: fenggang <fg191392@163.com>
+Date:   Wed Aug 8 00:16:30 2018 +0800
+
+    修改接口
+
+[33mcommit 93e17cb8b3c2df434c3414e73a338a37482f30c5[m
+Author: fenggang <fg191392@163.com>
+Date:   Wed Aug 8 00:15:58 2018 +0800
+
+    修改接口
+
+[33mcommit 927545f20e35ca61db21c6d8b8dc8b53722f1c54[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 23:51:07 2018 +0800
+
+    修改接口
+
+[33mcommit 19aafc2b83093214b0e185385b5c4e93fa1e30e3[m
+Merge: 764fde6 210e993
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 23:30:15 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit 764fde64389acc805d608cad71e48042a4c8fa57[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 23:30:04 2018 +0800
+
+    修改接口
+
+[33mcommit 210e9936957977738d12aa8ebc9020be85606fbe[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 19:06:00 2018 +0800
+
+    update pipeline
+
+[33mcommit 298cb8e7f665f3c1c4dd306b48ae48d4207a7ccd[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 19:03:00 2018 +0800
+
+    update pipeline
+
+[33mcommit 47f3fbddb95eb7ffa271c89ccc7a00afeb35fb02[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 18:58:38 2018 +0800
+
+    update pipeline
+
+[33mcommit 49ff856540b5f5298c25067ac73f52158043ae62[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 18:23:55 2018 +0800
+
+    update pipeline
+
+[33mcommit e4bb14d487767804cb98e219dc79cadfcdda8f53[m
+Merge: 2724ebc 2a61116
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 16:30:30 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit 2724ebcbb5f544d129b2e154ad9b290393ea1ffe[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 16:30:21 2018 +0800
+
+    update pipeline
+
+[33mcommit 2a61116726cc0ff574cc2df3fc0239643e5e4253[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 16:20:50 2018 +0800
+
+    修改接口
+
+[33mcommit 7fa2a559aa5a67e21a43e3eb019cf652c42a23ce[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Tue Aug 7 15:58:06 2018 +0800
+
+    node   字段修改
+
+[33mcommit 56439332eb523ae37e7597f9ac37ef9c20dbd524[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 15:38:01 2018 +0800
+
+    update pipeline
+
+[33mcommit 4189d8b38586ab55cf238907fcb757cde764c95f[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 15:30:15 2018 +0800
+
+    update pipeline
+
+[33mcommit d092bf8ccefe5e9047c67f06bf183c3617f0ed20[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 15:25:42 2018 +0800
+
+    update pipeline
+
+[33mcommit 37209a257ce15e53cccd9ee7b41c46e6571c704a[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 15:13:37 2018 +0800
+
+    加载模型
+
+[33mcommit 1d384f85a4137c5590a011ff5d337c9cb779f07b[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 14:50:13 2018 +0800
+
+    加载模型
+
+[33mcommit a1b5df2a21825eff80ef0e921a8afdaee599c13e[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 14:48:32 2018 +0800
+
+    update pipeline
+
+[33mcommit c50cc3b7ff84451f85c95919b93795b669a3f48e[m
+Merge: e21529f 84d2ac7
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 14:47:09 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit e21529fc7fd5e27deb896d556e610f083ee20480[m
+Author: mengxin <19868847@qq.com>
+Date:   Tue Aug 7 14:46:57 2018 +0800
+
+    update pipeline
+
+[33mcommit 84d2ac7e3da776ca6656f5017511d12b0141dfcb[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 11:05:27 2018 +0800
+
+    加载模型
+
+[33mcommit 963bd0c663deec8ac904d5b33cbeda114c151b47[m
+Author: fenggang <fg191392@163.com>
+Date:   Tue Aug 7 10:15:35 2018 +0800
+
+    停止模型和创建hdfs目录
+
+[33mcommit bfb89464a0d1bff79f636d4b8a5e67426c28e625[m
+Author: machen990519 <493137170@qq.com>
+Date:   Mon Aug 6 16:32:38 2018 +0800
+
+    修改成服务器的地址
+
+[33mcommit 52c8d0ef5e22b514ee1befad0161bd7da019f826[m
+Author: machen990519 <493137170@qq.com>
+Date:   Mon Aug 6 16:27:58 2018 +0800
+
+    添加下载和 读取功能 （字节流方式）
+
+[33mcommit 0ce05f4f1a3b06bfed9b93334dc5e728d9b9e24c[m
+Author: machen990519 <493137170@qq.com>
+Date:   Fri Aug 3 17:34:50 2018 +0800
+
+    下载（再本地做的测试）
+
+[33mcommit 5f7e0619d5fc3da0c3850a690d9c6241f0d6d4f7[m
+Merge: 2055587 7ff2496
+Author: machen990519 <493137170@qq.com>
+Date:   Fri Aug 3 17:25:57 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit 2055587f6414eda547e82a062b94b7c8996c4de6[m
+Author: machen990519 <493137170@qq.com>
+Date:   Fri Aug 3 17:25:37 2018 +0800
+
+    添加了 model的 字段
+
+[33mcommit 7ff2496e5b5057945bd46d29697a27fef4c0b59f[m
+Author: fenggang <fg191392@163.com>
+Date:   Fri Aug 3 16:36:57 2018 +0800
+
+    修改
+
+[33mcommit b5a63f4abc22ff802f7412ddf0376725aca566fd[m
+Merge: 0688fc2 18f70c0
+Author: mengxin <19868847@qq.com>
+Date:   Fri Aug 3 15:25:21 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit 0688fc2957b95a4cf53779cf96440258b4191423[m
+Author: mengxin <19868847@qq.com>
+Date:   Fri Aug 3 15:25:06 2018 +0800
+
+    update pipeline
+
+[33mcommit 18f70c08dbc211bb636ad791346005931b5f5b63[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Fri Aug 3 11:44:57 2018 +0800
+
+    node   字段修改
+
+[33mcommit bc50fa5b4744574854d95739950473b4c6ce5bca[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Fri Aug 3 11:20:36 2018 +0800
+
+    node   字段修改
+
+[33mcommit 9703d1d25f75c0aaea74c7d145afbfc3618ad52b[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Fri Aug 3 10:24:20 2018 +0800
+
+    node   字段修改
+
+[33mcommit 91ab2e735a15e72bd1756279e53c4bad4f621039[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Thu Aug 2 18:10:12 2018 +0800
+
+    读表
+
+[33mcommit 78c39ff00d02fd897a13d7fb548cbe76b2ccc7e3[m
+Merge: ad55d20 1b94b0a
+Author: hanwei36 <13051111332@163.com>
+Date:   Thu Aug 2 18:09:50 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit ad55d20ba6ee8f01baa5c2e6605b0b56969b1531[m
+Author: hanwei36 <13051111332@163.com>
+Date:   Thu Aug 2 18:07:13 2018 +0800
+
+    增加spark等环境配置
+
+[33mcommit 1b94b0aa76bc964e332383e7a086fc21b264a9cf[m
+Merge: c653975 e1d8b9f
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 17:40:42 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit c6539757dc61ccf82bec5e3da05e1bc9424495fe[m
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 17:40:27 2018 +0800
+
+    update pipeline
+
+[33mcommit e1d8b9f87bc54462cb7561078d6f308e5853ad3b[m
+Author: fenggang <fg191392@163.com>
+Date:   Thu Aug 2 17:22:29 2018 +0800
+
+    修改
+
+[33mcommit 048f819a6e9eab180fb581b89d689ab5dd7fd0c1[m
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 17:12:09 2018 +0800
+
+    update pipeline
+
+[33mcommit 8f167dc70920ae02fd817c4101c68d14ec909339[m
+Merge: 8c39717 1c4814c
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 16:52:57 2018 +0800
+
+    Merge remote-tracking branch 'origin/branch-1.0' into branch-1.0
+
+[33mcommit 8c3971718459d3c6445dde0063264dfa2686bdbd[m
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 16:52:45 2018 +0800
+
+    update pipeline
+
+[33mcommit 1c4814c7999a4b245424b0d600a038ce26334d8b[m
+Author: fenggang <fg191392@163.com>
+Date:   Thu Aug 2 15:46:08 2018 +0800
+
+    修改
+
+[33mcommit 7cbe04539e41a90a97837fa40ae31883f3dd0465[m
+Merge: b02c89d ffee847
+Author: mengxin <19868847@qq.com>
+Date:   Thu Aug 2 15:41:30 2018 +0800
+
+    Merge remote-tracking branch 'origin/br

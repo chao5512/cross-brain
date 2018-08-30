@@ -86,13 +86,13 @@ public class DataSetController {
             List<DataSet> dataSets = dataSetService.findAll(sort);
             List<String> cnDatasetNames = listName(dataSets);
             if(cnDatasetNames.contains(dataSet.getDataSetName())){
-                return ResultUtil.error(-1,"数据集名称已经存在,请重新命名。。。");
+                return ResultUtil.error(2001,"数据集名称已经存在,请重新命名。。。");
             }
             logger.info("检测远程hdfs 相关目录(数据集和模型)");
             if(!hdfsService.existDir(dataStoreUrl,false)){
                 hdfsService.mkdirHdfsDir(dataStoreUrl);
             }else {
-                return ResultUtil.error(-1,"数据集文件夹已经存在，请在 hdfs 中删除后重新创建");
+                return ResultUtil.error(2001,"数据集文件夹已经存在，请在 hdfs 中删除后重新创建");
             }
             logger.info("准备创建的数据集: "+ dataSetName);
 
@@ -104,105 +104,105 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("创建失败");
-            return ResultUtil.error(-1,"创建失败");
+            return ResultUtil.error(2001,"创建失败");
         }
     }
 
     //查询  Id
-    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "POST")
+    @ApiOperation(value = "依据指定的数据集ID，查询数据集详情",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = "/selectById",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectById",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetId(@RequestParam("dataSetId") int dataSetId){
         logger.info("开始罗列数据据基本信息");
         try {
             DataSet dataSet = dataSetService.findById(dataSetId);
             if(dataSet.getDataSetName().isEmpty()){
-                return ResultUtil.error(-1,"没有找到对应的数据集名称");
+                return ResultUtil.error(2002,"没有找到对应的数据集名称");
             }
             return ResultUtil.success(dataSet);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("查询失败");
-            return ResultUtil.error(-1,"查询失败");
+            return ResultUtil.error(2002,"查询失败");
         }
     }
 
     //查询  datasetEnglishName
-    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "POST")
+    @ApiOperation(value = "依据指定的数据集英文名称名称，查询数据集详情",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectByDataSetEnglishName",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetEnglishName(@RequestParam("dataSetEnglishName") String dataSetEnglishName,
                                                          @RequestParam(value = "userId") int userId){
         logger.info("开始罗列数据据基本信息");
         try {
             DataSet dataSet = dataSetService.findByDataSetEnglishNameAndUserId(dataSetEnglishName,userId);
             if(dataSet.getId() ==0 ){
-                return ResultUtil.error(-1,"没有找到对应的数据集 Id");
+                return ResultUtil.error(2003,"没有找到对应的数据集 Id");
             }
             return ResultUtil.success(dataSet);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("查询失败");
-            return ResultUtil.error(-1,"查询失败");
+            return ResultUtil.error(2003,"查询失败");
         }
     }
 
     //查询  datasetName
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectByDataSetName",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetName(@RequestParam("dataSetName") String dataSetName,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
         try {
             DataSet dataSet = dataSetService.findByDataSetNameAndUserId(dataSetName,userId);
             if(dataSet.getDataSetName().isEmpty()){
-                return ResultUtil.error(-1,"没有找到对应的数据集");
+                return ResultUtil.error(2004,"没有找到对应的数据集");
             }
             return ResultUtil.success(dataSet);
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("查询失败");
-            return ResultUtil.error(-1,"查询失败");
+            return ResultUtil.error(2004,"查询失败");
         }
     }
 
     //模糊查询  datasetNameLike
-    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "POST")
+    @ApiOperation(value = "依据指定的数据集名称，查询数据集详情",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectByDataSetNameLike",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByDataSetNameLike(@RequestParam("dataSetName") String dataSetNameLike,
                                                   @RequestParam("userId")int userId) throws IOException{
         logger.info("开始罗列数据据基本信息");
         try {
             List<DataSet> dataSets = dataSetService.findByUserIdAndDataSetNameLike(userId,dataSetNameLike);
             if(dataSets.size()==0){
-                return ResultUtil.error(-1,"未找到对应数据集");
+                return ResultUtil.error(2005,"未找到对应数据集");
             }
             return ResultUtil.success(dataSets);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("查询失败");
-            return ResultUtil.error(-1,"查询失败");
+            return ResultUtil.error(2005,"查询失败");
         }
     }
 
     //查询全部  user  Id
-    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "POST")
+    @ApiOperation(value = "依据指定的用户ID，查询所有数据集详情",httpMethod = "GET")
     @ResponseBody
-    @RequestMapping(value = "/selectByUserId",method = RequestMethod.POST)
+    @RequestMapping(value = "/selectByUserId",method = RequestMethod.GET)
     public ApiResult listInfoDataSetByUserId(@RequestParam("UserId") int userId){
         logger.info("开始依据用户Id【 "+userId+" 】罗列数据据基本信息");
         try {
             List<DataSet> dataSets = dataSetService.findByUserId(userId);
             if (dataSets.size()==0){
-                return ResultUtil.error(-1,"所查找的数据集不存在");
+                return ResultUtil.error(2006,"所查找的数据集不存在");
             }
             return ResultUtil.success(dataSets);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("查询失败");
-            return ResultUtil.error(-1,"查询失败");
+            return ResultUtil.error(2006,"查询失败");
         }
     }
 
@@ -240,10 +240,10 @@ public class DataSetController {
                     +"/"+userId+"/"+newDataSetName;
             dataSet.setDataSetStoreUrl(newdataStoreUrl);//new
 
-            if(!hdfsService.existDir(oldDataStoreUrl,false)){
+            if(hdfsService.existDir(oldDataStoreUrl,false)){
                 hdfsService.renameDir(oldDataStoreUrl,newdataStoreUrl);
             }else {
-                return ResultUtil.error(-1,"原旧数据集文件夹不存在，请在 hdfs 中确认后重新修改");
+                return ResultUtil.error(2007,"原旧数据集文件夹不存在，请在 hdfs 中确认后重新修改");
             }
 
             dataSet.setDataSetBasicDesc(newDataSetDesc);    //desc
@@ -256,7 +256,7 @@ public class DataSetController {
         } catch (NumberFormatException e) {
             e.printStackTrace();
             logger.error("修改失败");
-            return ResultUtil.error(-1,"修改失败");
+            return ResultUtil.error(2007,"修改失败");
         }
     }
 
@@ -275,7 +275,7 @@ public class DataSetController {
             logger.info("数据集准备清空操作  （删除文件） ");
             List<DataSetFile> fileList = dataSetFileService.findDataSetFilesByDataSetId(dataSetId);
             if(fileList.size() == 0 ){
-                return ResultUtil.error(-1,"此数据集不存在文件");
+                return ResultUtil.error(2008,"此数据集不存在文件");
             }
 
             String dataSetName =dataSet.getDataSetName();
@@ -303,11 +303,11 @@ public class DataSetController {
                 logger.info("更新后的数据及基本表新信息："+dataSet);
                 return ResultUtil.success();
             }
-            return ResultUtil.error(-1,"清空失败");
+            return ResultUtil.error(2008,"清空失败");
         } catch (NumberFormatException e) {
             e.printStackTrace();
             logger.error("清空失败");
-            return ResultUtil.error(-1,"清空失败");
+            return ResultUtil.error(2008,"清空失败");
         }
     }
 
@@ -339,7 +339,7 @@ public class DataSetController {
         } catch (IOException e) {
             e.printStackTrace();
             logger.error("删除失败");
-            return ResultUtil.error(-1,"删除失败");
+            return ResultUtil.error(2009,"删除失败");
         }
 
         String hdfsUrl = hdfsConfig.getHdfsUrl();
@@ -361,7 +361,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("删除失败");
-            return ResultUtil.error(-1,"删除失败");
+            return ResultUtil.error(2009,"删除失败");
         }
         return ResultUtil.success();
     }
@@ -451,7 +451,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-1,"获取表明失败");
+            return ResultUtil.error(2016,"获取表明失败");
         }
     }
 
@@ -480,7 +480,7 @@ public class DataSetController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(-1,"获取表字段信息失败");
+            return ResultUtil.error(2015,"获取表字段信息失败");
         }
     }
 
