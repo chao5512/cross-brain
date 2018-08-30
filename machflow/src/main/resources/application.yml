@@ -22,7 +22,7 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          auto: update
+          auto: validate
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
   thymeleaf:
