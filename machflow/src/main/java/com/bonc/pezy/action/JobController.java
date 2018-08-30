@@ -18,10 +18,7 @@ import com.bonc.pezy.vo.JobQuery;
 import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.apache.hadoop.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -93,16 +90,12 @@ public class JobController extends HttpServlet{
                 +userId+"/"
                 +modelId+"/"
                 +jobId+"/"+"/model";
-//        String fileNamePath ="hdfs://172.16.11.222:9000/machen/mmm/";
 
-        String zipFilePath = "D:\\machen\\a.zip";
+        String zipFilePath = "file:///home/hadoop/tt.zip";
         logger.info("模型地址："+fileNamePath);
         logger.info("zip文件存放路径（默认）："+zipFilePath);
 
-        res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
-//          res.setHeader("Content-Disposition", "attachment;filename="
-//                + URLEncoder.encode(fileName, "UTF-8"));
         res.setHeader("Content-Type", "application/zip");
 
         OutputStream outmm = new FileOutputStream(zipFilePath);
@@ -112,7 +105,6 @@ public class JobController extends HttpServlet{
         try {
             logger.info("开始打包模型文件（zip）");
             while (hdfsModel.hdfszip(fileNamePath,outZip)){
-                outZip.close();
                 result = ResultUtil.success("niceok:"+"OK");
             }
             result = ResultUtil.error(-1,"下载打包失败");
@@ -129,7 +121,7 @@ public class JobController extends HttpServlet{
     public Result qryLog(@RequestParam(name = "jobId") String jobId,
                          @RequestParam(name = "userId") String userId,
                          @RequestParam(name = "modelId") String modelId,
-             @RequestParam(name = "type") int type,
+                         @RequestParam(name = "type") int type,
             HttpServletResponse res) throws IOException{
         Result result = null;
         String fileName = "";  //模型文件
@@ -150,7 +142,6 @@ public class JobController extends HttpServlet{
             case 4:
                 fileName = "evaluator.log";
                 break;
-
         }
         Job thisjob= jobService.findByJobId(jobId);
 
@@ -166,9 +157,10 @@ public class JobController extends HttpServlet{
         String hdfsPath = properties.getProperty("hdfspath");
         logger.info(hdfsPath);
 
-        //测试使用
-        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/"+jobId+"/logs/"+fileName;
-        logger.info(fileNamePath);
+        //测试使用 日志地址
+//        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/JOBID00066/data/T000024.txt";
+        String fileNamePath = "hdfs://47.105.127.125:9000/machen/test.txt";
+        logger.info("测试文件"+fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
         res.setContentType("application/octet-stream");
@@ -176,14 +168,14 @@ public class JobController extends HttpServlet{
                 + URLEncoder.encode(fileName, "UTF-8"));
         logger.info("开始读取文件");
         FSDataInputStream fsdis = hdfsModel.readHdfsFiles(fileNamePath);
-        String ss =null;
+        OutputStream outputStream;
         int line;
         byte[] buff = new byte[1024];
         try {
+            outputStream =res.getOutputStream();
             line = fsdis.read(buff);
             while (line != -1) {
-                ss = new String(buff, 0, buff.length,"UTF-8");
-//                System.out.write(buff, 0, buff.length);
+                outputStream.write(buff, 0, buff.length);
                 line = fsdis.read(buff);
             }
             fsdis.close();
@@ -199,7 +191,7 @@ public class JobController extends HttpServlet{
                 }
             }
         }
-        result =ResultUtil.success(ss);
+        result =ResultUtil.success();
         return result;
     }
 
@@ -211,7 +203,7 @@ public class JobController extends HttpServlet{
     public Result qryResultData(@RequestParam(name = "jobId") String jobId,
             HttpServletResponse res) throws IOException{
         Result result = null;
-        String fileName = "aa.txt";  //模型文件
+        String fileName = "test.txt";  //模型文件
         Job thisjob= jobService.findByJobId(jobId);
         String modelId = thisjob.getModelId();
         Long userId = thisjob.getOwner();
@@ -227,8 +219,9 @@ public class JobController extends HttpServlet{
 
         String hdfsPath = properties.getProperty("hdfspath");
 
-        //测试专用
-        String fileNamePath ="hdfs://172.16.11.222:9000/machen/mmm/aa.txt";
+        //测试使用 日志地址
+//        String fileNamePath =hdfsPath+"/"+userId+"/"+modelId+"/JOBID00066/data/T000024.txt";
+        String fileNamePath = "hdfs://47.105.127.125:9000/machen/test.txt";
         logger.info(fileNamePath);
 
         res.setHeader("content-type", "application/octet-stream");
@@ -237,25 +230,17 @@ public class JobController extends HttpServlet{
                 + URLEncoder.encode(fileName, "UTF-8"));
         FSDataInputStream fsdis = hdfsModel.readHdfsFiles(fileNamePath);
 
-        String ss = null;
+        OutputStream outputStream;
         //第一种
-//        int line;
-//        byte[] buff = new byte[1024];
-        //第二种
-        int len =0;
-        int bufftemp =0;
-        byte b[] = new byte[1024];
+        int line;
+        byte[] buff = new byte[1024];
         try {
-            while ((bufftemp = fsdis.read())!=-1){
-                b[len] = (byte) bufftemp;
-                len++;
+            outputStream = res.getOutputStream();
+            line = fsdis.read(buff);
+            while (line != -1) {
+                outputStream.write(buff,0,buff.length);
+                line = fsdis.read(buff);
             }
-            //第一种
-//            line = fsdis.read(buff);
-//            while (line != -1) {
-//                ss = new String(buff, 0, buff.length,"UTF-8");
-//                line = fsdis.read(buff);
-//            }
             fsdis.close();
         } catch (IOException e) {
             e.printStackTrace();
@@ -269,8 +254,7 @@ public class JobController extends HttpServlet{
                 }
             }
         }
-        ss = new String(b,0,len);
-        result =ResultUtil.success(ss);
+        result =ResultUtil.success();
         return result;
     }
 
@@ -299,6 +283,7 @@ public class JobController extends HttpServlet{
             }
         } catch (IOException e) {
             e.printStackTrace();
+            return ResultUtil.error(-1,"读取数据文件失败");
         } finally {
             if (bis != null) {
                 try {

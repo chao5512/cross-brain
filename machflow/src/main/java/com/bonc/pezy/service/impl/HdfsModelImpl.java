@@ -5,10 +5,7 @@ import com.bonc.pezy.service.HdfsModel;
 import com.bonc.pezy.util.Upload;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,10 +42,7 @@ public class HdfsModelImpl implements HdfsModel {
     @Override
     public FSDataInputStream readHdfsFiles(String hdfsUrl)throws IOException{
         FileSystem fileSystem = getFileSystem();
-        Path hdfsPath = new Path(hdfsUrl);
-        FileStatus fileStatuses = fileSystem.getFileStatus(hdfsPath);
-        System.out.println("处理当前文件："+fileStatuses.getPath().getName());
-        FSDataInputStream fsDataInputStream = fileSystem.open(fileStatuses.getPath());
+        FSDataInputStream fsDataInputStream = fileSystem.open(new Path(hdfsUrl));
         return fsDataInputStream;
     }
     @Override
@@ -128,7 +122,10 @@ public class HdfsModelImpl implements HdfsModel {
     public boolean hdfszip(String uri,ZipOutputStream outZip)throws IOException{
         FileSystem fs = getFileSystem();
         FileStatus[] fileStatuses = fs.listStatus(new Path(uri));
-
+        if(fileStatuses.length ==0){
+            logger.info(uri+"   是空目录");
+            outZip.putNextEntry(new ZipEntry(uri+File.separator)); //添加文件后最符号 区分是目录
+        }
         Path sourceFilePath;
         try {
             for (int i = 0; i < fileStatuses.length; i++) {
@@ -147,14 +144,12 @@ public class HdfsModelImpl implements HdfsModel {
                     byte[] buffer = new byte[1024];
                     while ((bytesRead = in.read(buffer)) != -1) {
                     outZip.write(buffer, 0, bytesRead);
-//                        outZip.write(buffer, 0,buffer.length);
-//                        outZip.flush();
-//                  outZip.flush();
                     }
                     in.close();
                 }
             }
             outZip.flush();
+            outZip.close();
             return  true;
         } catch(Exception e) {
             outZip.close();
