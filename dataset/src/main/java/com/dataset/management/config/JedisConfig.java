@@ -22,14 +22,10 @@ public class JedisConfig {
     @Value("${spring.redis.jedis.pool.max-idle}")
     private int maxIdle;
 
-    @Value("${spring.redis.jedis.pool.max-wait}")
-    private long maxWaitMillis;
-
     @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(maxIdle);
-        jedisPoolConfig.setMaxWaitMillis(maxWaitMillis);
         JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
         return jedisPool;
     }

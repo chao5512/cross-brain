@@ -49,7 +49,6 @@ spring:
         max-idle: 8
         min-idle: 0
         max-active: 8
-        max-wait: -1
     timeout: 2000
     password:
 ####hive数据源配置#####
