@@ -16,6 +16,15 @@ public class JobQuery implements Serializable{
     @Pattern(regexp = "[0-9]{4}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}[0-9]{2}", message = "结束日期格式不对，需要yyyyMMddHHmmss格式")
     private String createTimeEnd;
     private String modelName;
+    private Integer jobStatus;
+
+    public Integer getJobStatus() {
+        return jobStatus;
+    }
+
+    public void setJobStatus(Integer jobStatus) {
+        this.jobStatus = jobStatus;
+    }
 
     public Long getOwner() {
         return owner;
