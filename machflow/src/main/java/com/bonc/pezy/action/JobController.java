@@ -392,8 +392,10 @@ public class JobController extends HttpServlet{
     @ResponseBody
     public Result findJobsByModelID(@RequestParam(value = "modelId") String modelId) {
         List<Job> jobs = jobService.findByModelId(modelId);
-        Result result = ResultUtil.success(jobs.get(0));
-        return result;
+        if(jobs.size()==0)
+            return ResultUtil.success();
+        else
+            return ResultUtil.success(jobs.get(0));
     }
 
     @ApiOperation(value = "更新任务状态", httpMethod = "POST")

@@ -17,6 +17,7 @@ import com.bonc.pezy.service.ModelService;
 import com.bonc.pezy.service.NodeService;
 import com.bonc.pezy.service.TaskService;
 import com.bonc.pezy.util.FindFile;
+import com.bonc.pezy.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.activiti.bpmn.model.Process;
@@ -31,10 +32,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import com.bonc.pezy.util.ResultUtil;
+import com.bonc.pezy.vo.Result;
 
 /**
  * Created by 冯刚 on 2018/6/14.
@@ -161,16 +161,19 @@ public class MachFlowController {
     @ApiOperation(value = "加载模型",httpMethod = "POST")
     @RequestMapping(value = "/loadmodel",method = RequestMethod.POST)
     @ResponseBody
-    public List<Task> loadmodel(@RequestParam("modelId") String modelId, HttpServletResponse respons){
+    public Result loadmodel(@RequestParam("modelId") String modelId, HttpServletResponse respons){
 
         List<Job> joblist = jobService.findByModelId(modelId);
+        if(joblist.size()==0){
+            return ResultUtil.success();
+        }
         Job job = joblist.get(0);
         List<Task> taskList = job.getTasks();
         for (Task task:taskList) {
             Node node = nodeService.findByClassName(task.getTaskName());
             task.setParam(node.getParam());
         }
-        return taskList;
+        return ResultUtil.success(joblist);
     }
 
 }
