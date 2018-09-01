@@ -5,6 +5,12 @@ eureka:
 server:
   port: 7777
   ip: localhost
+token:
+  client_id: client_1
+  type: client_credentials
+  scope: select
+  client_secret: 123456
+  url: http://localhost:8052/oauth/token
 spring:
   application:
     name: dataset
@@ -33,7 +39,19 @@ spring:
           auto: update
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
-
+#  redis配置
+  redis:
+    host: 47.105.127.125
+    database: 0
+    port: 6379
+    jedis:
+      pool:
+        max-idle: 8
+        min-idle: 0
+        max-active: 8
+        max-wait: -1
+    timeout: 2000
+    password:
 ####hive数据源配置#####
 hive:
   url: jdbc:hive2://47.105.127.125
