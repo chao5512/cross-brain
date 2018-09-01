@@ -13,13 +13,29 @@ import com.bonc.pezy.service.HdfsModel;
 import com.bonc.pezy.service.JobService;
 import com.bonc.pezy.service.TaskService;
 import com.bonc.pezy.util.ResultUtil;
-import com.bonc.pezy.util.Upload;
 import com.bonc.pezy.vo.JobQuery;
 import com.bonc.pezy.vo.Result;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
-import org.apache.hadoop.fs.*;
-import org.apache.hadoop.io.IOUtils;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.URLEncoder;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.zip.ZipOutputStream;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletResponse;
+import org.apache.hadoop.fs.FSDataInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,17 +47,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
-import java.io.*;
-import java.net.URLEncoder;
-import java.util.List;
-import java.util.Properties;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
-import java.util.*;
 
 @Controller
 @RequestMapping("Job")
@@ -377,8 +382,8 @@ public class JobController extends HttpServlet{
         }
     }
 
-    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)", httpMethod = "GET")
-    @RequestMapping(value = "/findJobs", method = RequestMethod.GET)
+    @ApiOperation(value = "分页查询job，可附加各种条件(创建日期范围、名称模糊查询等)", httpMethod = "POST")
+    @RequestMapping(value = "/findJobs", method = RequestMethod.POST)
     @ResponseBody
     public Result findJobs(@RequestParam(value = "page", defaultValue = "0") Integer page,
             @RequestParam(value = "size", defaultValue = "5") Integer size, @Validated JobQuery jobQuery) {
