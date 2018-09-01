@@ -173,7 +173,7 @@ public class MachFlowController {
             Node node = nodeService.findByClassName(task.getTaskName());
             task.setParam(node.getParam());
         }
-        return ResultUtil.success(joblist);
+        return ResultUtil.success(job);
     }
 
 }
