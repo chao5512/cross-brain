@@ -144,7 +144,7 @@ public class MachFlowController {
     @ApiOperation(value = "停止模型",httpMethod = "POST")
     @RequestMapping(value = "/stop",method = RequestMethod.POST)
     @ResponseBody
-    public String stop(@RequestParam("jobId") String jobId,
+    public Result stop(@RequestParam("jobId") String jobId,
                        @RequestParam("applicationId") String applicationId, HttpServletResponse respons){
 
         FindFile findFile = new FindFile();
@@ -155,7 +155,7 @@ public class MachFlowController {
         map.put("terminate",true);
         HttpAPI httpAPI = new HttpAPI();
         String msg = httpAPI.getHttpResult(map,url);
-        return msg;
+        return ResultUtil.success(msg);
     }
 
     @ApiOperation(value = "加载模型",httpMethod = "POST")
