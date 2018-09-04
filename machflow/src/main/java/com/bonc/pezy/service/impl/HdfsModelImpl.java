@@ -5,10 +5,7 @@ import com.bonc.pezy.service.HdfsModel;
 import com.bonc.pezy.util.Upload;
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FSDataInputStream;
-import org.apache.hadoop.fs.FileStatus;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +14,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.net.URI;
+import java.util.zip.CRC32;
+import java.util.zip.CheckedOutputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
+
+import static org.apache.hadoop.record.meta.TypeID.RIOType.BUFFER;
 
 
 @Service
@@ -39,10 +42,7 @@ public class HdfsModelImpl implements HdfsModel {
     @Override
     public FSDataInputStream readHdfsFiles(String hdfsUrl)throws IOException{
         FileSystem fileSystem = getFileSystem();
-        Path hdfsPath = new Path(hdfsUrl);
-        FileStatus fileStatuses = fileSystem.getFileStatus(hdfsPath);
-        System.out.println("处理当前文件："+fileStatuses.getPath().getName());
-        FSDataInputStream fsDataInputStream = fileSystem.open(fileStatuses.getPath());
+        FSDataInputStream fsDataInputStream = fileSystem.open(new Path(hdfsUrl));
         return fsDataInputStream;
     }
     @Override
@@ -96,7 +96,8 @@ public class HdfsModelImpl implements HdfsModel {
         }
     }
 
-    private FileSystem getFileSystem() {
+    @Override
+    public FileSystem getFileSystem() {
         Configuration conf = new Configuration();
         FileSystem fs = null;
         hdfs = hdfsConfig.getHdfsUrl()+":"+hdfsConfig.getHdfsProt();
@@ -118,4 +119,42 @@ public class HdfsModelImpl implements HdfsModel {
         return fs;
     }
 
+    public boolean hdfszip(String uri,ZipOutputStream outZip)throws IOException{
+        FileSystem fs = getFileSystem();
+        FileStatus[] fileStatuses = fs.listStatus(new Path(uri));
+        if(fileStatuses.length ==0){
+            logger.info(uri+"   是空目录");
+            outZip.putNextEntry(new ZipEntry(uri+File.separator)); //添加文件后最符号 区分是目录
+        }
+        Path sourceFilePath;
+        try {
+            for (int i = 0; i < fileStatuses.length; i++) {
+                sourceFilePath = new Path(uri + fileStatuses[i].getPath().getName());
+                System.out.println(sourceFilePath.getName());
+                if(fileStatuses[i].isDirectory()){
+                    System.out.println(fileStatuses[i].getPath().toString()+"  是路径  ");
+                    hdfszip(fileStatuses[i].getPath().toString(),outZip);
+                }else {
+                    FSDataInputStream in = fs.open(fileStatuses[i].getPath());
+                    logger.info("文件路径："+fileStatuses[i].getPath().toString());
+                    int bytesRead = 0;
+                    //建立檔案的 entry
+                    ZipEntry entry = new ZipEntry(fileStatuses[i].getPath().toString());
+                    outZip.putNextEntry(entry);
+                    byte[] buffer = new byte[1024];
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                    outZip.write(buffer, 0, bytesRead);
+                    }
+                    in.close();
+                }
+            }
+            outZip.flush();
+            outZip.close();
+            return  true;
+        } catch(Exception e) {
+            outZip.close();
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

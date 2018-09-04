@@ -55,7 +55,6 @@ public class DataSetFileController {
     /**
      [{"fileName":"new","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"ss","fileSize":"ddd","onloadTimedate":"sss"},
      {"fileName":"files","dataSetId":23,"filePath":"sss","fileSortBy":"sss","fileSortType":"ddd","fileDesc":"ss","fileSize":"ddd","onloadTimedate":"sss"}]
-
      * */
     @ApiOperation(value = "上传文件",httpMethod = "POST")
     @ResponseBody
@@ -98,7 +97,7 @@ public class DataSetFileController {
             logger.info("上传数据集文件列表：");
 
             if(multipartFiles.length<=0){
-                return ResultUtil.error(-1,"没有获取到文件");
+                return ResultUtil.error(2011,"没有获取到文件");
             }
             for(int i=0;i<multipartFiles.length;i++){
                 //遍历每一个媒体文件
@@ -165,7 +164,7 @@ public class DataSetFileController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("文件上传失败");
-            return ResultUtil.error(-1,"文件上传失败");
+            return ResultUtil.error(2011,"文件上传失败");
         }
     }
 
@@ -186,13 +185,13 @@ public class DataSetFileController {
                 dataSetFileService.save(dataSetFile);
             }
             if(fileList.isEmpty()){
-                return ResultUtil.error(-1,"没有文件");
+                return ResultUtil.error(2012,"没有文件");
             }
             return ResultUtil.success(fileList);
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("文件查询操作失败");
-            return ResultUtil.error(-1,"文件查询操作失败");
+            return ResultUtil.error(2012,"文件查询操作失败");
         }
     }
 
@@ -220,7 +219,7 @@ public class DataSetFileController {
         } catch (Exception e) {
             e.printStackTrace();
             logger.error("删除失败");
-            return ResultUtil.error(-1,"删除失败");
+            return ResultUtil.error(2013,"删除失败");
         }
     }
 

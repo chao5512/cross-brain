@@ -37,7 +37,7 @@ public class DataSetService implements IntDataSetService {
     }
 
     public List<DataSet> findByUserIdAndDataSetNameLike(int userId,String nameLike){
-        return dataSetRepository.findByUserIdAndDataSetNameLike(userId,nameLike);
+        return dataSetRepository.findByUserIdAndDataSetNameContaining(userId,nameLike);
     }
     public List<DataSet> findByUserId(int userId){
         return dataSetRepository.findByUserId(userId);

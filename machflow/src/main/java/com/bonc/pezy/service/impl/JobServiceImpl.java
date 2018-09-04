@@ -67,6 +67,10 @@ public class JobServiceImpl implements JobService {
                     predicates.add(criteriaBuilder
                             .equal(root.get("modelType").as(Short.class), jobQuery.getModelType()));
                 }
+                if (null != jobQuery.getJobStatus()) {
+                    predicates.add(criteriaBuilder
+                            .equal(root.get("jobStatus").as(Integer.class), jobQuery.getJobStatus()));
+                }
                 if (StringUtils.isNotEmpty(jobQuery.getCreateTimeBegin())) {
                     predicates.add(criteriaBuilder
                             .greaterThanOrEqualTo(root.get("createTime").as(String.class),
