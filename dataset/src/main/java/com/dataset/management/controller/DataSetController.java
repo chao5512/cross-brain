@@ -401,7 +401,6 @@ public class DataSetController {
         dataSet.setDataSetCreateTime(sd);
         dataSet.setDataSetLastUpdateTime(sd);
         dataSet.setDataSetStoreUrl(null);
-        dataSet.setDataSetHiveTableName(DataSetConstants.DATASET_ENGLISH_NAME);
 
         return dataSet;
     }
