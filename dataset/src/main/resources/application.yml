@@ -52,6 +52,7 @@ spring:
         max-wait: -1
     timeout: 2000
     password: Deepthought2018
+
 ####hive数据源配置#####
 hive:
   url: jdbc:hive2://47.105.127.125
