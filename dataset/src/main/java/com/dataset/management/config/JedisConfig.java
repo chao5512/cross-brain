@@ -22,11 +22,14 @@ public class JedisConfig {
     @Value("${spring.redis.jedis.pool.max-idle}")
     private int maxIdle;
 
+    @Value("${spring.redis.password}")
+    private String pwd;
+
     @Bean
     public JedisPool redisPoolFactory() {
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
         jedisPoolConfig.setMaxIdle(maxIdle);
-        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout);
+        JedisPool jedisPool = new JedisPool(jedisPoolConfig, host, port, timeout, pwd);
         return jedisPool;
     }
 
