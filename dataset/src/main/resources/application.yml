@@ -10,7 +10,7 @@ token:
   type: client_credentials
   scope: select
   client_secret: 123456
-  url: htt8082p://localhost:/oauth/token
+  url: http://localhost:8082/oauth/token
 spring:
   application:
     name: dataset
@@ -51,7 +51,7 @@ spring:
         max-active: 8
         max-wait: 10000
     timeout: 2000
-    password:
+    password: Deepthought2018
 ####hive数据源配置#####
 hive:
   url: jdbc:hive2://47.105.127.125
