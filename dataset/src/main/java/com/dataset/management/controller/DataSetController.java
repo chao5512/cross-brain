@@ -425,34 +425,6 @@ public class DataSetController {
         return ss;
     }
 
-    /**
-     * 功能描述:根据用户id查数据集名字
-     * @param userId
-     * @return: com.dataset.management.common.ApiResult
-     * @auther: 王培文
-     * @date: 2018/8/27 17:18
-     */
-    @ResponseBody
-    @ApiOperation(value = "根据用户id查数据集名字",httpMethod = "POST")
-    @RequestMapping(value = "dataSetTableName",method = RequestMethod.POST)
-    public ApiResult getDataSetName(@RequestParam("userId") String userId){
-        try {
-            logger.debug("用户id" + userId);
-            List<DataSet> dataSets = dataSetService.findByUserId(Integer.parseInt(userId));
-            List<String> dataSetTableNameList = new ArrayList<>();
-            for (DataSet dataSet:dataSets) {
-                String tableName = tableService.getTableNameByDataSet(dataSet);
-                if(tableName != null){
-                    dataSetTableNameList.add(tableName);
-                }
-            }
-            return ResultUtil.success(dataSetTableNameList);
-        } catch (Exception e) {
-            e.printStackTrace();
-            logger.error(String.valueOf(e.getStackTrace()));
-            return ResultUtil.error(2016,"获取表明失败");
-        }
-    }
 
     /**
      * 功能描述: 根据表名获取所有列信息
