@@ -128,7 +128,6 @@ public class HiveTableController {
     public ApiResult getHiveTableMeta(@RequestParam("hivetablename") String hiveTableName){
         try {
             HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(hiveTableName);
-            String tableName = hiveTableMeta.getTableName();
             logger.info("查询成功");
             return ResultUtil.success(hiveTableMeta);
         } catch (Exception e) {
