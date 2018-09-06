@@ -74,7 +74,7 @@ public class DataSetFileController {
             contentdDataSet.setDataSetStatus(DataSetConstants.UPLOAD_STATUS_LOADING);
             dataSetService.save(contentdDataSet);
 
-            //获取数据集存储路径
+            //获取数据集存储路径（链接）
             String hdfsUrl = hdfsConfig.getHdfsUrl();
             Long hdfsPort = hdfsConfig.getHdfsProt();
 

@@ -64,6 +64,7 @@ hive:
 ##hive表在hadoop中路径配置##
 hadoop:
   url: hdfs://47.105.127.125
+  name: hdfs://deepthought
   port: 9000
 
 

@@ -75,11 +75,18 @@ public class DataSetController {
         dataSet.setDataSetPower(dataSetPower);
         dataSet.setDataSetEnglishName(dataSetEnglishName);
 
+        //对用户隐藏
+        String hdfsHOstName = hdfsConfig.getHostName();
+        Long hdfsPorthide = hdfsConfig.getHdfsProt();
+        String dataStoreUrlhide = hdfsHOstName+":"+hdfsPorthide+DataSetConstants.DATASET_STOREURL_DIR
+                +"/"+userId+"/"+dataSetName;
+        dataSet.setDataSetStoreUrl(dataStoreUrlhide);
+
+        //用于外部链接
         String hdfsUrl = hdfsConfig.getHdfsUrl();
         Long hdfsPort = hdfsConfig.getHdfsProt();
         String dataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
                 +"/"+userId+"/"+dataSetName;
-        dataSet.setDataSetStoreUrl(dataStoreUrl);
 
         Sort sort = basicSortBy();
         try {
@@ -231,14 +238,25 @@ public class DataSetController {
             SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String newTime = sdf.format(new Date(Long.parseLong(String.valueOf(timetmp))));
             dataSet.setDataSetLastUpdateTime(newTime);
+            int userId =dataSet.getUserId();
+            String oldDataSetName = dataSet.getDataSetName();
 
-            String oldDataStoreUrl = dataSet.getDataSetStoreUrl(); //old
+            //外部链接地址
             String hdfsUrl = hdfsConfig.getHdfsUrl();
+            Long hdfsPortold = hdfsConfig.getHdfsProt();
+            String oldDataStoreUrl = hdfsUrl+":"+hdfsPortold + DataSetConstants.DATASET_STOREURL_DIR
+                    +"/"+userId+"/"+oldDataSetName;
+
+            //新的用户隐藏字段（地址）
+            String hdfsHOstName = hdfsConfig.getHostName();
             Long hdfsPort = hdfsConfig.getHdfsProt();
-            int userId = dataSet.getUserId();
-            String newdataStoreUrl = hdfsUrl+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
+            String newdataStoreUrlhide = hdfsHOstName+":"+hdfsPort+DataSetConstants.DATASET_STOREURL_DIR
                     +"/"+userId+"/"+newDataSetName;
-            dataSet.setDataSetStoreUrl(newdataStoreUrl);//new
+            dataSet.setDataSetStoreUrl(newdataStoreUrlhide);//new
+
+            //外部链接地址
+            String newdataStoreUrl = hdfsUrl+":"+hdfsPortold + DataSetConstants.DATASET_STOREURL_DIR
+                    +"/"+userId+"/"+oldDataSetName;
 
             if(hdfsService.existDir(oldDataStoreUrl,false)){
                 hdfsService.renameDir(oldDataStoreUrl,newdataStoreUrl);
