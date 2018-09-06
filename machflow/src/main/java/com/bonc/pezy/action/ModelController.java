@@ -69,7 +69,7 @@ public class ModelController {
     @ApiOperation(value = "按模型ID删除模型",httpMethod = "POST")
     @RequestMapping(value= "/delByModelId",method = RequestMethod.POST)
     @ResponseBody
-    public Result delModel( @RequestParam(name="modelId[]",value="modelId[]") String[] modelId,
+    public Result delModel( @RequestParam(name="modelId",value="modelId") String[] modelId,
                            @RequestParam(name="owner") String owner,
                            HttpServletResponse response){
         Result result = null;

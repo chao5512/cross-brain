@@ -5,20 +5,22 @@ import com.dataset.management.aop.annotation.PreventRepetitionAnnotation;
 import com.dataset.management.common.ApiResult;
 import com.dataset.management.common.ResultUtil;
 import com.dataset.management.config.HdfsConfig;
-import com.dataset.management.constant.DataSetConstants;
 import com.dataset.management.entity.DataSet;
 import com.dataset.management.entity.HiveTableMeta;
 import com.dataset.management.entity.User;
 import com.dataset.management.service.DataSetMetastoreService;
 import com.dataset.management.service.DataSetService;
 import com.dataset.management.service.HiveTableService;
+import java.io.IOException;
+import javax.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @ClassName HiveTableController
@@ -117,24 +119,15 @@ public class HiveTableController {
 
     /**
      * 功能描述:获取表元数据信息
-     * @param datasetId
+     * @param hiveTableName
      * @return: com.dataset.management.common.ApiResult
      * @auther: 王培文
      * @date: 2018/6/5 16:05
      */
     @RequestMapping(value = "getTableMeta",method = RequestMethod.POST)
-    public ApiResult getHiveTableMeta(@RequestParam("datasetId") String datasetId){
+    public ApiResult getHiveTableMeta(@RequestParam("hivetablename") String hiveTableName){
         try {
-            DataSet dataSet = new DataSet();
-            logger.info("datasetId: "+datasetId);
-            dataSet.setId(Integer.parseInt(datasetId));
-            HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(dataSet);
-            String tableName = hiveTableMeta.getTableName();
-            logger.info("tableName: " + tableName);
-            int length = tableName.length();
-            int index = tableName.indexOf("_");
-            String subTableName = tableName.substring(index + 1, length);
-            hiveTableMeta.setTableName(subTableName);
+            HiveTableMeta hiveTableMeta = metastoreService.getHiveTableMeta(hiveTableName);
             logger.info("查询成功");
             return ResultUtil.success(hiveTableMeta);
         } catch (Exception e) {
